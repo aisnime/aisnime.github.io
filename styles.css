@@ -1,0 +1,88 @@
+/* Gaya umum tetap sama */
+body {
+    font-family: 'Inter', sans-serif;
+    background-image: url('bg.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: white;
+}
+
+.overlay {
+    */background-color: rgba(0, 0, 0, 0.6);*/
+    min-height: 100vh;
+}
+
+.main-content-container {
+    background-color: rgba(0, 0, 0, 0.75);
+    border-radius: 0.75rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+}
+
+.content-card {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.content-card:hover {
+    transform: translateY(-4px);
+}
+
+#player-controls {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin-bottom: 3.5rem;
+    margin-right: 1rem;
+    z-index: 2147483647;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+#video-modal .group:hover #player-controls {
+    opacity: 1;
+}
+
+#settings-btn {
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 9999px;
+    color: white;
+    font-size: 1.25rem;
+    border: none;
+    cursor: pointer;
+}
+
+#resolution-menu {
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    margin-bottom: 0.5rem;
+    background-color: rgba(20, 20, 20, 0.8);
+    backdrop-filter: blur(5px);
+    border-radius: 0.375rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    min-width: 100px;
+}
+
+#resolution-menu button {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    color: white;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+#resolution-menu button:hover {
+    background-color: rgba(124, 58, 237, 0.5);
+}
+
