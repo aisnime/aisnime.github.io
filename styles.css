@@ -1,7 +1,7 @@
 /* Gaya umum tetap sama */
 body {
     font-family: 'Inter', sans-serif;
-    background-image: url('bg.png');
+    background-image: url('Setting/bg.png');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -85,4 +85,5 @@ body {
 #resolution-menu button:hover {
     background-color: rgba(124, 58, 237, 0.5);
 }
+
 
