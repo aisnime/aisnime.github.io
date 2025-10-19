@@ -166,7 +166,6 @@
                 currentItem = docSnap.data();
                 await updateDoc(docRef, { viewCount: increment(1) });
                 
-                // Tampilkan judul dan mulai generate deskripsi
                 document.getElementById('modal-content-title').textContent = currentItem.title;
                 const descriptionEl = document.getElementById('modal-content-description');
                 descriptionEl.textContent = "Membuat deskripsi dengan AI...";
