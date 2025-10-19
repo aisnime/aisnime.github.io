@@ -10,14 +10,15 @@
         {
             "src": "https://aisnime.github.io/aisnime/Setting/logo.ico",
             "sizes": "192x192",
-            "type": "ico/image/png"
+            "type": "ico/png"
         },
         {
             "src": "https://aisnime.github.io/aisnime/Setting/logo.png",
             "sizes": "512x512",
-            "type": "ico/image/png"
+            "type": "ico/png"
         }
     ]
 
 }
+
 
