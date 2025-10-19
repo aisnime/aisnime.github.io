@@ -28,27 +28,17 @@
         </div>
 
         <div id="views-container">
-            <!-- VIEW: TAMBAH KONTEN -->
             <div id="add-content-view" class="hidden">
                 <div class="bg-gray-800 p-8 rounded-lg shadow-2xl space-y-6">
                     <h2 class="text-2xl font-bold text-center">Tambah Konten Baru</h2>
-                    <div>
-                        <label for="title" class="block text-sm font-medium text-gray-300 mb-1">Judul Konten</label>
-                        <input type="text" id="title" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white" placeholder="Contoh: Pemandangan Indah">
-                    </div>
-                    <div>
-                        <label for="thumbnail-url" class="block text-sm font-medium text-gray-300 mb-1">URL Thumbnail</label>
-                        <input type="text" id="thumbnail-url" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white" placeholder="https://example.com/thumbnail.jpg">
-                    </div>
-                    <div>
-                        <label for="description" class="block text-sm font-medium text-gray-300 mb-1">Deskripsi</label>
-                        <textarea id="description" rows="4" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white" placeholder="Deskripsi singkat..."></textarea>
-                    </div>
+                    <div><label for="title" class="block text-sm font-medium text-gray-300 mb-1">Judul Konten</label><input type="text" id="title" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white" placeholder="Contoh: Pemandangan Indah"></div>
+                    <div><label for="thumbnail-url" class="block text-sm font-medium text-gray-300 mb-1">URL Thumbnail</label><input type="text" id="thumbnail-url" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white" placeholder="https://example.com/thumbnail.jpg"></div>
+                    <div><label for="description" class="block text-sm font-medium text-gray-300 mb-1">Deskripsi</label><textarea id="description" rows="4" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white" placeholder="Deskripsi singkat..."></textarea></div>
                     <div class="border-t border-gray-700 pt-6 space-y-4">
-                         <h3 class="text-lg font-semibold text-white">URL File Video (Wajib isi minimal satu)</h3>
-                         <div><label for="video-url-1080p" class="block text-sm font-medium text-gray-300 mb-1">URL Video 1080p</label><input type="text" id="video-url-1080p" class="w-full bg-gray-700 border rounded-md p-3" placeholder="https://example.com/video_1080p.mp4"></div>
-                         <div><label for="video-url-720p" class="block text-sm font-medium text-gray-300 mb-1">URL Video 720p</label><input type="text" id="video-url-720p" class="w-full bg-gray-700 border rounded-md p-3" placeholder="https://example.com/video_720p.mp4"></div>
-                         <div><label for="video-url-480p" class="block text-sm font-medium text-gray-300 mb-1">URL Video 480p</label><input type="text" id="video-url-480p" class="w-full bg-gray-700 border rounded-md p-3" placeholder="https://example.com/video_480p.mp4"></div>
+                        <h3 class="text-lg font-semibold text-white">URL File Video (Wajib isi minimal satu)</h3>
+                        <div><label for="video-url-1080p" class="block text-sm font-medium text-gray-300 mb-1">URL Video 1080p</label><input type="text" id="video-url-1080p" class="w-full bg-gray-700 border rounded-md p-3" placeholder="https://example.com/video_1080p.mp4"></div>
+                        <div><label for="video-url-720p" class="block text-sm font-medium text-gray-300 mb-1">URL Video 720p</label><input type="text" id="video-url-720p" class="w-full bg-gray-700 border rounded-md p-3" placeholder="https://example.com/video_720p.mp4"></div>
+                        <div><label for="video-url-480p" class="block text-sm font-medium text-gray-300 mb-1">URL Video 480p</label><input type="text" id="video-url-480p" class="w-full bg-gray-700 border rounded-md p-3" placeholder="https://example.com/video_480p.mp4"></div>
                     </div>
                     <div class="border-t border-gray-700 pt-6">
                         <h3 class="text-lg font-semibold text-white">Jadwalkan Publikasi</h3>
@@ -61,18 +51,16 @@
                     <p id="status-message" class="text-center text-sm min-h-[20px]"></p>
                 </div>
             </div>
-            <!-- VIEW: KELOLA KONTEN -->
             <div id="manage-content-view">
-                <div class="bg-gray-800 p-8 rounded-lg shadow-2xl">
+                 <div class="bg-gray-800 p-8 rounded-lg shadow-2xl">
                     <h2 class="text-2xl font-bold mb-6">Kelola Konten</h2>
                     <div id="content-list-container" class="space-y-4">
                         <p id="content-list-loading" class="text-gray-400">Memuat daftar konten...</p>
                     </div>
                 </div>
             </div>
-            <!-- VIEW: SETTING -->
             <div id="settings-view" class="hidden">
-                 <div class="bg-gray-800 p-8 rounded-lg shadow-2xl space-y-8">
+                  <div class="bg-gray-800 p-8 rounded-lg shadow-2xl space-y-8">
                     <div class="space-y-4">
                         <h2 class="text-2xl font-bold text-center">Pengaturan Background</h2>
                         <div><label for="background-url" class="block text-sm font-medium">URL Gambar Background</label><input type="text" id="background-url" placeholder="https://example.com/background.jpg" class="w-full bg-gray-700 rounded-md p-3 mt-1"></div>
@@ -101,8 +89,6 @@
             </div>
         </div>
     </div>
-    
-    <!-- MODAL UPDATE -->
     <div id="update-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 hidden z-50">
        <div class="bg-gray-800 rounded-lg shadow-2xl p-8 w-full max-w-2xl space-y-6 max-h-screen overflow-y-auto">
              <h2 class="text-2xl font-bold">Ubah Detail Konten</h2>
@@ -128,15 +114,39 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, Timestamp, query, orderBy, onSnapshot, doc, getDoc, updateDoc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        // ============== LANGKAH PENTING! ==============
+        // GANTI SEMUA ISI DI BAWAH INI DENGAN KONFIGURASI FIREBASE ANDA
+        const firebaseConfig = {
+            apiKey: "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            authDomain: "nama-proyek-anda.firebaseapp.com",
+            projectId: "nama-proyek-anda",
+            storageBucket: "nama-proyek-anda.appspot.com",
+            messagingSenderId: "123456789012",
+            appId: "1:123456789012:web:XXXXXXXXXXXXXXXXXXXXXX"
+        };
+        // ===============================================
+
+        // Validasi Konfigurasi Firebase
+        if (firebaseConfig.apiKey === "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXX") {
+            document.body.innerHTML = `
+                <div class="bg-red-900 text-white p-8 rounded-lg shadow-2xl max-w-2xl mx-auto mt-20">
+                    <h1 class="text-3xl font-bold mb-4">Konfigurasi Firebase Tidak Valid!</h1>
+                    <p class="mb-4">Kunci API Firebase Anda belum diatur. Silakan buka file <strong>admin.html</strong>, cari bagian <strong>firebaseConfig</strong>, dan ganti dengan konfigurasi dari proyek Firebase Anda.</p>
+                    <p>Halaman tidak akan berfungsi sampai Anda memperbarui konfigurasi ini.</p>
+                </div>
+            `;
+            throw new Error("Invalid Firebase Configuration: Please replace the placeholder firebaseConfig object.");
+        }
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+
+        const contentCollRef = collection(db, 'public/data/content');
+        const settingsCollRef = collection(db, 'public/data/settings');
 
         const manageView = document.getElementById('manage-content-view');
         const addView = document.getElementById('add-content-view');
@@ -148,9 +158,8 @@
 
         async function main() {
             try {
-                const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-                if (token) { await signInWithCustomToken(auth, token); } 
-                else { await signInAnonymously(auth); }
+                await signInAnonymously(auth);
+                console.log("Signed in anonymously.");
                 
                 setupMenuNavigation();
                 setupUploadListener();
@@ -158,8 +167,9 @@
                 setupSettingsView();
                 renderContentList();
             } catch (error) {
-                console.error("Authentication failed:", error);
-                statusMessage.textContent = "Error: Gagal mengautentikasi.";
+                console.error("Initialization or Auth failed:", error);
+                // Pesan error sudah ditangani oleh validasi di atas,
+                // tapi kita tambahkan log untuk debugging jika ada masalah lain.
             }
         }
 
@@ -179,7 +189,6 @@
         }
 
         function renderContentList() {
-             const contentCollRef = collection(db, `/artifacts/${appId}/public/data/content`);
              const q = query(contentCollRef, orderBy("uploadedAt", "desc"));
              onSnapshot(q, (snapshot) => {
                  contentListContainer.innerHTML = '';
@@ -209,7 +218,6 @@
         async function setupSettingsView() {
             const saveBtn = document.getElementById('save-settings-button');
             const status = document.getElementById('settings-status-message');
-            
             const inputs = {
                 background: document.getElementById('background-url'),
                 mainLogo: document.getElementById('main-logo-url'),
@@ -228,9 +236,8 @@
                 favicon: document.getElementById('favicon-preview-container'),
                 introVideo: document.getElementById('intro-video-preview-container')
             };
-
             for (const key in inputs) {
-                const docRef = doc(db, `/artifacts/${appId}/public/data/settings/${key}`);
+                const docRef = doc(settingsCollRef, key);
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists() && docSnap.data().url) {
                     inputs[key].value = docSnap.data().url;
@@ -238,18 +245,21 @@
                     previewContainers[key].classList.remove('hidden');
                 }
             }
-            
             saveBtn.addEventListener('click', async () => {
                 status.textContent = "Menyimpan...";
                 saveBtn.disabled = true;
                 try {
                     for (const key in inputs) {
                         const url = inputs[key].value.trim();
+                        const docRef = doc(settingsCollRef, key);
                         if (url) {
-                            const docRef = doc(db, `/artifacts/${appId}/public/data/settings/${key}`);
                             await setDoc(docRef, { url: url });
                             previews[key].src = url;
                             previewContainers[key].classList.remove('hidden');
+                        } else {
+                            await deleteDoc(docRef);
+                            previews[key].src = '';
+                            previewContainers[key].classList.add('hidden');
                         }
                     }
                     status.textContent = "Pengaturan berhasil disimpan!";
@@ -279,12 +289,9 @@
                     if(videoUrl1080) videoFiles['1080p'] = videoUrl1080;
                     if(videoUrl720) videoFiles['720p'] = videoUrl720;
                     if(videoUrl480) videoFiles['480p'] = videoUrl480;
-                    
                     const dateStr = document.getElementById('publish-date').value;
                     const timeStr = document.getElementById('publish-time').value;
                     const publishAt = (dateStr && timeStr) ? Timestamp.fromDate(new Date(`${dateStr}T${timeStr}`)) : Timestamp.now();
-                    
-                    const contentCollRef = collection(db, `/artifacts/${appId}/public/data/content`);
                     await addDoc(contentCollRef, {
                         title, 
                         description: document.getElementById('description').value.trim(),
@@ -294,7 +301,6 @@
                         publishAt, 
                         viewCount: 0
                     });
-                    
                     statusMessage.textContent = "Konten berhasil diunggah!";
                     document.getElementById('title').value = '';
                     document.getElementById('thumbnail-url').value = '';
@@ -314,7 +320,7 @@
         }
 
         async function openUpdateModal(id) {
-            const docRef = doc(db, `/artifacts/${appId}/public/data/content`, id);
+            const docRef = doc(contentCollRef, id);
             const docSnap = await getDoc(docRef);
             if (!docSnap.exists()) { alert("Konten tidak ditemukan."); return; }
             const item = docSnap.data();
@@ -337,7 +343,7 @@
             if (!id) return;
             saveButton.disabled = true;
             try {
-                const docRef = doc(db, `/artifacts/${appId}/public/data/content`, id);
+                const docRef = doc(contentCollRef, id);
                 const videoFiles = {};
                 const url1080 = document.getElementById('update-video-url-1080p').value.trim();
                 const url720 = document.getElementById('update-video-url-720p').value.trim();
@@ -374,7 +380,7 @@
                 }
                 if (e.target.classList.contains('delete-btn')) {
                     if (confirm("Yakin ingin menghapus konten ini?")) {
-                        await deleteDoc(doc(db, `/artifacts/${appId}/public/data/content`, id));
+                        await deleteDoc(doc(contentCollRef, id));
                     }
                 }
             });
