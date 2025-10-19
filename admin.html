@@ -30,7 +30,7 @@
         <div id="views-container">
             <!-- VIEW: TAMBAH KONTEN -->
             <div id="add-content-view" class="hidden">
-                 <div class="bg-gray-800 p-8 rounded-lg shadow-2xl space-y-6">
+                <div class="bg-gray-800 p-8 rounded-lg shadow-2xl space-y-6">
                     <h2 class="text-2xl font-bold text-center">Tambah Konten Baru</h2>
                     <div><label for="title" class="block text-sm font-medium text-gray-300 mb-1">Judul Konten</label><input type="text" id="title" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white" placeholder="Contoh: Pemandangan Indah"></div>
                     <div><label for="thumbnail-url" class="block text-sm font-medium text-gray-300 mb-1">URL Thumbnail</label><input type="text" id="thumbnail-url" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white" placeholder="https://example.com/thumbnail.jpg"></div>
@@ -118,11 +118,9 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, Timestamp, query, orderBy, onSnapshot, doc, getDoc, updateDoc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Your web app's Firebase configuration
         const firebaseConfig = {
             apiKey: "AIzaSyBkSf56I0akk5poCZ5t8QI1MNlUvZ8Aiu0",
             authDomain: "aisnime.firebaseapp.com",
@@ -134,7 +132,6 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
@@ -159,30 +156,7 @@
                 renderContentList();
             } catch (error) {
                 console.error("Initialization or Auth failed:", error);
-                let errorMessage = `<h1 class="text-3xl font-bold mb-4">Koneksi Gagal!</h1><p>Pastikan konfigurasi Firebase benar dan aturan database (Firestore Rules) sudah diatur untuk mengizinkan akses baca/tulis.</p>`;
-
-                if (error.code === 'auth/configuration-not-found') {
-                    errorMessage = `
-                        <div class="bg-yellow-900 border-4 border-yellow-500 text-white p-8 rounded-lg shadow-2xl max-w-3xl mx-auto mt-20 text-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto mb-4 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                            </svg>
-                            <h1 class="text-4xl font-bold mb-4">AKSI DIPERLUKAN</h1>
-                            <p class="mb-6 text-lg">Metode 'Login Anonim' belum diaktifkan di proyek Firebase Anda.</p>
-                            <p class="mb-4 font-semibold text-left">Ikuti langkah-langkah ini untuk memperbaikinya:</p>
-                            <ol class="list-decimal list-inside space-y-2 bg-gray-800 p-6 rounded-md text-left">
-                                <li>Buka <a href="https://console.firebase.google.com/" target="_blank" class="text-blue-300 underline font-bold">Firebase Console</a> dan buka proyek <strong>aisnime</strong> Anda.</li>
-                                <li>Di menu kiri, klik <strong>Authentication</strong> (di bawah Build).</li>
-                                <li>Pilih tab <strong>Sign-in method</strong>.</li>
-                                <li>Cari dan klik <strong>Anonymous</strong> di daftar penyedia.</li>
-                                <li><strong>Aktifkan</strong> toggle-nya dan klik <strong>Save</strong>.</li>
-                                <li>Setelah selesai, <strong>muat ulang (refresh) halaman ini</strong>.</li>
-                            </ol>
-                        </div>
-                    `;
-                }
-                
-                document.body.innerHTML = errorMessage;
+                 document.body.innerHTML = `<div class="bg-red-900 text-white p-8 rounded-lg shadow-2xl max-w-2xl mx-auto mt-20"><h1 class="text-3xl font-bold mb-4">Koneksi Gagal!</h1><p>Pastikan konfigurasi Firebase benar dan aturan database (Firestore Rules) sudah diatur untuk mengizinkan akses baca/tulis.</p></div>`;
             }
         }
 
