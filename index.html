@@ -7,21 +7,18 @@
     <link rel="icon" id="favicon" href="">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="overlay">
         <div class="container mx-auto p-4 lg:p-8">
             <header class="mb-8 text-center">
-                <img id="main-logo" src="https://aisnime.github.io/aisnime/Setting/logomain.png" alt="Logo Aplikasi" class="w-auto h-20 mx-auto mb-4 hidden">
-                <!--h1 id="main-title-text" class="text-5xl font-extrabold text-white drop-shadow-lg">Galeri Konten</h1-->
+                <img id="main-logo" src="" alt="Logo Aplikasi" class="w-auto h-20 mx-auto mb-4 hidden">
+                <h1 id="main-title-text" class="text-5xl font-extrabold text-white drop-shadow-lg">Galeri Konten</h1>
             </header>
-
             <div class="mb-8 max-w-xl mx-auto">
-                <input type="search" id="search-input" placeholder="Cari berdasarkan judul..." class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition placeholder-white focus:outline-none">
+                <input type="search" id="search-input" placeholder="Cari berdasarkan judul..." class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition">
             </div>
-
             <main class="main-content-container p-6">
                 <h2 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-3">UPDATE TERBARU</h2>
                 <div id="content-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -30,248 +27,197 @@
             </main>
         </div>
     </div>
-
     <div id="video-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 hidden z-50">
        <div class="bg-black rounded-lg shadow-2xl w-full max-w-4xl relative group">
             <button id="close-modal-btn" class="absolute -top-3 -right-3 bg-white text-black rounded-full w-8 h-8 flex items-center justify-center font-bold text-xl z-20">&times;</button>
             <video id="modal-intro-player" class="w-full aspect-video rounded-lg" playsinline muted></video>
             <video id="modal-main-player" class="w-full aspect-video rounded-lg hidden" controls controlslist="nodownload" disablepictureinpicture playsinline></video>
-            
-            <div id="player-controls" class="absolute bottom-0 right-0 mb-12 mr-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+            <div id="player-controls" class="absolute bottom-0 right-0 mb-12 mr-4 opacity-0 group-hover:opacity-100 z-10">
                 <div class="relative">
                     <button id="settings-btn" class="w-10 h-10 flex items-center justify-center bg-black bg-opacity-50 rounded-full text-white text-xl hidden">⚙️</button>
-                    <div id="resolution-menu" class="absolute bottom-full right-0 mb-2 bg-black bg-opacity-70 rounded-md py-1 hidden">
-                    </div>
+                    <div id="resolution-menu" class="absolute bottom-full right-0 mb-2 bg-black bg-opacity-70 rounded-md py-1 hidden"></div>
                 </div>
             </div>
         </div>
     </div>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, query, where, orderBy, onSnapshot, doc, getDoc, updateDoc, Timestamp, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.addEventListener('contextmenu', event => event.preventDefault());
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
-            const db = new Dexie('MyContentDatabase');
-            db.version(3).stores({
-                content: '++id, title, uploadedAt, publishAt, viewCount',
-                settings: 'key'
-            }).upgrade(tx => {
-                 return tx.table('content').toCollection().modify(item => {
-                    if (typeof item.viewCount === 'undefined') item.viewCount = 0;
-                    if (item.videoFile && !item.videoFiles) {
-                        item.videoFiles = { '720p': item.videoFile };
-                        delete item.videoFile;
-                    }
-                 });
-            });
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
 
-            const contentListEl = document.getElementById('content-list');
-            const videoModal = document.getElementById('video-modal');
-            const closeModalBtn = document.getElementById('close-modal-btn');
-            const modalIntroPlayer = document.getElementById('modal-intro-player');
-            const modalMainPlayer = document.getElementById('modal-main-player');
-            const settingsBtn = document.getElementById('settings-btn');
-            const resolutionMenu = document.getElementById('resolution-menu');
-            const mainLogoImg = document.getElementById('main-logo');
-            const mainTitleText = document.getElementById('main-title-text');
+        const contentListEl = document.getElementById('content-list');
+        const videoModal = document.getElementById('video-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const modalIntroPlayer = document.getElementById('modal-intro-player');
+        const modalMainPlayer = document.getElementById('modal-main-player');
+        const settingsBtn = document.getElementById('settings-btn');
+        const resolutionMenu = document.getElementById('resolution-menu');
+        const mainLogoImg = document.getElementById('main-logo');
+        const mainTitleText = document.getElementById('main-title-text');
             
-            let allPublishedContent = [];
-            let currentItem = null;
-            let activeObjectURLs = { thumbnails: [], video: null, intro: null, favicon: null, mainLogo: null, background: null };
-            
-            function cleanupURLs() {
-                 activeObjectURLs.thumbnails.forEach(url => URL.revokeObjectURL(url));
-                 activeObjectURLs.thumbnails = [];
-                 if (activeObjectURLs.video) URL.revokeObjectURL(activeObjectURLs.video);
-                 if (activeObjectURLs.intro) URL.revokeObjectURL(activeObjectURLs.intro);
-                 activeObjectURLs.video = null;
-                 activeObjectURLs.intro = null;
-            }
+        let allPublishedContent = [];
+        let currentItem = null;
+        let currentItemId = null;
 
-            async function loadSettings() {
-                if (activeObjectURLs.favicon) URL.revokeObjectURL(activeObjectURLs.favicon);
-                if (activeObjectURLs.mainLogo) URL.revokeObjectURL(activeObjectURLs.mainLogo);
-                if (activeObjectURLs.background) URL.revokeObjectURL(activeObjectURLs.background);
-
-                const faviconEl = document.getElementById('favicon');
+        async function main() {
+            try {
+                const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+                if (token) { await signInWithCustomToken(auth, token); } 
+                else { await signInAnonymously(auth); }
                 
-                try {
-                    const settings = await db.settings.bulkGet(['background', 'mainLogo', 'favicon']);
-                    const [backgroundSetting, mainLogoSetting, faviconSetting] = settings;
+                await loadSettings();
+                loadInitialContent();
+                setupSearchListener();
+                setupEventListeners();
+            } catch(e) { console.error("Initialization failed", e) }
+        }
 
-                    if (backgroundSetting && backgroundSetting.value instanceof Blob) {
-                        activeObjectURLs.background = URL.createObjectURL(backgroundSetting.value);
-                        document.body.style.backgroundImage = `url('${activeObjectURLs.background}')`;
-                    }
-                    
-                    if (faviconSetting && faviconSetting.value instanceof Blob) {
-                        activeObjectURLs.favicon = URL.createObjectURL(faviconSetting.value);
-                        faviconEl.href = activeObjectURLs.favicon;
-                    }
-                    
-                    if (mainLogoSetting && mainLogoSetting.value instanceof Blob) {
-                        activeObjectURLs.mainLogo = URL.createObjectURL(mainLogoSetting.value);
-                        mainLogoImg.src = activeObjectURLs.mainLogo;
-                        mainLogoImg.classList.remove('hidden');
-                        if(mainTitleText) mainTitleText.classList.add('hidden');
-                    } else {
-                        mainLogoImg.classList.add('hidden');
-                        if(mainTitleText) mainTitleText.classList.remove('hidden');
-                    }
-                } catch (error) {
-                    console.error("Gagal memuat pengaturan:", error);
-                    mainLogoImg.classList.add('hidden');
-                    if(mainTitleText) mainTitleText.classList.remove('hidden');
+        async function loadSettings() {
+            try {
+                const settingsKeys = ['background', 'mainLogo', 'favicon'];
+                const promises = settingsKeys.map(key => getDoc(doc(db, `/artifacts/${appId}/public/data/settings/${key}`)));
+                const [backgroundSnap, mainLogoSnap, faviconSnap] = await Promise.all(promises);
+
+                if (backgroundSnap.exists() && backgroundSnap.data().url) {
+                    document.body.style.backgroundImage = `url('${backgroundSnap.data().url}')`;
                 }
-            }
+                if (mainLogoSnap.exists() && mainLogoSnap.data().url) {
+                    mainLogoImg.src = mainLogoSnap.data().url;
+                    mainLogoImg.classList.remove('hidden');
+                    mainTitleText.classList.add('hidden');
+                }
+                if (faviconSnap.exists() && faviconSnap.data().url) {
+                    document.getElementById('favicon').href = faviconSnap.data().url;
+                }
+            } catch (error) { console.error("Gagal memuat pengaturan:", error); }
+        }
 
-            function closeVideoModal() {
-                videoModal.classList.add('hidden');
-                modalIntroPlayer.pause();
-                modalIntroPlayer.src = '';
-                modalMainPlayer.pause();
-                modalMainPlayer.src = '';
-                cleanupURLs();
-                renderContent(allPublishedContent); 
-            }
+        function closeVideoModal() {
+            videoModal.classList.add('hidden');
+            modalIntroPlayer.pause();
+            modalIntroPlayer.src = '';
+            modalMainPlayer.pause();
+            modalMainPlayer.src = '';
+        }
 
-            function switchResolution(res) {
-                if (!currentItem || !currentItem.videoFiles[res]) return;
+        function switchResolution(res) {
+            if (!currentItem || !currentItem.videoFiles[res]) return;
+            const currentTime = modalMainPlayer.currentTime;
+            const isPaused = modalMainPlayer.paused;
+            modalMainPlayer.src = currentItem.videoFiles[res];
+            modalMainPlayer.addEventListener('loadedmetadata', () => {
+                modalMainPlayer.currentTime = currentTime;
+                if (!isPaused) modalMainPlayer.play();
+            }, { once: true });
+            resolutionMenu.classList.add('hidden');
+        }
+
+        async function playVideoInModal(id) {
+            try {
+                currentItemId = id;
+                const docRef = doc(db, `/artifacts/${appId}/public/data/content`, id);
+                const docSnap = await getDoc(docRef);
+                if (!docSnap.exists()) { alert("Konten tidak ditemukan."); return; }
                 
-                const currentTime = modalMainPlayer.currentTime;
-                const isPaused = modalMainPlayer.paused;
-
-                if (activeObjectURLs.video) URL.revokeObjectURL(activeObjectURLs.video);
+                currentItem = docSnap.data();
+                await updateDoc(docRef, { viewCount: increment(1) });
                 
-                activeObjectURLs.video = URL.createObjectURL(currentItem.videoFiles[res]);
-                modalMainPlayer.src = activeObjectURLs.video;
+                resolutionMenu.innerHTML = '';
+                const resolutions = Object.keys(currentItem.videoFiles).sort((a,b) => parseInt(b) - parseInt(a));
+                if (resolutions.length > 1) {
+                    resolutions.forEach(res => {
+                        const btn = document.createElement('button');
+                        btn.className = 'block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700';
+                        btn.textContent = `${res}p`;
+                        btn.onclick = () => switchResolution(res);
+                        resolutionMenu.appendChild(btn);
+                    });
+                    settingsBtn.classList.remove('hidden');
+                } else {
+                    settingsBtn.classList.add('hidden');
+                }
                 
-                modalMainPlayer.addEventListener('loadedmetadata', () => {
-                    modalMainPlayer.currentTime = currentTime;
-                    if (!isPaused) modalMainPlayer.play();
-                }, { once: true });
-                resolutionMenu.classList.add('hidden');
-            }
+                modalMainPlayer.src = currentItem.videoFiles[resolutions[0]];
 
-            async function playVideoInModal(id) {
-                try {
-                    currentItem = await db.content.get(id);
-                    if (!currentItem || !currentItem.videoFiles || Object.keys(currentItem.videoFiles).length === 0) {
-                        alert("Gagal memuat file video."); return;
-                    }
-
-                    await db.content.update(id, { viewCount: (currentItem.viewCount || 0) + 1 });
-                    
-                    resolutionMenu.innerHTML = '';
-                    const resolutions = Object.keys(currentItem.videoFiles).sort((a,b) => parseInt(b) - parseInt(a));
-                    if(resolutions.length > 1){
-                       resolutions.forEach(res => {
-                            const menuItem = document.createElement('button');
-                            menuItem.className = 'block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700';
-                            menuItem.textContent = `${res}p`;
-                            menuItem.onclick = () => switchResolution(res);
-                            resolutionMenu.appendChild(menuItem);
-                        });
-                        settingsBtn.classList.remove('hidden');
-                    } else {
-                        settingsBtn.classList.add('hidden');
-                    }
-                    
-                    const defaultRes = resolutions[0];
-                    if (activeObjectURLs.video) URL.revokeObjectURL(activeObjectURLs.video);
-                    activeObjectURLs.video = URL.createObjectURL(currentItem.videoFiles[defaultRes]);
-                    modalMainPlayer.src = activeObjectURLs.video;
-
-                    const introVideoSetting = await db.settings.get('introVideo');
-                    if (introVideoSetting && introVideoSetting.value instanceof Blob) {
-                        if (activeObjectURLs.intro) URL.revokeObjectURL(activeObjectURLs.intro);
-                        activeObjectURLs.intro = URL.createObjectURL(introVideoSetting.value);
-                        modalIntroPlayer.src = activeObjectURLs.intro;
-                        
-                        const onIntroEnd = () => {
-                            modalIntroPlayer.classList.add('hidden');
-                            modalMainPlayer.classList.remove('hidden');
-                            modalMainPlayer.play();
-                            modalIntroPlayer.removeEventListener('ended', onIntroEnd);
-                        };
-                        modalIntroPlayer.addEventListener('ended', onIntroEnd);
-
-                        videoModal.classList.remove('hidden');
-                        modalIntroPlayer.classList.remove('hidden');
-                        modalMainPlayer.classList.add('hidden');
-                        modalIntroPlayer.play();
-                    } else {
-                        videoModal.classList.remove('hidden');
+                const introSnap = await getDoc(doc(db, `/artifacts/${appId}/public/data/settings/introVideo`));
+                if (introSnap.exists() && introSnap.data().url) {
+                    modalIntroPlayer.src = introSnap.data().url;
+                    const onIntroEnd = () => {
                         modalIntroPlayer.classList.add('hidden');
                         modalMainPlayer.classList.remove('hidden');
                         modalMainPlayer.play();
-                    }
-                } catch (error) { console.error("Gagal memuat video:", error); }
-            }
-
-            function renderContent(contentToRender) {
-                cleanupURLs();
-                contentListEl.innerHTML = '';
-
-                if (contentToRender.length === 0) {
-                    contentListEl.innerHTML = '<p class="text-gray-500 col-span-full text-center py-8">Tidak ada konten yang ditemukan.</p>';
-                    return;
+                        modalIntroPlayer.removeEventListener('ended', onIntroEnd);
+                    };
+                    modalIntroPlayer.addEventListener('ended', onIntroEnd);
+                    videoModal.classList.remove('hidden');
+                    modalIntroPlayer.classList.remove('hidden');
+                    modalMainPlayer.classList.add('hidden');
+                    modalIntroPlayer.play();
+                } else {
+                    videoModal.classList.remove('hidden');
+                    modalIntroPlayer.classList.add('hidden');
+                    modalMainPlayer.classList.remove('hidden');
+                    modalMainPlayer.play();
                 }
+            } catch (error) { console.error("Gagal memuat video:", error); }
+        }
 
-                contentToRender.forEach(item => {
-                    const thumbnailUrl = URL.createObjectURL(item.thumbnailFile);
-                    activeObjectURLs.thumbnails.push(thumbnailUrl);
-
-                    const itemEl = document.createElement('div');
-                    itemEl.className = 'content-card bg-gray-800 bg-opacity-50 rounded-lg overflow-hidden shadow-lg transform hover:-translate-y-1 transition-transform duration-300';
-                    itemEl.innerHTML = `
-                        <div class="relative w-full aspect-video"><img src="${thumbnailUrl}" alt="${item.title}" class="w-full h-full object-cover"></div>
-                        <div class="p-4">
-                            <h4 class="font-semibold text-white leading-tight truncate" title="${item.title}">${item.title}</h4>
-                            <p class="text-xs text-gray-400 mt-1">${item.viewCount || 0} kali ditonton</p>
-                        </div>`;
-                    itemEl.addEventListener('click', () => playVideoInModal(item.id));
-                    contentListEl.appendChild(itemEl);
-                });
+        function renderContent(contentToRender) {
+            contentListEl.innerHTML = '';
+            if (contentToRender.length === 0) {
+                contentListEl.innerHTML = '<p class="text-gray-500 col-span-full text-center py-8">Tidak ada konten ditemukan.</p>';
+                return;
             }
+            contentToRender.forEach(itemData => {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'content-card bg-gray-800 bg-opacity-50 rounded-lg overflow-hidden shadow-lg transform hover:-translate-y-1';
+                itemEl.innerHTML = `
+                    <div class="relative w-full aspect-video"><img src="${itemData.data.thumbnailUrl}" alt="${itemData.data.title}" class="w-full h-full object-cover"></div>
+                    <div class="p-4">
+                        <h4 class="font-semibold text-white truncate" title="${itemData.data.title}">${itemData.data.title}</h4>
+                        <p class="text-xs text-gray-400 mt-1">${itemData.data.viewCount || 0} kali ditonton</p>
+                    </div>`;
+                itemEl.addEventListener('click', () => playVideoInModal(itemData.id));
+                contentListEl.appendChild(itemEl);
+            });
+        }
 
-            async function loadInitialContent() {
-                await loadSettings();
-                try {
-                    const now = new Date();
-                    allPublishedContent = await db.content.where('publishAt').belowOrEqual(now).reverse().sortBy('publishAt');
-                    renderContent(allPublishedContent);
-                } catch (error) {
-                    console.error("Gagal memuat konten dari IndexedDB:", error);
-                    contentListEl.innerHTML = '<p class="text-red-500 col-span-full text-center py-8">Error: Gagal memuat konten.</p>';
-                }
-            }
+        function loadInitialContent() {
+            const contentCollRef = collection(db, `/artifacts/${appId}/public/data/content`);
+            const q = query(contentCollRef, where("publishAt", "<=", Timestamp.now()), orderBy("publishAt", "desc"));
+            onSnapshot(q, (snapshot) => {
+                allPublishedContent = snapshot.docs.map(doc => ({id: doc.id, data: doc.data()}));
+                renderContent(allPublishedContent);
+            }, (error) => {
+                console.error("Gagal memuat konten:", error);
+                contentListEl.innerHTML = '<p class="text-red-500 col-span-full text-center py-8">Error memuat konten.</p>';
+            });
+        }
 
-            function setupSearchListener() {
-                const searchInput = document.getElementById('search-input');
-                searchInput.addEventListener('input', (e) => {
-                    const searchTerm = e.target.value.toLowerCase().trim();
-                    const filteredContent = allPublishedContent.filter(item => item.title.toLowerCase().includes(searchTerm));
-                    renderContent(filteredContent);
-                });
-            }
-            
+        function setupSearchListener() {
+            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase().trim();
+                const filtered = allPublishedContent.filter(item => item.data.title.toLowerCase().includes(searchTerm));
+                renderContent(filtered);
+            });
+        }
+
+        function setupEventListeners(){
             settingsBtn.addEventListener('click', () => resolutionMenu.classList.toggle('hidden'));
             closeModalBtn.addEventListener('click', closeVideoModal);
             videoModal.addEventListener('click', (e) => { if (e.target === videoModal) closeVideoModal(); });
-
-            loadInitialContent();
-            setupSearchListener();
-        });
+        }
+        
+        main();
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
 
