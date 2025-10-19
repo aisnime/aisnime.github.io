@@ -114,39 +114,28 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, Timestamp, query, orderBy, onSnapshot, doc, getDoc, updateDoc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
-        // ============== LANGKAH PENTING! ==============
-        // GANTI SEMUA ISI DI BAWAH INI DENGAN KONFIGURASI FIREBASE ANDA
-        const firebaseConfig = {
-            apiKey: "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-            authDomain: "nama-proyek-anda.firebaseapp.com",
-            projectId: "nama-proyek-anda",
-            storageBucket: "nama-proyek-anda.appspot.com",
-            messagingSenderId: "123456789012",
-            appId: "1:123456789012:web:XXXXXXXXXXXXXXXXXXXXXX"
-        };
-        // ===============================================
-
-        // Validasi Konfigurasi Firebase
-        if (firebaseConfig.apiKey === "AIzaSyXXXXXXXXXXXXXXXXXXXXXXXXXXX") {
-            document.body.innerHTML = `
+        if (!firebaseConfig.apiKey) {
+             document.body.innerHTML = `
                 <div class="bg-red-900 text-white p-8 rounded-lg shadow-2xl max-w-2xl mx-auto mt-20">
-                    <h1 class="text-3xl font-bold mb-4">Konfigurasi Firebase Tidak Valid!</h1>
-                    <p class="mb-4">Kunci API Firebase Anda belum diatur. Silakan buka file <strong>admin.html</strong>, cari bagian <strong>firebaseConfig</strong>, dan ganti dengan konfigurasi dari proyek Firebase Anda.</p>
-                    <p>Halaman tidak akan berfungsi sampai Anda memperbarui konfigurasi ini.</p>
+                    <h1 class="text-3xl font-bold mb-4">Konfigurasi Firebase Tidak Ditemukan!</h1>
+                    <p>Aplikasi ini tidak dapat terhubung ke database karena konfigurasi Firebase tidak tersedia.</p>
                 </div>
             `;
-            throw new Error("Invalid Firebase Configuration: Please replace the placeholder firebaseConfig object.");
+            throw new Error("Firebase config not found.");
         }
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        const contentCollRef = collection(db, 'public/data/content');
-        const settingsCollRef = collection(db, 'public/data/settings');
+        const contentCollRef = collection(db, `/artifacts/${appId}/public/data/content`);
+        const settingsCollRef = collection(db, `/artifacts/${appId}/public/data/settings`);
 
         const manageView = document.getElementById('manage-content-view');
         const addView = document.getElementById('add-content-view');
@@ -158,8 +147,14 @@
 
         async function main() {
             try {
-                await signInAnonymously(auth);
-                console.log("Signed in anonymously.");
+                const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+                if (token) {
+                    await signInWithCustomToken(auth, token);
+                    console.log("Signed in with custom token.");
+                } else {
+                    await signInAnonymously(auth);
+                    console.log("Signed in anonymously.");
+                }
                 
                 setupMenuNavigation();
                 setupUploadListener();
@@ -168,8 +163,12 @@
                 renderContentList();
             } catch (error) {
                 console.error("Initialization or Auth failed:", error);
-                // Pesan error sudah ditangani oleh validasi di atas,
-                // tapi kita tambahkan log untuk debugging jika ada masalah lain.
+                 document.body.innerHTML = `
+                <div class="bg-red-900 text-white p-8 rounded-lg shadow-2xl max-w-2xl mx-auto mt-20">
+                    <h1 class="text-3xl font-bold mb-4">Gagal Terhubung ke Database!</h1>
+                    <p class="mb-4">Terjadi kesalahan saat mengautentikasi dengan Firebase. Pastikan konfigurasi Anda benar dan Anda memiliki izin akses.</p>
+                </div>
+            `;
             }
         }
 
