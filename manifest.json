@@ -1,0 +1,21 @@
+{
+    "name": "AISNIME",
+    "short_name": "AISNIME",
+    "start_url": "/aisnime/",
+    "display": "standalone",
+    "background_color": "#111827",
+    "theme_color": "#8B5CF6",
+    "description": "Galeri Konten dari AISNIME.",
+    "icons": [
+        {
+            "src": "https://i.imgur.com/7b4w4qH.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "https://i.imgur.com/7b4w4qH.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
