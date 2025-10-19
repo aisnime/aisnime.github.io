@@ -1,7 +1,6 @@
 /* Gaya umum tetap sama */
 body {
     font-family: 'Inter', sans-serif;
-    background-image: url('aisnime/Setting/bg.png');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -9,7 +8,7 @@ body {
 }
 
 .overlay {
-    */background-color: rgba(0, 0, 0, 0.6);*/
+    background-color: rgba(0, 0, 0, 0.6);
     min-height: 100vh;
 }
 
@@ -32,12 +31,14 @@ body {
     position: absolute;
     bottom: 0;
     right: 0;
-    margin-bottom: 3.5rem;
+    /* Adjust margin to be above the new content info section */
+    margin-bottom: 8rem; /* Perkiraan tinggi section info + margin */
     margin-right: 1rem;
     z-index: 2147483647;
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
 }
+
 
 #video-modal .group:hover #player-controls {
     opacity: 1;
@@ -86,5 +87,10 @@ body {
     background-color: rgba(124, 58, 237, 0.5);
 }
 
-
+/* Gaya baru untuk deskripsi di modal */
+#modal-content-description {
+    white-space: pre-wrap; /* Mempertahankan format paragraf dari Gemini */
+    max-height: 150px; /* Batasi tinggi deskripsi */
+    overflow-y: auto; /* Tambahkan scroll jika deskripsi panjang */
+}
 
