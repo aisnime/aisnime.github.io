@@ -28,8 +28,9 @@
         </div>
 
         <div id="views-container">
+            <!-- VIEW: TAMBAH KONTEN -->
             <div id="add-content-view" class="hidden">
-                <div class="bg-gray-800 p-8 rounded-lg shadow-2xl space-y-6">
+                 <div class="bg-gray-800 p-8 rounded-lg shadow-2xl space-y-6">
                     <h2 class="text-2xl font-bold text-center">Tambah Konten Baru</h2>
                     <div><label for="title" class="block text-sm font-medium text-gray-300 mb-1">Judul Konten</label><input type="text" id="title" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white" placeholder="Contoh: Pemandangan Indah"></div>
                     <div><label for="thumbnail-url" class="block text-sm font-medium text-gray-300 mb-1">URL Thumbnail</label><input type="text" id="thumbnail-url" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white" placeholder="https://example.com/thumbnail.jpg"></div>
@@ -51,6 +52,7 @@
                     <p id="status-message" class="text-center text-sm min-h-[20px]"></p>
                 </div>
             </div>
+            <!-- VIEW: KELOLA KONTEN -->
             <div id="manage-content-view">
                  <div class="bg-gray-800 p-8 rounded-lg shadow-2xl">
                     <h2 class="text-2xl font-bold mb-6">Kelola Konten</h2>
@@ -59,6 +61,7 @@
                     </div>
                 </div>
             </div>
+            <!-- VIEW: SETTING -->
             <div id="settings-view" class="hidden">
                   <div class="bg-gray-800 p-8 rounded-lg shadow-2xl space-y-8">
                     <div class="space-y-4">
@@ -89,6 +92,7 @@
             </div>
         </div>
     </div>
+    <!-- MODAL UPDATE -->
     <div id="update-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 hidden z-50">
        <div class="bg-gray-800 rounded-lg shadow-2xl p-8 w-full max-w-2xl space-y-6 max-h-screen overflow-y-auto">
              <h2 class="text-2xl font-bold">Ubah Detail Konten</h2>
@@ -114,28 +118,28 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, Timestamp, query, orderBy, onSnapshot, doc, getDoc, updateDoc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
-        if (!firebaseConfig.apiKey) {
-             document.body.innerHTML = `
-                <div class="bg-red-900 text-white p-8 rounded-lg shadow-2xl max-w-2xl mx-auto mt-20">
-                    <h1 class="text-3xl font-bold mb-4">Konfigurasi Firebase Tidak Ditemukan!</h1>
-                    <p>Aplikasi ini tidak dapat terhubung ke database karena konfigurasi Firebase tidak tersedia.</p>
-                </div>
-            `;
-            throw new Error("Firebase config not found.");
-        }
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBkSf56I0akk5poCZ5t8QI1MNlUvZ8Aiu0",
+            authDomain: "aisnime.firebaseapp.com",
+            projectId: "aisnime",
+            storageBucket: "aisnime.firebasestorage.app",
+            messagingSenderId: "736632750777",
+            appId: "1:736632750777:web:8756d28d0ffe2698739168",
+            measurementId: "G-1WF1269W5W"
+        };
 
         const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        const contentCollRef = collection(db, `/artifacts/${appId}/public/data/content`);
-        const settingsCollRef = collection(db, `/artifacts/${appId}/public/data/settings`);
+        const contentCollRef = collection(db, 'content');
+        const settingsCollRef = collection(db, 'settings');
 
         const manageView = document.getElementById('manage-content-view');
         const addView = document.getElementById('add-content-view');
@@ -147,15 +151,7 @@
 
         async function main() {
             try {
-                const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-                if (token) {
-                    await signInWithCustomToken(auth, token);
-                    console.log("Signed in with custom token.");
-                } else {
-                    await signInAnonymously(auth);
-                    console.log("Signed in anonymously.");
-                }
-                
+                await signInAnonymously(auth);
                 setupMenuNavigation();
                 setupUploadListener();
                 setupEventListeners();
@@ -163,12 +159,25 @@
                 renderContentList();
             } catch (error) {
                 console.error("Initialization or Auth failed:", error);
-                 document.body.innerHTML = `
-                <div class="bg-red-900 text-white p-8 rounded-lg shadow-2xl max-w-2xl mx-auto mt-20">
-                    <h1 class="text-3xl font-bold mb-4">Gagal Terhubung ke Database!</h1>
-                    <p class="mb-4">Terjadi kesalahan saat mengautentikasi dengan Firebase. Pastikan konfigurasi Anda benar dan Anda memiliki izin akses.</p>
-                </div>
-            `;
+                let errorMessage = `<h1 class="text-3xl font-bold mb-4">Koneksi Gagal!</h1><p>Pastikan konfigurasi Firebase benar dan aturan database (Firestore Rules) sudah diatur untuk mengizinkan akses baca/tulis.</p>`;
+
+                if (error.code === 'auth/configuration-not-found') {
+                    errorMessage = `
+                        <h1 class="text-3xl font-bold mb-4">Langkah Tambahan Diperlukan!</h1>
+                        <p class="mb-4">Metode 'Login Anonim' belum diaktifkan di proyek Firebase Anda. Ini adalah pengaturan keamanan yang harus Anda ubah di situs web Firebase.</p>
+                        <p class="mb-2 font-semibold">Ikuti langkah-langkah ini untuk memperbaikinya:</p>
+                        <ol class="list-decimal list-inside space-y-2 bg-gray-800 p-4 rounded-md">
+                            <li>Pergi ke <a href="https://console.firebase.google.com/" target="_blank" class="text-blue-400 underline">Firebase Console</a> dan buka proyek <strong>aisnime</strong> Anda.</li>
+                            <li>Di menu sebelah kiri, klik <strong>Build > Authentication</strong>.</li>
+                            <li>Pilih tab <strong>Sign-in method</strong>.</li>
+                            <li>Cari <strong>Anonymous</strong> di daftar penyedia, lalu klik.</li>
+                            <li>Aktifkan (enable) toggle-nya dan klik <strong>Save</strong>.</li>
+                            <li>Setelah selesai, <strong>muat ulang (refresh) halaman ini</strong>.</li>
+                        </ol>
+                    `;
+                }
+                
+                document.body.innerHTML = `<div class="bg-red-900 text-white p-8 rounded-lg shadow-2xl max-w-2xl mx-auto mt-20">${errorMessage}</div>`;
             }
         }
 
