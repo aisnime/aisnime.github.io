@@ -36,13 +36,20 @@
     <div id="video-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 hidden z-50">
        <div class="bg-black rounded-lg shadow-2xl w-full max-w-4xl relative group">
             <button id="close-modal-btn" class="absolute -top-3 -right-3 bg-white text-black rounded-full w-8 h-8 flex items-center justify-center font-bold text-xl z-20">&times;</button>
-            <video id="modal-intro-player" class="w-full aspect-video rounded-lg" playsinline muted></video>
-            <video id="modal-main-player" class="w-full aspect-video rounded-lg hidden" controls controlslist="nodownload" disablepictureinpicture playsinline></video>
-            <div id="player-controls" class="absolute bottom-0 right-0 mb-12 mr-4 opacity-0 group-hover:opacity-100 z-10">
+            <div class="w-full aspect-video bg-black rounded-t-lg">
+                <video id="modal-intro-player" class="w-full h-full" playsinline muted></video>
+                <video id="modal-main-player" class="w-full h-full hidden" controls controlslist="nodownload" disablepictureinpicture playsinline></video>
+            </div>
+            <div id="player-controls" class="absolute bottom-16 right-0 mb-12 mr-4 opacity-0 group-hover:opacity-100 z-10">
                 <div class="relative">
                     <button id="settings-btn" class="w-10 h-10 flex items-center justify-center bg-black bg-opacity-50 rounded-full text-white text-xl hidden">⚙️</button>
                     <div id="resolution-menu" class="absolute bottom-full right-0 mb-2 bg-black bg-opacity-70 rounded-md py-1 hidden"></div>
                 </div>
+            </div>
+             <!-- Info Konten di Modal -->
+            <div id="modal-content-info" class="p-6 bg-gray-900 rounded-b-lg">
+                <h3 id="modal-content-title" class="text-2xl font-bold text-white mb-2">Memuat judul...</h3>
+                <p id="modal-content-description" class="text-gray-400 text-sm whitespace-pre-wrap">Membuat deskripsi dengan AI...</p>
             </div>
         </div>
     </div>
@@ -50,6 +57,34 @@
         import { auth, db, contentCollRef, settingsCollRef } from 'https://aisnime.github.io/aisnime/firebase-init.js';
         import { signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { query, where, orderBy, onSnapshot, doc, getDoc, updateDoc, Timestamp, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        let geminiApiKey = '';
+
+        async function callGeminiAPI(prompt) {
+            if (!geminiApiKey) {
+                return "Kunci API Gemini tidak diatur di halaman admin.";
+            }
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${geminiApiKey}`;
+            const payload = { contents: [{ parts: [{ text: prompt }] }] };
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) throw new Error(`API call failed with status: ${response.status}`);
+                const result = await response.json();
+                const candidate = result.candidates?.[0];
+                if (candidate && candidate.content?.parts?.[0]?.text) {
+                    return candidate.content.parts[0].text;
+                } else {
+                    throw new Error("Invalid response structure from Gemini API.");
+                }
+            } catch (error) {
+                console.error("Error calling Gemini API:", error);
+                return "Maaf, terjadi kesalahan saat menghubungi Gemini AI.";
+            }
+        }
 
         const contentListEl = document.getElementById('content-list');
         const videoModal = document.getElementById('video-modal');
@@ -80,9 +115,9 @@
 
         async function loadSettings() {
             try {
-                const settingsKeys = ['background', 'mainLogo', 'favicon'];
+                const settingsKeys = ['background', 'mainLogo', 'favicon', 'geminiApiKey'];
                 const promises = settingsKeys.map(key => getDoc(doc(settingsCollRef, key)));
-                const [backgroundSnap, mainLogoSnap, faviconSnap] = await Promise.all(promises);
+                const [backgroundSnap, mainLogoSnap, faviconSnap, geminiApiSnap] = await Promise.all(promises);
 
                 if (backgroundSnap.exists() && backgroundSnap.data().url) {
                     document.body.style.backgroundImage = `url('${backgroundSnap.data().url}')`;
@@ -94,6 +129,9 @@
                 }
                 if (faviconSnap.exists() && faviconSnap.data().url) {
                     document.getElementById('favicon').href = faviconSnap.data().url;
+                }
+                 if (geminiApiSnap.exists() && geminiApiSnap.data().key) {
+                    geminiApiKey = geminiApiSnap.data().key;
                 }
             } catch (error) { console.error("Gagal memuat pengaturan:", error); }
         }
@@ -128,6 +166,16 @@
                 currentItem = docSnap.data();
                 await updateDoc(docRef, { viewCount: increment(1) });
                 
+                // Tampilkan judul dan mulai generate deskripsi
+                document.getElementById('modal-content-title').textContent = currentItem.title;
+                const descriptionEl = document.getElementById('modal-content-description');
+                descriptionEl.textContent = "Membuat deskripsi dengan AI...";
+                
+                const prompt = `Buatkan deskripsi video yang menarik sebanyak tiga paragraf dalam bahasa Indonesia untuk video dengan judul "${currentItem.title}". Jangan ulangi judul di dalam deskripsi.`;
+                callGeminiAPI(prompt).then(desc => {
+                    descriptionEl.textContent = desc;
+                });
+
                 resolutionMenu.innerHTML = '';
                 const resolutions = Object.keys(currentItem.videoFiles).sort((a,b) => parseInt(b) - parseInt(a));
                 if (resolutions.length > 1) {
