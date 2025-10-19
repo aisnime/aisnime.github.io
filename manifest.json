@@ -8,14 +8,15 @@
     "description": "Galeri Konten dari AISNIME.",
     "icons": [
         {
-            "src": "https://i.imgur.com/7b4w4qH.png",
+            "src": "https://aisnime.github.io/aisnime/Setting/ikon.ico",
             "sizes": "192x192",
-            "type": "image/png"
+            "type": "ico/image/png"
         },
         {
-            "src": "https://i.imgur.com/7b4w4qH.png",
+            "src": "https://aisnime.github.io/aisnime/Setting/ikon.ico",
             "sizes": "512x512",
-            "type": "image/png"
+            "type": "ico/image/png"
         }
     ]
+
 }
