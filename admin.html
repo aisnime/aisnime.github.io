@@ -117,26 +117,9 @@
     </div>
 
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, addDoc, Timestamp, query, orderBy, onSnapshot, doc, getDoc, updateDoc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyBkSf56I0akk5poCZ5t8QI1MNlUvZ8Aiu0",
-            authDomain: "aisnime.firebaseapp.com",
-            projectId: "aisnime",
-            storageBucket: "aisnime.firebasestorage.app",
-            messagingSenderId: "736632750777",
-            appId: "1:736632750777:web:8756d28d0ffe2698739168",
-            measurementId: "G-1WF1269W5W"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        const contentCollRef = collection(db, 'content');
-        const settingsCollRef = collection(db, 'settings');
+        import { auth, db, contentCollRef, settingsCollRef } from 'https://aisnime.github.io/aisnime/firebase-init.js';
+        import { signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { addDoc, Timestamp, query, orderBy, onSnapshot, doc, getDoc, updateDoc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         const manageView = document.getElementById('manage-content-view');
         const addView = document.getElementById('add-content-view');
@@ -156,7 +139,7 @@
                 renderContentList();
             } catch (error) {
                 console.error("Initialization or Auth failed:", error);
-                 document.body.innerHTML = `<div class="bg-red-900 text-white p-8 rounded-lg shadow-2xl max-w-2xl mx-auto mt-20"><h1 class="text-3xl font-bold mb-4">Koneksi Gagal!</h1><p>Pastikan konfigurasi Firebase benar dan aturan database (Firestore Rules) sudah diatur untuk mengizinkan akses baca/tulis.</p></div>`;
+                document.body.innerHTML = `<div class="bg-red-900 text-white p-8 rounded-lg shadow-2xl max-w-2xl mx-auto mt-20"><h1 class="text-3xl font-bold mb-4">Koneksi Gagal!</h1><p>Pastikan konfigurasi Firebase benar dan aturan database (Firestore Rules) sudah diatur untuk mengizinkan akses baca/tulis.</p></div>`;
             }
         }
 
