@@ -248,6 +248,8 @@
                         if (url) {
                             const docRef = doc(db, `/artifacts/${appId}/public/data/settings/${key}`);
                             await setDoc(docRef, { url: url });
+                            previews[key].src = url;
+                            previewContainers[key].classList.remove('hidden');
                         }
                     }
                     status.textContent = "Pengaturan berhasil disimpan!";
@@ -296,7 +298,12 @@
                     statusMessage.textContent = "Konten berhasil diunggah!";
                     document.getElementById('title').value = '';
                     document.getElementById('thumbnail-url').value = '';
-                    // ... reset input lainnya
+                    document.getElementById('video-url-1080p').value = '';
+                    document.getElementById('video-url-720p').value = '';
+                    document.getElementById('video-url-480p').value = '';
+                    document.getElementById('description').value = '';
+                    document.getElementById('publish-date').value = '';
+                    document.getElementById('publish-time').value = '';
                 } catch (error) {
                     statusMessage.textContent = "Error: Gagal menyimpan konten.";
                 } finally {
