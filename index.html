@@ -170,7 +170,7 @@
                 const descriptionEl = document.getElementById('modal-content-description');
                 descriptionEl.textContent = "Membuat deskripsi dengan AI...";
                 
-                const prompt = `Buatkan deskripsi video yang menarik sebanyak tiga paragraf dalam bahasa Indonesia untuk video dengan judul "${currentItem.title}". Jangan ulangi judul di dalam deskripsi.`;
+                const prompt = `Buat deskripsi video dalam bahasa Indonesia sebanyak tiga paragraf untuk video berjudul "${currentItem.title}". Jangan sertakan judul, pembukaan, atau format markdown seperti heading. Hanya berikan teks deskripsinya saja.`;
                 callGeminiAPI(prompt).then(desc => {
                     descriptionEl.textContent = desc;
                 });
