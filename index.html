@@ -42,15 +42,28 @@
     </div>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, query, where, orderBy, onSnapshot, doc, getDoc, updateDoc, Timestamp, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBkSf56I0akk5poCZ5t8QI1MNlUvZ8Aiu0",
+            authDomain: "aisnime.firebaseapp.com",
+            projectId: "aisnime",
+            storageBucket: "aisnime.firebasestorage.app",
+            messagingSenderId: "736632750777",
+            appId: "1:736632750777:web:8756d28d0ffe2698739168",
+            measurementId: "G-1WF1269W5W"
+        };
+        
         const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
         const auth = getAuth(app);
         const db = getFirestore(app);
+
+        const contentCollRef = collection(db, 'content');
+        const settingsCollRef = collection(db, 'settings');
 
         const contentListEl = document.getElementById('content-list');
         const videoModal = document.getElementById('video-modal');
@@ -68,21 +81,21 @@
 
         async function main() {
             try {
-                const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-                if (token) { await signInWithCustomToken(auth, token); } 
-                else { await signInAnonymously(auth); }
-                
+                await signInAnonymously(auth);
                 await loadSettings();
                 loadInitialContent();
                 setupSearchListener();
                 setupEventListeners();
-            } catch(e) { console.error("Initialization failed", e) }
+            } catch(e) { 
+                console.error("Initialization failed", e);
+                document.body.innerHTML = `<div class="bg-red-900 text-white p-8 rounded-lg shadow-2xl max-w-2xl mx-auto mt-20"><h1 class="text-3xl font-bold mb-4">Koneksi Gagal!</h1><p>Pastikan konfigurasi Firebase benar dan aturan database (Firestore Rules) sudah diatur untuk mengizinkan akses baca/tulis.</p></div>`;
+            }
         }
 
         async function loadSettings() {
             try {
                 const settingsKeys = ['background', 'mainLogo', 'favicon'];
-                const promises = settingsKeys.map(key => getDoc(doc(db, `/artifacts/${appId}/public/data/settings/${key}`)));
+                const promises = settingsKeys.map(key => getDoc(doc(settingsCollRef, key)));
                 const [backgroundSnap, mainLogoSnap, faviconSnap] = await Promise.all(promises);
 
                 if (backgroundSnap.exists() && backgroundSnap.data().url) {
@@ -122,7 +135,7 @@
         async function playVideoInModal(id) {
             try {
                 currentItemId = id;
-                const docRef = doc(db, `/artifacts/${appId}/public/data/content`, id);
+                const docRef = doc(contentCollRef, id);
                 const docSnap = await getDoc(docRef);
                 if (!docSnap.exists()) { alert("Konten tidak ditemukan."); return; }
                 
@@ -146,7 +159,7 @@
                 
                 modalMainPlayer.src = currentItem.videoFiles[resolutions[0]];
 
-                const introSnap = await getDoc(doc(db, `/artifacts/${appId}/public/data/settings/introVideo`));
+                const introSnap = await getDoc(doc(settingsCollRef, 'introVideo'));
                 if (introSnap.exists() && introSnap.data().url) {
                     modalIntroPlayer.src = introSnap.data().url;
                     const onIntroEnd = () => {
@@ -190,7 +203,6 @@
         }
 
         function loadInitialContent() {
-            const contentCollRef = collection(db, `/artifacts/${appId}/public/data/content`);
             const q = query(contentCollRef, where("publishAt", "<=", Timestamp.now()), orderBy("publishAt", "desc"));
             onSnapshot(q, (snapshot) => {
                 allPublishedContent = snapshot.docs.map(doc => ({id: doc.id, data: doc.data()}));
