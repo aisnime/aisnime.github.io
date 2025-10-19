@@ -6,12 +6,10 @@
     <title>Halaman Admin - Manajemen Konten</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
         input[type="date"]::-webkit-calendar-picker-indicator,
         input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(1); }
-        #update-modal, #settings-modal { transition: opacity 0.3s ease; }
         .menu-btn { border-bottom: 3px solid transparent; transition: all 0.3s ease; }
         .menu-btn.active-menu { border-bottom-color: #8B5CF6; color: white; }
     </style>
@@ -19,8 +17,8 @@
 <body class="bg-gray-900 text-white">
     <div class="container mx-auto p-4 lg:p-8 max-w-4xl">
         <header class="mb-8 text-center">
-            <h1 class="text-4xl font-extrabold text-white">Panel Admin</h1>
-            <p class="text-lg text-gray-400 mt-2">Unggah, Jadwalkan, dan Kelola Konten Anda</p>
+            <h1 class="text-4xl font-extrabold text-white">Panel Admin (Firebase)</h1>
+            <p class="text-lg text-gray-400 mt-2">Data disimpan secara online dan terpusat.</p>
         </header>
 
         <div class="mb-8 flex justify-center border-b border-gray-700">
@@ -39,33 +37,24 @@
                         <input type="text" id="title" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white" placeholder="Contoh: Pemandangan Indah">
                     </div>
                     <div>
-                        <label for="thumbnail-upload" class="block text-sm font-medium text-gray-300 mb-1">Unggah Thumbnail</label>
-                        <input type="file" id="thumbnail-upload" accept="image/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:font-semibold file:bg-purple-600 file:text-white hover:file:bg-purple-700">
+                        <label for="thumbnail-url" class="block text-sm font-medium text-gray-300 mb-1">URL Thumbnail</label>
+                        <input type="text" id="thumbnail-url" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white" placeholder="https://example.com/thumbnail.jpg">
                     </div>
                     <div>
                         <label for="description" class="block text-sm font-medium text-gray-300 mb-1">Deskripsi</label>
                         <textarea id="description" rows="4" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white" placeholder="Deskripsi singkat..."></textarea>
                     </div>
                     <div class="border-t border-gray-700 pt-6 space-y-4">
-                         <h3 class="text-lg font-semibold text-white">Unggah File Video (Wajib isi minimal satu)</h3>
-                         <div>
-                            <label for="video-upload-1080p" class="block text-sm font-medium text-gray-300 mb-1">Video Resolusi 1080p (HD)</label>
-                            <input type="file" id="video-upload-1080p" accept="video/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:font-semibold file:bg-gray-600 file:text-white hover:file:bg-gray-500">
-                        </div>
-                         <div>
-                            <label for="video-upload-720p" class="block text-sm font-medium text-gray-300 mb-1">Video Resolusi 720p (SD)</label>
-                            <input type="file" id="video-upload-720p" accept="video/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:font-semibold file:bg-gray-600 file:text-white hover:file:bg-gray-500">
-                        </div>
-                         <div>
-                            <label for="video-upload-480p" class="block text-sm font-medium text-gray-300 mb-1">Video Resolusi 480p (Rendah)</label>
-                            <input type="file" id="video-upload-480p" accept="video/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:font-semibold file:bg-gray-600 file:text-white hover:file:bg-gray-500">
-                        </div>
+                         <h3 class="text-lg font-semibold text-white">URL File Video (Wajib isi minimal satu)</h3>
+                         <div><label for="video-url-1080p" class="block text-sm font-medium text-gray-300 mb-1">URL Video 1080p</label><input type="text" id="video-url-1080p" class="w-full bg-gray-700 border rounded-md p-3" placeholder="https://example.com/video_1080p.mp4"></div>
+                         <div><label for="video-url-720p" class="block text-sm font-medium text-gray-300 mb-1">URL Video 720p</label><input type="text" id="video-url-720p" class="w-full bg-gray-700 border rounded-md p-3" placeholder="https://example.com/video_720p.mp4"></div>
+                         <div><label for="video-url-480p" class="block text-sm font-medium text-gray-300 mb-1">URL Video 480p</label><input type="text" id="video-url-480p" class="w-full bg-gray-700 border rounded-md p-3" placeholder="https://example.com/video_480p.mp4"></div>
                     </div>
                     <div class="border-t border-gray-700 pt-6">
-                        <h3 class="text-lg font-semibold text-white">Jadwalkan Publikasi (Opsional)</h3>
+                        <h3 class="text-lg font-semibold text-white">Jadwalkan Publikasi</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                            <div><label for="publish-date" class="block text-sm font-medium text-gray-300 mb-1">Tanggal Tayang</label><input type="date" id="publish-date" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white"></div>
-                            <div><label for="publish-time" class="block text-sm font-medium text-gray-300 mb-1">Waktu Tayang</label><input type="time" id="publish-time" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white"></div>
+                            <div><label for="publish-date" class="block text-sm font-medium text-gray-300 mb-1">Tanggal</label><input type="date" id="publish-date" class="w-full bg-gray-700 rounded-md p-3"></div>
+                            <div><label for="publish-time" class="block text-sm font-medium text-gray-300 mb-1">Waktu</label><input type="time" id="publish-time" class="w-full bg-gray-700 rounded-md p-3"></div>
                         </div>
                     </div>
                     <div><button id="upload-button" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-md transition">Unggah Konten</button></div>
@@ -75,7 +64,7 @@
             <!-- VIEW: KELOLA KONTEN -->
             <div id="manage-content-view">
                 <div class="bg-gray-800 p-8 rounded-lg shadow-2xl">
-                    <h2 class="text-2xl font-bold mb-6">Kelola Konten Terbaru (7 Hari Terakhir)</h2>
+                    <h2 class="text-2xl font-bold mb-6">Kelola Konten</h2>
                     <div id="content-list-container" class="space-y-4">
                         <p id="content-list-loading" class="text-gray-400">Memuat daftar konten...</p>
                     </div>
@@ -86,47 +75,23 @@
                  <div class="bg-gray-800 p-8 rounded-lg shadow-2xl space-y-8">
                     <div class="space-y-4">
                         <h2 class="text-2xl font-bold text-center">Pengaturan Background</h2>
-                        <div>
-                            <label for="background-url" class="block text-sm font-medium text-gray-300 mb-1">URL Gambar Background Halaman Utama</label>
-                            <input type="text" id="background-url" placeholder="https://example.com/background.jpg" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white focus:ring-2 focus:ring-purple-500 transition">
-                        </div>
-                        <div id="background-preview-container" class="hidden text-center">
-                            <span class="text-sm text-gray-400 block mb-2">Background Saat Ini:</span>
-                            <img id="background-preview" class="w-full h-32 object-cover rounded-lg mx-auto border-2 border-gray-600">
-                        </div>
+                        <div><label for="background-url" class="block text-sm font-medium">URL Gambar Background</label><input type="text" id="background-url" placeholder="https://example.com/background.jpg" class="w-full bg-gray-700 rounded-md p-3 mt-1"></div>
+                        <div id="background-preview-container" class="hidden text-center"><span class="block mb-2">Preview:</span><img id="background-preview" class="w-full h-32 object-cover rounded-lg"></div>
                     </div>
                     <div class="border-t border-gray-700 pt-8 space-y-4">
                         <h2 class="text-2xl font-bold text-center">Pengaturan Logo Halaman Utama</h2>
-                        <div>
-                            <label for="main-logo-url" class="block text-sm font-medium text-gray-300 mb-1">URL Logo Tipe Teks (lebar)</label>
-                            <input type="text" id="main-logo-url" placeholder="https://example.com/logo.png" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white focus:ring-2 focus:ring-purple-500 transition">
-                        </div>
-                        <div id="main-logo-preview-container" class="hidden text-center">
-                            <span class="text-sm text-gray-400 block mb-2">Logo Saat Ini:</span>
-                            <img id="main-logo-preview" class="w-auto h-20 mx-auto">
-                        </div>
+                        <div><label for="main-logo-url" class="block text-sm font-medium">URL Logo Utama</label><input type="text" id="main-logo-url" placeholder="https://example.com/logo.png" class="w-full bg-gray-700 rounded-md p-3 mt-1"></div>
+                        <div id="main-logo-preview-container" class="hidden text-center"><span class="block mb-2">Preview:</span><img id="main-logo-preview" class="w-auto h-20 mx-auto"></div>
                     </div>
                     <div class="border-t border-gray-700 pt-8 space-y-4">
-                        <h2 class="text-2xl font-bold text-center">Pengaturan Logo Tab Browser (Favicon)</h2>
-                        <div>
-                            <label for="favicon-url" class="block text-sm font-medium text-gray-300 mb-1">URL Logo Ikon (persegi)</label>
-                            <input type="text" id="favicon-url" placeholder="https://example.com/favicon.ico" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white focus:ring-2 focus:ring-purple-500 transition">
-                        </div>
-                        <div id="favicon-preview-container" class="hidden text-center">
-                            <span class="text-sm text-gray-400 block mb-2">Favicon Saat Ini:</span>
-                            <img id="favicon-preview" class="w-16 h-16 rounded-full mx-auto border-2 border-gray-600 object-cover">
-                        </div>
+                        <h2 class="text-2xl font-bold text-center">Pengaturan Favicon</h2>
+                        <div><label for="favicon-url" class="block text-sm font-medium">URL Favicon</label><input type="text" id="favicon-url" placeholder="https://example.com/favicon.ico" class="w-full bg-gray-700 rounded-md p-3 mt-1"></div>
+                        <div id="favicon-preview-container" class="hidden text-center"><span class="block mb-2">Preview:</span><img id="favicon-preview" class="w-16 h-16 rounded-full mx-auto"></div>
                     </div>
                     <div class="border-t border-gray-700 pt-8 space-y-4">
                         <h2 class="text-2xl font-bold text-center">Pengaturan Video Pembuka</h2>
-                        <div>
-                            <label for="intro-video-url" class="block text-sm font-medium text-gray-300 mb-1">URL Video Pembuka (Global)</label>
-                            <input type="text" id="intro-video-url" placeholder="https://example.com/intro.mp4" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white focus:ring-2 focus:ring-purple-500 transition">
-                        </div>
-                        <div id="intro-video-preview-container" class="hidden">
-                            <span class="text-sm text-gray-400 mr-4">Video Pembuka Saat Ini:</span>
-                            <video id="intro-video-preview" class="w-40 h-22 rounded-md bg-black inline-block" controls></video>
-                        </div>
+                        <div><label for="intro-video-url" class="block text-sm font-medium">URL Video Pembuka</label><input type="text" id="intro-video-url" placeholder="https://example.com/intro.mp4" class="w-full bg-gray-700 rounded-md p-3 mt-1"></div>
+                        <div id="intro-video-preview-container" class="hidden"><span class="mr-4">Preview:</span><video id="intro-video-preview" class="w-40 h-22 rounded-md inline-block" controls></video></div>
                     </div>
                     <div class="border-t border-gray-700 pt-8">
                          <button id="save-settings-button" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-md transition">Simpan Semua Pengaturan</button>
@@ -141,321 +106,276 @@
     <div id="update-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 hidden z-50">
        <div class="bg-gray-800 rounded-lg shadow-2xl p-8 w-full max-w-2xl space-y-6 max-h-screen overflow-y-auto">
              <h2 class="text-2xl font-bold">Ubah Detail Konten</h2>
-             <div>
-                <label for="update-title" class="block text-sm font-medium text-gray-300 mb-1">Judul Konten</label>
-                <input type="text" id="update-title" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white">
-             </div>
-             <div>
-                <label for="update-thumbnail-upload" class="block text-sm font-medium text-gray-300 mb-1">Unggah Thumbnail Baru (Opsional)</label>
-                <input type="file" id="update-thumbnail-upload" accept="image/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:font-semibold file:bg-gray-600 file:text-white">
-             </div>
-             <div>
-                <label for="update-description" class="block text-sm font-medium text-gray-300 mb-1">Deskripsi</label>
-                <textarea id="update-description" rows="4" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white"></textarea>
-             </div>
+             <div><label for="update-title" class="block text-sm font-medium">Judul</label><input type="text" id="update-title" class="w-full bg-gray-700 rounded-md p-3 mt-1"></div>
+             <div><label for="update-thumbnail-url" class="block text-sm font-medium">URL Thumbnail</label><input type="text" id="update-thumbnail-url" class="w-full bg-gray-700 rounded-md p-3 mt-1"></div>
+             <div><label for="update-description" class="block text-sm font-medium">Deskripsi</label><textarea id="update-description" rows="4" class="w-full bg-gray-700 rounded-md p-3 mt-1"></textarea></div>
              <div class="border-t border-gray-700 pt-6 space-y-4">
-                 <h3 class="text-lg font-semibold text-white">Unggah Ulang File Video (Opsional)</h3>
-                 <p class="text-xs text-gray-500">Isi hanya jika ingin mengganti file video yang ada.</p>
-                 <div>
-                    <label for="update-video-upload-1080p" class="block text-sm font-medium text-gray-300 mb-1">Video Resolusi 1080p (HD)</label>
-                    <input type="file" id="update-video-upload-1080p" accept="video/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:font-semibold file:bg-gray-600 file:text-white">
-                </div>
-                 <div>
-                    <label for="update-video-upload-720p" class="block text-sm font-medium text-gray-300 mb-1">Video Resolusi 720p (SD)</label>
-                    <input type="file" id="update-video-upload-720p" accept="video/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:font-semibold file:bg-gray-600 file:text-white">
-                </div>
-                 <div>
-                    <label for="update-video-upload-480p" class="block text-sm font-medium text-gray-300 mb-1">Video Resolusi 480p (Rendah)</label>
-                    <input type="file" id="update-video-upload-480p" accept="video/*" class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:font-semibold file:bg-gray-600 file:text-white">
-                </div>
+                 <h3 class="text-lg font-semibold">URL Video</h3>
+                 <div><label for="update-video-url-1080p" class="block text-sm font-medium">1080p</label><input type="text" id="update-video-url-1080p" class="w-full bg-gray-700 rounded-md p-3 mt-1"></div>
+                 <div><label for="update-video-url-720p" class="block text-sm font-medium">720p</label><input type="text" id="update-video-url-720p" class="w-full bg-gray-700 rounded-md p-3 mt-1"></div>
+                 <div><label for="update-video-url-480p" class="block text-sm font-medium">480p</label><input type="text" id="update-video-url-480p" class="w-full bg-gray-700 rounded-md p-3 mt-1"></div>
              </div>
              <div class="border-t border-gray-700 pt-6">
-                <h3 class="text-lg font-semibold text-white">Jadwal Publikasi</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                    <div><label for="update-publish-date" class="block text-sm font-medium text-gray-300 mb-1">Tanggal Tayang</label><input type="date" id="update-publish-date" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white"></div>
-                    <div><label for="update-publish-time" class="block text-sm font-medium text-gray-300 mb-1">Waktu Tayang</label><input type="time" id="update-publish-time" class="w-full bg-gray-700 border border-gray-600 rounded-md p-3 text-white"></div>
+                <h3 class="text-lg font-semibold">Jadwal Publikasi</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                    <div><label for="update-publish-date" class="block text-sm font-medium">Tanggal</label><input type="date" id="update-publish-date" class="w-full bg-gray-700 rounded-md p-3 mt-1"></div>
+                    <div><label for="update-publish-time" class="block text-sm font-medium">Waktu</label><input type="time" id="update-publish-time" class="w-full bg-gray-700 rounded-md p-3 mt-1"></div>
                 </div>
              </div>
-             <div class="flex justify-end space-x-4">
-                <button id="cancel-update-button" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md transition">Batal</button>
-                <button id="save-update-button" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md transition">Simpan Perubahan</button>
-            </div>
+             <div class="flex justify-end space-x-4 pt-6"><button id="cancel-update-button" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md">Batal</button><button id="save-update-button" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md">Simpan</button></div>
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const db = new Dexie('MyContentDatabase');
-            db.version(3).stores({
-                content: '++id, title, uploadedAt, publishAt, viewCount',
-                settings: 'key'
-            });
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, Timestamp, query, orderBy, onSnapshot, doc, getDoc, updateDoc, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-            const manageView = document.getElementById('manage-content-view');
-            const addView = document.getElementById('add-content-view');
-            const settingsView = document.getElementById('settings-view');
-            const contentListContainer = document.getElementById('content-list-container');
-            const statusMessage = document.getElementById('status-message');
-            const uploadButton = document.getElementById('upload-button');
-            const modal = document.getElementById('update-modal');
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
 
-            function setupMenuNavigation() {
-                const menuButtons = { manage: document.getElementById('show-manage-view-btn'), add: document.getElementById('show-add-view-btn'), settings: document.getElementById('show-settings-view-btn') };
-                const views = { manage: manageView, add: addView, settings: settingsView };
-                function switchView(viewName) {
-                    Object.keys(views).forEach(key => {
-                        views[key].classList.toggle('hidden', key !== viewName);
-                        menuButtons[key].classList.toggle('active-menu', key === viewName);
-                        menuButtons[key].classList.toggle('text-white', key === viewName);
-                        menuButtons[key].classList.toggle('text-gray-400', key !== viewName);
-                    });
-                }
-                menuButtons.manage.addEventListener('click', () => switchView('manage'));
-                menuButtons.add.addEventListener('click', () => switchView('add'));
-                menuButtons.settings.addEventListener('click', () => switchView('settings'));
-                switchView('manage');
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const manageView = document.getElementById('manage-content-view');
+        const addView = document.getElementById('add-content-view');
+        const settingsView = document.getElementById('settings-view');
+        const contentListContainer = document.getElementById('content-list-container');
+        const statusMessage = document.getElementById('status-message');
+        const uploadButton = document.getElementById('upload-button');
+        const modal = document.getElementById('update-modal');
+
+        async function main() {
+            try {
+                const token = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+                if (token) { await signInWithCustomToken(auth, token); } 
+                else { await signInAnonymously(auth); }
+                
+                setupMenuNavigation();
+                setupUploadListener();
+                setupEventListeners();
+                setupSettingsView();
+                renderContentList();
+            } catch (error) {
+                console.error("Authentication failed:", error);
+                statusMessage.textContent = "Error: Gagal mengautentikasi.";
             }
+        }
 
-            async function renderContentList() {
-                 const sevenDaysAgo = new Date();
-                 sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-                 const recentContent = await db.content.where('uploadedAt').above(sevenDaysAgo).reverse().sortBy('uploadedAt');
+        function setupMenuNavigation() {
+            const menuButtons = { manage: document.getElementById('show-manage-view-btn'), add: document.getElementById('show-add-view-btn'), settings: document.getElementById('show-settings-view-btn') };
+            const views = { manage: manageView, add: addView, settings: settingsView };
+            function switchView(viewName) {
+                Object.keys(views).forEach(key => {
+                    views[key].classList.toggle('hidden', key !== viewName);
+                    menuButtons[key].classList.toggle('active-menu', key === viewName);
+                });
+            }
+            menuButtons.manage.addEventListener('click', () => switchView('manage'));
+            menuButtons.add.addEventListener('click', () => switchView('add'));
+            menuButtons.settings.addEventListener('click', () => switchView('settings'));
+            switchView('manage');
+        }
+
+        function renderContentList() {
+             const contentCollRef = collection(db, `/artifacts/${appId}/public/data/content`);
+             const q = query(contentCollRef, orderBy("uploadedAt", "desc"));
+             onSnapshot(q, (snapshot) => {
                  contentListContainer.innerHTML = '';
-                 if (recentContent.length === 0) {
-                     contentListContainer.innerHTML = '<p class="text-gray-400">Tidak ada konten yang diunggah dalam 7 hari terakhir.</p>';
+                 if (snapshot.empty) {
+                     contentListContainer.innerHTML = '<p class="text-gray-400">Belum ada konten.</p>';
                      return;
                  }
-                 recentContent.forEach(item => {
-                     const publishDate = new Date(item.publishAt).toLocaleString('id-ID', { dateStyle: 'medium', timeStyle: 'short' });
+                 snapshot.forEach(doc => {
+                     const item = doc.data();
+                     const publishDate = item.publishAt.toDate().toLocaleString('id-ID');
                      const itemEl = document.createElement('div');
                      itemEl.className = 'bg-gray-700 p-4 rounded-lg flex items-center justify-between';
-                     const thumbnailUrl = URL.createObjectURL(item.thumbnailFile);
                      itemEl.innerHTML = `
                         <div class="flex items-center space-x-4">
-                            <img src="${thumbnailUrl}" alt="thumbnail" class="w-16 h-9 object-cover rounded-md bg-gray-600" onload="URL.revokeObjectURL(this.src)">
+                            <img src="${item.thumbnailUrl}" alt="thumbnail" class="w-16 h-9 object-cover rounded-md bg-gray-600">
                             <div><h3 class="font-semibold text-white">${item.title}</h3><p class="text-sm text-gray-400">Tayang: ${publishDate}</p></div>
                         </div>
                         <div class="space-x-2">
-                            <button data-id="${item.id}" class="update-btn bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md text-sm transition">Ubah</button>
-                            <button data-id="${item.id}" class="delete-btn bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md text-sm transition">Hapus</button>
-                        </div>
-                     `;
+                            <button data-id="${doc.id}" class="update-btn bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md text-sm">Ubah</button>
+                            <button data-id="${doc.id}" class="delete-btn bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md text-sm">Hapus</button>
+                        </div>`;
                      contentListContainer.appendChild(itemEl);
                  });
-            }
+             });
+        }
+        
+        async function setupSettingsView() {
+            const saveBtn = document.getElementById('save-settings-button');
+            const status = document.getElementById('settings-status-message');
+            
+            const inputs = {
+                background: document.getElementById('background-url'),
+                mainLogo: document.getElementById('main-logo-url'),
+                favicon: document.getElementById('favicon-url'),
+                introVideo: document.getElementById('intro-video-url')
+            };
+            const previews = {
+                background: document.getElementById('background-preview'),
+                mainLogo: document.getElementById('main-logo-preview'),
+                favicon: document.getElementById('favicon-preview'),
+                introVideo: document.getElementById('intro-video-preview')
+            };
+             const previewContainers = {
+                background: document.getElementById('background-preview-container'),
+                mainLogo: document.getElementById('main-logo-preview-container'),
+                favicon: document.getElementById('favicon-preview-container'),
+                introVideo: document.getElementById('intro-video-preview-container')
+            };
 
-            async function urlToBlob(url) {
-                try {
-                    const response = await fetch(url);
-                    if (!response.ok) throw new Error('Network response was not ok.');
-                    return await response.blob();
-                } catch (error) {
-                    console.error('Gagal mengambil file dari URL:', error);
-                    return null;
+            for (const key in inputs) {
+                const docRef = doc(db, `/artifacts/${appId}/public/data/settings/${key}`);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists() && docSnap.data().url) {
+                    inputs[key].value = docSnap.data().url;
+                    previews[key].src = docSnap.data().url;
+                    previewContainers[key].classList.remove('hidden');
                 }
             }
             
-            async function setupSettingsView() {
-                const saveBtn = document.getElementById('save-settings-button');
-                const backgroundInput = document.getElementById('background-url');
-                const mainLogoInput = document.getElementById('main-logo-url');
-                const faviconInput = document.getElementById('favicon-url');
-                const introVideoInput = document.getElementById('intro-video-url');
-                const status = document.getElementById('settings-status-message');
+            saveBtn.addEventListener('click', async () => {
+                status.textContent = "Menyimpan...";
+                saveBtn.disabled = true;
+                try {
+                    for (const key in inputs) {
+                        const url = inputs[key].value.trim();
+                        if (url) {
+                            const docRef = doc(db, `/artifacts/${appId}/public/data/settings/${key}`);
+                            await setDoc(docRef, { url: url });
+                        }
+                    }
+                    status.textContent = "Pengaturan berhasil disimpan!";
+                } catch(e) {
+                    status.textContent = "Gagal menyimpan pengaturan.";
+                } finally {
+                    saveBtn.disabled = false;
+                    setTimeout(() => status.textContent = '', 3000);
+                }
+            });
+        }
+
+        function setupUploadListener() {
+            uploadButton.addEventListener('click', async () => {
+                const title = document.getElementById('title').value.trim();
+                const thumbnailUrl = document.getElementById('thumbnail-url').value.trim();
+                const videoUrl1080 = document.getElementById('video-url-1080p').value.trim();
+                const videoUrl720 = document.getElementById('video-url-720p').value.trim();
+                const videoUrl480 = document.getElementById('video-url-480p').value.trim();
+                if (!title || !thumbnailUrl || (!videoUrl1080 && !videoUrl720 && !videoUrl480)) {
+                    statusMessage.textContent = "Error: Judul, URL Thumbnail, dan minimal satu URL Video wajib diisi."; return;
+                }
+                statusMessage.textContent = "Menyimpan...";
+                uploadButton.disabled = true;
+                try {
+                    const videoFiles = {};
+                    if(videoUrl1080) videoFiles['1080p'] = videoUrl1080;
+                    if(videoUrl720) videoFiles['720p'] = videoUrl720;
+                    if(videoUrl480) videoFiles['480p'] = videoUrl480;
+                    
+                    const dateStr = document.getElementById('publish-date').value;
+                    const timeStr = document.getElementById('publish-time').value;
+                    const publishAt = (dateStr && timeStr) ? Timestamp.fromDate(new Date(`${dateStr}T${timeStr}`)) : Timestamp.now();
+                    
+                    const contentCollRef = collection(db, `/artifacts/${appId}/public/data/content`);
+                    await addDoc(contentCollRef, {
+                        title, 
+                        description: document.getElementById('description').value.trim(),
+                        thumbnailUrl, 
+                        videoFiles,
+                        uploadedAt: Timestamp.now(), 
+                        publishAt, 
+                        viewCount: 0
+                    });
+                    
+                    statusMessage.textContent = "Konten berhasil diunggah!";
+                    document.getElementById('title').value = '';
+                    document.getElementById('thumbnail-url').value = '';
+                    // ... reset input lainnya
+                } catch (error) {
+                    statusMessage.textContent = "Error: Gagal menyimpan konten.";
+                } finally {
+                    uploadButton.disabled = false;
+                    setTimeout(() => statusMessage.textContent = '', 3000);
+                }
+            });
+        }
+
+        async function openUpdateModal(id) {
+            const docRef = doc(db, `/artifacts/${appId}/public/data/content`, id);
+            const docSnap = await getDoc(docRef);
+            if (!docSnap.exists()) { alert("Konten tidak ditemukan."); return; }
+            const item = docSnap.data();
+            document.getElementById('update-title').value = item.title;
+            document.getElementById('update-thumbnail-url').value = item.thumbnailUrl;
+            document.getElementById('update-description').value = item.description;
+            document.getElementById('update-video-url-1080p').value = item.videoFiles['1080p'] || '';
+            document.getElementById('update-video-url-720p').value = item.videoFiles['720p'] || '';
+            document.getElementById('update-video-url-480p').value = item.videoFiles['480p'] || '';
+            const publishDate = item.publishAt.toDate();
+            document.getElementById('update-publish-date').value = publishDate.toISOString().split('T')[0];
+            document.getElementById('update-publish-time').value = publishDate.toTimeString().split(' ')[0].substring(0, 5);
+            document.getElementById('save-update-button').dataset.id = id;
+            modal.classList.remove('hidden');
+        }
+
+        async function saveContentUpdate() {
+            const saveButton = document.getElementById('save-update-button');
+            const id = saveButton.dataset.id;
+            if (!id) return;
+            saveButton.disabled = true;
+            try {
+                const docRef = doc(db, `/artifacts/${appId}/public/data/content`, id);
+                const videoFiles = {};
+                const url1080 = document.getElementById('update-video-url-1080p').value.trim();
+                const url720 = document.getElementById('update-video-url-720p').value.trim();
+                const url480 = document.getElementById('update-video-url-480p').value.trim();
+                if(url1080) videoFiles['1080p'] = url1080;
+                if(url720) videoFiles['720p'] = url720;
+                if(url480) videoFiles['480p'] = url480;
+
+                const dateStr = document.getElementById('update-publish-date').value;
+                const timeStr = document.getElementById('update-publish-time').value;
+                const publishAt = (dateStr && timeStr) ? Timestamp.fromDate(new Date(`${dateStr}T${timeStr}`)) : Timestamp.now();
                 
-                const backgroundPreviewContainer = document.getElementById('background-preview-container');
-                const backgroundPreviewImg = document.getElementById('background-preview');
-                const mainLogoPreviewContainer = document.getElementById('main-logo-preview-container');
-                const mainLogoPreviewImg = document.getElementById('main-logo-preview');
-                const faviconPreviewContainer = document.getElementById('favicon-preview-container');
-                const faviconPreviewImg = document.getElementById('favicon-preview');
-                const introPreviewContainer = document.getElementById('intro-video-preview-container');
-                const introPreviewVideo = document.getElementById('intro-video-preview');
+                await updateDoc(docRef, {
+                    title: document.getElementById('update-title').value.trim(),
+                    thumbnailUrl: document.getElementById('update-thumbnail-url').value.trim(),
+                    description: document.getElementById('update-description').value.trim(),
+                    videoFiles,
+                    publishAt
+                });
+                modal.classList.add('hidden');
+            } catch (error) {
+                alert("Gagal menyimpan perubahan.");
+            } finally {
+                saveButton.disabled = false;
+            }
+        }
 
-                async function loadCurrentSettings() {
-                    const settings = await db.settings.bulkGet(['background', 'mainLogo', 'favicon', 'introVideo']);
-                    const [currentBackground, currentMainLogo, currentFavicon, currentIntro] = settings;
-
-                    if (currentBackground && currentBackground.value instanceof Blob) {
-                        backgroundPreviewImg.src = URL.createObjectURL(currentBackground.value);
-                        backgroundPreviewContainer.classList.remove('hidden');
-                    }
-                    if (currentMainLogo && currentMainLogo.value instanceof Blob) {
-                        mainLogoPreviewImg.src = URL.createObjectURL(currentMainLogo.value);
-                        mainLogoPreviewContainer.classList.remove('hidden');
-                    }
-                    if (currentFavicon && currentFavicon.value instanceof Blob) {
-                        faviconPreviewImg.src = URL.createObjectURL(currentFavicon.value);
-                        faviconPreviewContainer.classList.remove('hidden');
-                    }
-                    if (currentIntro && currentIntro.value instanceof Blob) {
-                        introPreviewVideo.src = URL.createObjectURL(currentIntro.value);
-                        introPreviewContainer.classList.remove('hidden');
+        function setupEventListeners() {
+            contentListContainer.addEventListener('click', async (e) => {
+                const id = e.target.dataset.id;
+                if (!id) return;
+                if (e.target.classList.contains('update-btn')) {
+                    openUpdateModal(id);
+                }
+                if (e.target.classList.contains('delete-btn')) {
+                    if (confirm("Yakin ingin menghapus konten ini?")) {
+                        await deleteDoc(doc(db, `/artifacts/${appId}/public/data/content`, id));
                     }
                 }
-                
-                saveBtn.addEventListener('click', async () => {
-                    const backgroundUrl = backgroundInput.value.trim();
-                    const mainLogoUrl = mainLogoInput.value.trim();
-                    const faviconUrl = faviconInput.value.trim();
-                    const introUrl = introVideoInput.value.trim();
-                    
-                    if (!backgroundUrl && !mainLogoUrl && !faviconUrl && !introUrl) {
-                        status.textContent = "Tidak ada perubahan untuk disimpan.";
-                        return;
-                    }
+            });
+            document.getElementById('cancel-update-button').addEventListener('click', () => modal.classList.add('hidden'));
+            document.getElementById('save-update-button').addEventListener('click', saveContentUpdate);
+        }
 
-                    status.textContent = "Memproses URL dan menyimpan...";
-                    saveBtn.disabled = true;
-
-                    try {
-                        const settingsToSave = [];
-                        if (backgroundUrl) {
-                            const blob = await urlToBlob(backgroundUrl);
-                            if (blob) settingsToSave.push({ key: 'background', value: blob });
-                        }
-                        if (mainLogoUrl) {
-                            const blob = await urlToBlob(mainLogoUrl);
-                            if (blob) settingsToSave.push({ key: 'mainLogo', value: blob });
-                        }
-                        if (faviconUrl) {
-                            const blob = await urlToBlob(faviconUrl);
-                            if (blob) settingsToSave.push({ key: 'favicon', value: blob });
-                        }
-                        if (introUrl) {
-                            const blob = await urlToBlob(introUrl);
-                            if (blob) settingsToSave.push({ key: 'introVideo', value: blob });
-                        }
-
-                        if (settingsToSave.length > 0) {
-                            await db.settings.bulkPut(settingsToSave);
-                            status.textContent = "Pengaturan berhasil disimpan!";
-                            loadCurrentSettings();
-                        } else {
-                            status.textContent = "Gagal mengambil file dari URL. Periksa kembali URL Anda.";
-                        }
-                        
-                    } catch (e) {
-                         status.textContent = "Gagal menyimpan pengaturan.";
-                    } finally {
-                        saveBtn.disabled = false;
-                        setTimeout(() => status.textContent = '', 4000);
-                    }
-                });
-
-                loadCurrentSettings();
-            }
-
-            function setupUploadListener() {
-                uploadButton.addEventListener('click', async () => {
-                    const title = document.getElementById('title').value.trim();
-                    const description = document.getElementById('description').value.trim();
-                    const thumbnailFile = document.getElementById('thumbnail-upload').files[0];
-                    const videoFile1080 = document.getElementById('video-upload-1080p').files[0];
-                    const videoFile720 = document.getElementById('video-upload-720p').files[0];
-                    const videoFile480 = document.getElementById('video-upload-480p').files[0];
-                    if (!title || !thumbnailFile || (!videoFile1080 && !videoFile720 && !videoFile480)) {
-                        statusMessage.textContent = "Error: Judul, Thumbnail, dan minimal satu file Video wajib diisi."; return;
-                    }
-                    statusMessage.textContent = "Menyimpan file ke database...";
-                    uploadButton.disabled = true;
-                    try {
-                        const videoFiles = {};
-                        if(videoFile1080) videoFiles['1080p'] = videoFile1080;
-                        if(videoFile720) videoFiles['720p'] = videoFile720;
-                        if(videoFile480) videoFiles['480p'] = videoFile480;
-                        const dateStr = document.getElementById('publish-date').value;
-                        const timeStr = document.getElementById('publish-time').value;
-                        const publishAt = (dateStr && timeStr) ? new Date(`${dateStr}T${timeStr}`) : new Date();
-                        await db.content.add({ title, description, thumbnailFile, videoFiles, uploadedAt: new Date(), publishAt, viewCount: 0 });
-                        statusMessage.textContent = "Konten berhasil diunggah!";
-                        document.getElementById('title').value = '';
-                        document.getElementById('thumbnail-upload').value = '';
-                        document.getElementById('video-upload-1080p').value = '';
-                        document.getElementById('video-upload-720p').value = '';
-                        document.getElementById('video-upload-480p').value = '';
-                        document.getElementById('description').value = '';
-                        document.getElementById('publish-date').value = '';
-                        document.getElementById('publish-time').value = '';
-                        await renderContentList();
-                    } catch (error) { statusMessage.textContent = "Error: Gagal menyimpan ke database."; } 
-                    finally { uploadButton.disabled = false; setTimeout(() => statusMessage.textContent = '', 3000); }
-                });
-            }
-
-            async function openUpdateModal(id) {
-                const item = await db.content.get(id);
-                if (!item) { alert("Konten tidak ditemukan."); return; }
-                document.getElementById('update-title').value = item.title;
-                document.getElementById('update-description').value = item.description;
-                const publishDate = new Date(item.publishAt);
-                document.getElementById('update-publish-date').value = publishDate.toISOString().split('T')[0];
-                document.getElementById('update-publish-time').value = publishDate.toTimeString().split(' ')[0].substring(0, 5);
-                document.getElementById('update-thumbnail-upload').value = '';
-                document.getElementById('update-video-upload-1080p').value = '';
-                document.getElementById('update-video-upload-720p').value = '';
-                document.getElementById('update-video-upload-480p').value = '';
-                document.getElementById('save-update-button').dataset.id = id;
-                modal.classList.remove('hidden');
-            }
-
-            async function saveContentUpdate() {
-                const saveButton = document.getElementById('save-update-button');
-                const id = parseInt(saveButton.dataset.id);
-                if (!id) return;
-                saveButton.disabled = true;
-                saveButton.textContent = "Menyimpan...";
-                try {
-                    const currentItem = await db.content.get(id);
-                    const newThumbnailFile = document.getElementById('update-thumbnail-upload').files[0];
-                    const newVideo1080 = document.getElementById('update-video-upload-1080p').files[0];
-                    const newVideo720 = document.getElementById('update-video-upload-720p').files[0];
-                    const newVideo480 = document.getElementById('update-video-upload-480p').files[0];
-                    const dateStr = document.getElementById('update-publish-date').value;
-                    const timeStr = document.getElementById('update-publish-time').value;
-                    const publishAt = (dateStr && timeStr) ? new Date(`${dateStr}T${timeStr}`) : new Date();
-                    const videoFiles = currentItem.videoFiles || {};
-                    if (newVideo1080) videoFiles['1080p'] = newVideo1080;
-                    if (newVideo720) videoFiles['720p'] = newVideo720;
-                    if (newVideo480) videoFiles['480p'] = newVideo480;
-                    const updates = {
-                        title: document.getElementById('update-title').value.trim(),
-                        description: document.getElementById('update-description').value.trim(),
-                        publishAt: publishAt,
-                        thumbnailFile: newThumbnailFile || currentItem.thumbnailFile,
-                        videoFiles: videoFiles
-                    };
-                    await db.content.update(id, updates);
-                    modal.classList.add('hidden');
-                    await renderContentList();
-                } catch (error) { alert("Gagal menyimpan perubahan."); } 
-                finally { saveButton.disabled = false; saveButton.textContent = "Simpan Perubahan"; }
-            }
-
-            function setupEventListeners() {
-                contentListContainer.addEventListener('click', async (e) => {
-                    const id = parseInt(e.target.dataset.id);
-                    if (!id) return;
-                    if (e.target.classList.contains('update-btn')) {
-                        openUpdateModal(id);
-                    }
-                    if (e.target.classList.contains('delete-btn')) {
-                        if (confirm("Apakah Anda yakin ingin menghapus konten ini?")) {
-                            await db.content.delete(id);
-                            await renderContentList();
-                        }
-                    }
-                });
-                document.getElementById('cancel-update-button').addEventListener('click', () => modal.classList.add('hidden'));
-                document.getElementById('save-update-button').addEventListener('click', saveContentUpdate);
-            }
-
-            setupMenuNavigation();
-            setupUploadListener();
-            setupEventListeners();
-            setupSettingsView();
-            renderContentList();
-        });
+        main();
     </script>
 </body>
 </html>
