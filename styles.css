@@ -42,7 +42,6 @@ body {
     transition: opacity 0.3s ease-in-out;
 }
 
-
 #video-modal .group:hover #player-controls {
     opacity: 1;
 }
@@ -92,18 +91,17 @@ body {
 
 #modal-content-description {
     white-space: pre-wrap;
-    overflow-y: auto;
-    flex-grow: 1;
-    /* Menambahkan batasan tinggi untuk perangkat seluler */
-    max-height: 100px;
+    overflow-y: auto; /* Tambahkan scroll vertikal jika konten meluap */
+    flex-grow: 1; /* Membuat deskripsi mengisi sisa ruang */
+    /* Menambahkan batasan tinggi untuk memicu scrolling di perangkat kecil */
+    max-height: 120px; 
 }
 
-@media (min-width: 1024px) { /* lg */
+@media (min-width: 1024px) { /* lg (desktop) */
   #modal-content-description {
-     max-height: none; /* Hapus batasan tinggi di desktop */
+     max-height: none; /* Hapus batasan tinggi di desktop agar flex-grow bekerja penuh */
   }
 }
-
 
 #content-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
