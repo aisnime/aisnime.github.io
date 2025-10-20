@@ -27,6 +27,13 @@ body {
     transform: translateY(-4px);
 }
 
+/* PERUBAHAN: Memastikan gambar thumbnail mengisi seluruh area kartu */
+.content-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Mengisi area, mungkin memotong sedikit gambar */
+}
+
 #player-controls {
     position: absolute;
     bottom: 0;
