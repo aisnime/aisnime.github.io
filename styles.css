@@ -121,7 +121,7 @@ body {
 
 @media (min-width: 1024px) { /* lg (desktop) */
   #modal-content-description {
-     max-height: none; /* Hapus batasan tinggi di desktop agar flex-grow bekerja penuh */
+     max-height: 200px; /* Atur tinggi maksimal untuk deskripsi di desktop agar bisa di-scroll */
   }
 }
 
