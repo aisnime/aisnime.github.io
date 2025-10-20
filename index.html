@@ -365,10 +365,12 @@
                 globalMessages.classList.add('hidden');
             });
 
-            const q = query(globalChatCollRef, orderBy("createdAt", "desc"), where("createdAt", ">", Timestamp.fromDate(new Date(Date.now() - 24 * 60 * 60 * 1000))));
+            const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+            const q = query(globalChatCollRef, where("createdAt", ">=", Timestamp.fromDate(sevenDaysAgo)), orderBy("createdAt", "asc"));
+
             onSnapshot(q, (snapshot) => {
                 globalMessages.innerHTML = '';
-                snapshot.docs.reverse().forEach(doc => {
+                snapshot.docs.forEach(doc => {
                     renderMessage(doc.data(), globalMessages, doc.data().userId === userId);
                 });
                 globalMessages.scrollTop = globalMessages.scrollHeight;
@@ -401,8 +403,8 @@
                 const msgEl = document.createElement('div');
                 msgEl.className = `chat-message ${isUser ? 'user-message' : 'other-message'}`;
                 msgEl.textContent = data.text;
-                msgWrapper.appendChild(msgWrapper);
-                container.appendChild(msgEl);
+                msgWrapper.appendChild(msgEl);
+                container.appendChild(msgWrapper);
                 container.scrollTop = container.scrollHeight;
                 return msgEl;
             }
