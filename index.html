@@ -103,13 +103,40 @@
         let geminiApiKey = '';
 
         async function callGeminiAPI(prompt) {
-            // ... (Fungsi ini tidak berubah)
+            if (!geminiApiKey) {
+                return "Kunci API Gemini tidak diatur di halaman admin.";
+            }
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${geminiApiKey}`;
+            const payload = { contents: [{ parts: [{ text: prompt }] }] };
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) throw new Error(`Panggilan API gagal: ${response.status}`);
+                const result = await response.json();
+                const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (text) {
+                    return text;
+                } else {
+                    throw new Error("Struktur respons dari Gemini API tidak valid.");
+                }
+            } catch (error) {
+                console.error("Error saat memanggil Gemini API:", error);
+                return "Maaf, terjadi kesalahan saat menghubungi Gemini AI.";
+            }
         }
 
         const contentListEl = document.getElementById('content-list');
         const videoModal = document.getElementById('video-modal');
         const closeModalBtn = document.getElementById('close-modal-btn');
-        // ... (Elemen lain tidak berubah)
+        const modalIntroPlayer = document.getElementById('modal-intro-player');
+        const modalMainPlayer = document.getElementById('modal-main-player');
+        const settingsBtn = document.getElementById('settings-btn');
+        const resolutionMenu = document.getElementById('resolution-menu');
+        const mainLogoImg = document.getElementById('main-logo');
+        const mainTitleText = document.getElementById('main-title-text');
             
         let allPublishedContent = [];
         let currentItem = null;
@@ -144,11 +171,169 @@
         }
 
         async function loadSettings() {
-            // ... (Fungsi ini tidak berubah)
+            try {
+                const settingsKeys = ['background', 'mainLogo', 'favicon', 'geminiApiKey'];
+                const promises = settingsKeys.map(key => getDoc(doc(settingsCollRef, key)));
+                const [backgroundSnap, mainLogoSnap, faviconSnap, geminiApiSnap] = await Promise.all(promises);
+
+                if (backgroundSnap.exists() && backgroundSnap.data().url) {
+                    document.body.style.backgroundImage = `url('${backgroundSnap.data().url}')`;
+                }
+                if (mainLogoSnap.exists() && mainLogoSnap.data().url) {
+                    mainLogoImg.src = mainLogoSnap.data().url;
+                    mainLogoImg.classList.remove('hidden');
+                    mainTitleText.classList.add('hidden');
+                }
+                if (faviconSnap.exists() && faviconSnap.data().url) {
+                    document.getElementById('favicon').href = faviconSnap.data().url;
+                }
+                if (geminiApiSnap.exists() && geminiApiSnap.data().key) {
+                    geminiApiKey = geminiApiSnap.data().key;
+                }
+            } catch (error) { console.error("Gagal memuat pengaturan:", error); }
         }
 
-        // ... (Fungsi playVideoInModal, renderContent, dll tidak berubah)
+        function closeVideoModal() {
+            videoModal.classList.add('hidden');
+            modalIntroPlayer.pause();
+            modalIntroPlayer.src = '';
+            modalMainPlayer.pause();
+            modalMainPlayer.src = '';
+            renderContent(allPublishedContent);
+        }
 
+        function switchResolution(res) {
+            if (!currentItem || !currentItem.videoFiles[res]) return;
+            const currentTime = modalMainPlayer.currentTime;
+            const isPaused = modalMainPlayer.paused;
+            modalMainPlayer.src = currentItem.videoFiles[res];
+            modalMainPlayer.addEventListener('loadedmetadata', () => {
+                modalMainPlayer.currentTime = currentTime;
+                if (!isPaused) modalMainPlayer.play();
+            }, { once: true });
+            resolutionMenu.classList.add('hidden');
+        }
+
+        async function playVideoInModal(id) {
+            try {
+                const docRef = doc(contentCollRef, id);
+                const docSnap = await getDoc(docRef);
+                if (!docSnap.exists()) { alert("Konten tidak ditemukan."); return; }
+                
+                currentItem = docSnap.data();
+                await updateDoc(docRef, { viewCount: increment(1) });
+                
+                document.getElementById('modal-content-title').textContent = currentItem.title;
+                const descriptionEl = document.getElementById('modal-content-description');
+                descriptionEl.textContent = "Menerjemahkan sinopsis...";
+
+                const prompt = `Terjemahkan sinopsis berikut ke dalam bahasa Indonesia. Berikan hanya teks terjemahannya saja, tanpa kata pengantar, judul, atau format markdown:\n\n"${currentItem.description || ''}"`;
+                
+                callGeminiAPI(prompt).then(translatedDesc => {
+                    descriptionEl.textContent = translatedDesc;
+                }).catch(err => {
+                    console.error("Translation failed:", err);
+                    descriptionEl.textContent = currentItem.description || 'Tidak ada deskripsi.';
+                });
+
+                document.getElementById('modal-content-rating').textContent = currentItem.rating || 'N/A';
+                document.getElementById('modal-content-members').textContent = (currentItem.members || 0).toLocaleString('id-ID') + ' Anggota';
+
+                resolutionMenu.innerHTML = '';
+                const resolutions = Object.keys(currentItem.videoFiles).sort((a,b) => parseInt(b) - parseInt(a));
+                if (resolutions.length > 1) {
+                    resolutions.forEach(res => {
+                        const btn = document.createElement('button');
+                        btn.className = 'block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700';
+                        btn.textContent = `${res}p`;
+                        btn.onclick = () => switchResolution(res);
+                        resolutionMenu.appendChild(btn);
+                    });
+                    settingsBtn.classList.remove('hidden');
+                } else {
+                    settingsBtn.classList.add('hidden');
+                }
+                
+                modalMainPlayer.src = currentItem.videoFiles[resolutions[0]];
+
+                const introSnap = await getDoc(doc(settingsCollRef, 'introVideo'));
+                if (introSnap.exists() && introSnap.data().url) {
+                    modalIntroPlayer.src = introSnap.data().url;
+                    const onIntroEnd = () => {
+                        modalIntroPlayer.classList.add('hidden');
+                        modalMainPlayer.classList.remove('hidden');
+                        modalMainPlayer.play();
+                        modalIntroPlayer.removeEventListener('ended', onIntroEnd);
+                    };
+                    modalIntroPlayer.addEventListener('ended', onIntroEnd);
+                    videoModal.classList.remove('hidden');
+                    modalIntroPlayer.classList.remove('hidden');
+                    modalMainPlayer.classList.add('hidden');
+                    modalIntroPlayer.play();
+                } else {
+                    videoModal.classList.remove('hidden');
+                    modalIntroPlayer.classList.add('hidden');
+                    modalMainPlayer.classList.remove('hidden');
+                    modalMainPlayer.play();
+                }
+            } catch (error) { console.error("Gagal memuat video:", error); }
+        }
+
+        function renderContent(contentToRender) {
+            contentListEl.innerHTML = '';
+            if (contentToRender.length === 0) {
+                contentListEl.innerHTML = '<p class="text-gray-500 col-span-full text-center py-8">Tidak ada konten ditemukan.</p>';
+                return;
+            }
+            contentToRender.forEach(itemData => {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'content-card bg-gray-800 bg-opacity-50 rounded-lg overflow-hidden shadow-lg transform hover:-translate-y-1';
+                itemEl.innerHTML = `
+                    <div class="relative w-full aspect-[2/3]"><img src="${itemData.data.thumbnailUrl}" alt="${itemData.data.title}" class="w-full h-full object-cover"></div>
+                    <div class="p-4 space-y-1">
+                        <h4 class="font-semibold text-white leading-tight truncate" title="${itemData.data.title}">${itemData.data.title}</h4>
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center text-xs text-yellow-400">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                                <span>${itemData.data.rating || 'N/A'}</span>
+                            </div>
+                            <div class="flex items-center text-xs text-gray-400">
+                               <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M15 21a6 6 0 00-9-5.197m0 0A5.975 5.975 0 0112 13a5.975 5.975 0 01-3 5.197M9 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                <span>${(itemData.data.members || 0).toLocaleString('id-ID')}</span>
+                            </div>
+                        </div>
+                    </div>`;
+                itemEl.addEventListener('click', () => playVideoInModal(itemData.id));
+                contentListEl.appendChild(itemEl);
+            });
+        }
+
+        function loadInitialContent() {
+            const q = query(contentCollRef, where("publishAt", "<=", Timestamp.now()), orderBy("publishAt", "desc"));
+            onSnapshot(q, (snapshot) => {
+                allPublishedContent = snapshot.docs.map(doc => ({id: doc.id, data: doc.data()}));
+                renderContent(allPublishedContent);
+            }, (error) => {
+                console.error("Gagal memuat konten:", error);
+                contentListEl.innerHTML = '<p class="text-red-500 col-span-full text-center py-8">Error memuat konten.</p>';
+            });
+        }
+
+        function setupSearchListener() {
+            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase().trim();
+                const filtered = allPublishedContent.filter(item => item.data.title.toLowerCase().includes(searchTerm));
+                renderContent(filtered);
+            });
+        }
+
+        function setupEventListeners(){
+            settingsBtn.addEventListener('click', () => resolutionMenu.classList.toggle('hidden'));
+            closeModalBtn.addEventListener('click', closeVideoModal);
+            videoModal.addEventListener('click', (e) => { if (e.target === videoModal) closeVideoModal(); });
+        }
+        
         function setupChatFeatures() {
             const chatBubble = document.getElementById('chat-bubble');
             const chatWindow = document.getElementById('chat-window');
@@ -180,7 +365,6 @@
                 globalMessages.classList.add('hidden');
             });
 
-            // Listen for global chat messages
             const q = query(globalChatCollRef, orderBy("createdAt", "desc"), where("createdAt", ">", Timestamp.fromDate(new Date(Date.now() - 24 * 60 * 60 * 1000))));
             onSnapshot(q, (snapshot) => {
                 globalMessages.innerHTML = '';
@@ -197,7 +381,7 @@
 
                 if (activeTab === 'global') {
                     addDoc(globalChatCollRef, { text, userId, createdAt: Timestamp.now() });
-                } else { // AI Tab
+                } else { 
                     renderMessage({ text }, aiMessages, true);
                     const thinkingEl = renderMessage({ text: "AI sedang berpikir...", isThinking: true }, aiMessages, false);
                     
