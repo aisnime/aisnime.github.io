@@ -31,8 +31,7 @@ body {
     position: absolute;
     bottom: 0;
     right: 0;
-    /* Adjust margin to be above the new content info section */
-    margin-bottom: 8rem; /* Perkiraan tinggi section info + margin */
+    margin-bottom: 12rem; /* Adjusted for more space */
     margin-right: 1rem;
     z-index: 2147483647;
     opacity: 0;
@@ -89,8 +88,8 @@ body {
 
 /* Gaya baru untuk deskripsi di modal */
 #modal-content-description {
-    white-space: pre-wrap; /* Mempertahankan format paragraf dari Gemini */
-    max-height: 150px; /* Batasi tinggi deskripsi */
-    overflow-y: auto; /* Tambahkan scroll jika deskripsi panjang */
+    white-space: pre-wrap;
+    max-height: 150px;
+    overflow-y: auto;
 }
 
