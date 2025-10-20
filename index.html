@@ -14,6 +14,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Memberikan warna latar baru untuk pesan dari AI */
+        .other-message {
+            background-color: #047857; /* A dark green color (emerald-700) */
+        }
+    </style>
 </head>
 <body>
     <div class="overlay">
@@ -84,7 +90,7 @@
         </div>
         <div id="ai-chat-messages" class="hidden flex-grow p-4 overflow-y-auto text-sm space-y-4">
              <div class="chat-message other-message">
-                <p>Halo! Saya adalah asisten AI. Tanyakan apa saja tentang anime atau konten di sini.</p>
+                <p>Halo! Saya adalah Ais, asisten AI Anda. Tanyakan apa saja.</p>
             </div>
         </div>
         <form id="chat-form" class="p-2 border-t border-gray-700 flex">
@@ -385,7 +391,7 @@
                     renderMessage({ text }, aiMessages, true);
                     const thinkingEl = renderMessage({ text: "AI sedang berpikir...", isThinking: true }, aiMessages, false);
                     
-                    const prompt = `Anda adalah asisten AI yang ramah bernama AISNIME. Jawab pertanyaan berikut dengan singkat dan jelas dalam bahasa Indonesia: "${text}"`;
+                    const prompt = `Anda adalah asisten AI yang ramah bernama Ais. Jawab pertanyaan berikut dengan singkat dan jelas dalam bahasa Indonesia: "${text}"`;
                     callGeminiAPI(prompt).then(response => {
                         thinkingEl.textContent = response;
                     }).catch(err => {
