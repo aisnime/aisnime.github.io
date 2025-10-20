@@ -53,19 +53,23 @@
 
              <!-- Kolom Info (Kanan di Desktop) -->
             <div id="modal-content-info" class="p-6 lg:w-1/3 w-full bg-gray-900 rounded-b-lg lg:rounded-r-lg lg:rounded-bl-none flex flex-col">
-                <img id="modal-thumbnail" src="" class="w-full aspect-video object-cover rounded-md mb-4">
-                <h3 id="modal-content-title" class="text-2xl font-bold text-white mb-2">Memuat judul...</h3>
-                 <div class="flex flex-wrap items-center text-sm text-gray-400 mb-4 gap-x-4 gap-y-2">
-                    <div class="flex items-center space-x-1 text-yellow-400 font-semibold">
-                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                        <span id="modal-content-rating">N/A</span>
-                    </div>
-                    <div class="flex items-center space-x-1">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M15 21a6 6 0 00-9-5.197m0 0A5.975 5.975 0 0112 13a5.975 5.975 0 01-3 5.197M9 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                        <span id="modal-content-members">N/A</span>
+                <div class="flex space-x-4 mb-4">
+                    <img id="modal-thumbnail" src="" class="w-24 h-36 object-cover rounded-md flex-shrink-0 border-2 border-gray-700">
+                    <div class="flex flex-col justify-start">
+                        <h3 id="modal-content-title" class="text-2xl font-bold text-white mb-2">Memuat judul...</h3>
+                        <div class="flex flex-wrap items-center text-sm text-gray-400 gap-x-4 gap-y-1">
+                            <div class="flex items-center space-x-1 text-yellow-400 font-semibold">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                                <span id="modal-content-rating">N/A</span>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M15 21a6 6 0 00-9-5.197m0 0A5.975 5.975 0 0112 13a5.975 5.975 0 01-3 5.197M9 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                <span id="modal-content-members">N/A</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <p id="modal-content-description" class="text-gray-400 text-sm whitespace-pre-wrap flex-grow overflow-y-auto">Tidak ada deskripsi.</p>
+                <p id="modal-content-description" class="text-gray-400 text-sm whitespace-pre-wrap flex-grow">Tidak ada deskripsi.</p>
             </div>
         </div>
     </div>
@@ -73,34 +77,6 @@
         import { auth, db, contentCollRef, settingsCollRef } from 'https://aisnime.github.io/aisnime/firebase-init.js';
         import { signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { query, where, orderBy, onSnapshot, doc, getDoc, updateDoc, Timestamp, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        
-        let geminiApiKey = '';
-
-        async function callGeminiForText(prompt) {
-            if (!geminiApiKey) {
-                return "Kunci API Gemini tidak diatur.";
-            }
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${geminiApiKey}`;
-            const payload = { contents: [{ parts: [{ text: prompt }] }] };
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                if (!response.ok) throw new Error(`Panggilan API gagal: ${response.status}`);
-                const result = await response.json();
-                const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (text) {
-                    return text;
-                } else {
-                    throw new Error("Struktur respons dari Gemini API tidak valid.");
-                }
-            } catch (error) {
-                console.error("Error saat memanggil Gemini API:", error);
-                return null;
-            }
-        }
 
         const contentListEl = document.getElementById('content-list');
         const videoModal = document.getElementById('video-modal');
@@ -130,9 +106,9 @@
 
         async function loadSettings() {
             try {
-                const settingsKeys = ['background', 'mainLogo', 'favicon', 'geminiApiKey'];
+                const settingsKeys = ['background', 'mainLogo', 'favicon'];
                 const promises = settingsKeys.map(key => getDoc(doc(settingsCollRef, key)));
-                const [backgroundSnap, mainLogoSnap, faviconSnap, geminiApiSnap] = await Promise.all(promises);
+                const [backgroundSnap, mainLogoSnap, faviconSnap] = await Promise.all(promises);
 
                 if (backgroundSnap.exists() && backgroundSnap.data().url) {
                     document.body.style.backgroundImage = `url('${backgroundSnap.data().url}')`;
@@ -144,9 +120,6 @@
                 }
                 if (faviconSnap.exists() && faviconSnap.data().url) {
                     document.getElementById('favicon').href = faviconSnap.data().url;
-                }
-                 if (geminiApiSnap.exists() && geminiApiSnap.data().key) {
-                    geminiApiKey = geminiApiSnap.data().key;
                 }
             } catch (error) { console.error("Gagal memuat pengaturan:", error); }
         }
@@ -181,16 +154,7 @@
                 
                 document.getElementById('modal-thumbnail').src = currentItem.thumbnailUrl;
                 document.getElementById('modal-content-title').textContent = currentItem.title;
-                const descriptionEl = document.getElementById('modal-content-description');
-                const originalDescription = currentItem.description || 'Tidak ada sinopsis.';
-                
-                descriptionEl.textContent = "Menerjemahkan sinopsis...";
-                const prompt = `Terjemahkan sinopsis berikut ke dalam bahasa Indonesia yang natural dan mudah dibaca. Berikan HANYA hasil terjemahannya saja, tanpa kata pengantar atau format markdown:\n\n"${originalDescription}"`;
-                
-                callGeminiForText(prompt).then(translatedDesc => {
-                    descriptionEl.textContent = translatedDesc || originalDescription;
-                });
-
+                document.getElementById('modal-content-description').textContent = currentItem.description || 'Tidak ada deskripsi.';
                 document.getElementById('modal-content-rating').textContent = (currentItem.rating || 'N/A').replace(' / 10', '');
                 document.getElementById('modal-content-members').textContent = (currentItem.members || 0).toLocaleString('id-ID') + ' Anggota';
 
@@ -235,6 +199,7 @@
         }
 
         function renderContent(contentToRender) {
+            const contentListEl = document.getElementById('content-list');
             contentListEl.innerHTML = '';
             if (contentToRender.length === 0) {
                 contentListEl.innerHTML = '<p class="text-gray-500 col-span-full text-center py-8">Tidak ada konten ditemukan.</p>';
@@ -247,7 +212,7 @@
                     <div class="relative w-full aspect-[2/3] bg-black">
                         <img src="${itemData.data.thumbnailUrl}" alt="${itemData.data.title}" class="w-full h-full object-cover">
                     </div>
-                    <div class="p-4 space-y-1">
+                    <div class="p-4 space-y-1 text-left">
                         <h4 class="font-semibold text-white leading-tight truncate" title="${itemData.data.title}">${itemData.data.title}</h4>
                         <div class="flex items-center space-x-4">
                             <div class="flex items-center text-xs text-yellow-400">
