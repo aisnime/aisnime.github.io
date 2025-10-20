@@ -43,7 +43,7 @@
                     <video id="modal-intro-player" class="w-full h-full" playsinline muted></video>
                     <video id="modal-main-player" class="w-full h-full hidden" controls controlslist="nodownload" disablepictureinpicture playsinline></video>
                 </div>
-                <div id="player-controls" class="absolute bottom-0 right-0 z-10">
+                <div id="player-controls" class="absolute bottom-0 right-0 z-10 m-4">
                     <div class="relative">
                         <button id="settings-btn" class="w-10 h-10 flex items-center justify-center bg-black bg-opacity-50 rounded-full text-white text-xl hidden">⚙️</button>
                         <div id="resolution-menu" class="absolute bottom-full right-0 mb-2 bg-black bg-opacity-70 rounded-md py-1 hidden"></div>
@@ -53,6 +53,7 @@
 
              <!-- Kolom Info (Kanan di Desktop) -->
             <div id="modal-content-info" class="p-6 lg:w-1/3 w-full bg-gray-900 rounded-b-lg lg:rounded-r-lg lg:rounded-bl-none flex flex-col">
+                <img id="modal-thumbnail" src="" class="w-full aspect-video object-cover rounded-md mb-4">
                 <h3 id="modal-content-title" class="text-2xl font-bold text-white mb-2">Memuat judul...</h3>
                  <div class="flex flex-wrap items-center text-sm text-gray-400 mb-4 gap-x-4 gap-y-2">
                     <div class="flex items-center space-x-1 text-yellow-400 font-semibold">
@@ -64,7 +65,7 @@
                         <span id="modal-content-members">N/A</span>
                     </div>
                 </div>
-                <p id="modal-content-description" class="text-gray-400 text-sm whitespace-pre-wrap flex-grow">Tidak ada deskripsi.</p>
+                <p id="modal-content-description" class="text-gray-400 text-sm whitespace-pre-wrap flex-grow overflow-y-auto">Tidak ada deskripsi.</p>
             </div>
         </div>
     </div>
@@ -72,6 +73,34 @@
         import { auth, db, contentCollRef, settingsCollRef } from 'https://aisnime.github.io/aisnime/firebase-init.js';
         import { signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { query, where, orderBy, onSnapshot, doc, getDoc, updateDoc, Timestamp, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        let geminiApiKey = '';
+
+        async function callGeminiForText(prompt) {
+            if (!geminiApiKey) {
+                return "Kunci API Gemini tidak diatur.";
+            }
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${geminiApiKey}`;
+            const payload = { contents: [{ parts: [{ text: prompt }] }] };
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                if (!response.ok) throw new Error(`Panggilan API gagal: ${response.status}`);
+                const result = await response.json();
+                const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (text) {
+                    return text;
+                } else {
+                    throw new Error("Struktur respons dari Gemini API tidak valid.");
+                }
+            } catch (error) {
+                console.error("Error saat memanggil Gemini API:", error);
+                return null;
+            }
+        }
 
         const contentListEl = document.getElementById('content-list');
         const videoModal = document.getElementById('video-modal');
@@ -101,9 +130,9 @@
 
         async function loadSettings() {
             try {
-                const settingsKeys = ['background', 'mainLogo', 'favicon'];
+                const settingsKeys = ['background', 'mainLogo', 'favicon', 'geminiApiKey'];
                 const promises = settingsKeys.map(key => getDoc(doc(settingsCollRef, key)));
-                const [backgroundSnap, mainLogoSnap, faviconSnap] = await Promise.all(promises);
+                const [backgroundSnap, mainLogoSnap, faviconSnap, geminiApiSnap] = await Promise.all(promises);
 
                 if (backgroundSnap.exists() && backgroundSnap.data().url) {
                     document.body.style.backgroundImage = `url('${backgroundSnap.data().url}')`;
@@ -115,6 +144,9 @@
                 }
                 if (faviconSnap.exists() && faviconSnap.data().url) {
                     document.getElementById('favicon').href = faviconSnap.data().url;
+                }
+                 if (geminiApiSnap.exists() && geminiApiSnap.data().key) {
+                    geminiApiKey = geminiApiSnap.data().key;
                 }
             } catch (error) { console.error("Gagal memuat pengaturan:", error); }
         }
@@ -147,8 +179,18 @@
                 
                 currentItem = docSnap.data();
                 
+                document.getElementById('modal-thumbnail').src = currentItem.thumbnailUrl;
                 document.getElementById('modal-content-title').textContent = currentItem.title;
-                document.getElementById('modal-content-description').textContent = currentItem.description || 'Tidak ada deskripsi.';
+                const descriptionEl = document.getElementById('modal-content-description');
+                const originalDescription = currentItem.description || 'Tidak ada sinopsis.';
+                
+                descriptionEl.textContent = "Menerjemahkan sinopsis...";
+                const prompt = `Terjemahkan sinopsis berikut ke dalam bahasa Indonesia yang natural dan mudah dibaca. Berikan HANYA hasil terjemahannya saja, tanpa kata pengantar atau format markdown:\n\n"${originalDescription}"`;
+                
+                callGeminiForText(prompt).then(translatedDesc => {
+                    descriptionEl.textContent = translatedDesc || originalDescription;
+                });
+
                 document.getElementById('modal-content-rating').textContent = (currentItem.rating || 'N/A').replace(' / 10', '');
                 document.getElementById('modal-content-members').textContent = (currentItem.members || 0).toLocaleString('id-ID') + ' Anggota';
 
@@ -193,7 +235,6 @@
         }
 
         function renderContent(contentToRender) {
-            const contentListEl = document.getElementById('content-list');
             contentListEl.innerHTML = '';
             if (contentToRender.length === 0) {
                 contentListEl.innerHTML = '<p class="text-gray-500 col-span-full text-center py-8">Tidak ada konten ditemukan.</p>';
