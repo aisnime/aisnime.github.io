@@ -34,7 +34,8 @@ enableIndexedDbPersistence(db)
 // Definisikan dan ekspor referensi koleksi
 const contentCollRef = collection(db, 'content');
 const settingsCollRef = collection(db, 'settings');
+const globalChatCollRef = collection(db, 'globalChat'); // TAMBAHAN BARU
 
 // Ekspor semua yang dibutuhkan oleh file lain
-export { auth, db, contentCollRef, settingsCollRef };
+export { auth, db, contentCollRef, settingsCollRef, globalChatCollRef }; // DIPERBARUI
 
