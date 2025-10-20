@@ -164,7 +164,6 @@
                 if (!docSnap.exists()) { alert("Konten tidak ditemukan."); return; }
                 
                 currentItem = docSnap.data();
-                await updateDoc(docRef, { viewCount: increment(1) });
                 
                 document.getElementById('modal-content-title').textContent = currentItem.title;
                 const descriptionEl = document.getElementById('modal-content-description');
@@ -228,7 +227,6 @@
                     <div class="relative w-full aspect-video"><img src="${itemData.data.thumbnailUrl}" alt="${itemData.data.title}" class="w-full h-full object-cover"></div>
                     <div class="p-4">
                         <h4 class="font-semibold text-white truncate" title="${itemData.data.title}">${itemData.data.title}</h4>
-                        <p class="text-xs text-gray-400 mt-1">${itemData.data.viewCount || 0} kali ditonton</p>
                     </div>`;
                 itemEl.addEventListener('click', () => playVideoInModal(itemData.id));
                 contentListEl.appendChild(itemEl);
