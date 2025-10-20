@@ -100,3 +100,27 @@ body {
     overflow-y: auto;
 }
 
+/* GAYA BARU: Menyesuaikan Grid untuk Ukuran Konten yang Lebih Kecil */
+#content-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem; /* Mengurangi jarak antar kartu */
+}
+
+@media (min-width: 640px) { /* sm */
+  #content-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) { /* md */
+  #content-list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) { /* lg */
+  #content-list {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
