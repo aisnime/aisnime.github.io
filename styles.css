@@ -27,24 +27,20 @@ body {
     transform: translateY(-4px);
 }
 
-/* PERUBAHAN: Memastikan gambar thumbnail mengisi seluruh area kartu */
 .content-card img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Mengisi area, mungkin memotong sedikit gambar */
+    object-fit: cover;
 }
 
 #player-controls {
     position: absolute;
-    bottom: 0;
-    right: 0;
-    margin-bottom: 12rem; /* Adjusted for more space */
-    margin-right: 1rem;
+    bottom: 3.5rem; /* Disesuaikan agar di atas progress bar default */
+    right: 1rem;
     z-index: 2147483647;
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
 }
-
 
 #video-modal .group:hover #player-controls {
     opacity: 1;
@@ -93,17 +89,15 @@ body {
     background-color: rgba(124, 58, 237, 0.5);
 }
 
-/* Gaya baru untuk deskripsi di modal */
 #modal-content-description {
     white-space: pre-wrap;
-    max-height: 150px;
     overflow-y: auto;
+    flex-grow: 1; /* Membuat deskripsi mengisi sisa ruang */
 }
 
-/* GAYA BARU: Menyesuaikan Grid untuk Ukuran Konten yang Lebih Kecil */
 #content-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem; /* Mengurangi jarak antar kartu */
+    gap: 1rem;
 }
 
 @media (min-width: 640px) { /* sm */
