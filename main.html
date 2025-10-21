@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AISNIME</title>
     
+    <!-- Pengaturan untuk PWA dan Ikon di Android/iOS -->
     <meta name="theme-color" content="#8B5CF6">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="https://i.imgur.com/7b4w4qH.png">
@@ -225,8 +226,10 @@
                 document.getElementById('modal-content-members').textContent = (currentItem.members || 0).toLocaleString('id-ID') + ' Anggota';
 
                 resolutionMenu.innerHTML = '';
-                const resolutions = Object.keys(currentItem.videoFiles).sort((a,b) => parseInt(b) - parseInt(a));
+                const resolutions = currentItem.videoFiles ? Object.keys(currentItem.videoFiles).sort((a,b) => parseInt(b) - parseInt(a)) : [];
+                
                 if (resolutions.length > 1) {
+                    settingsBtn.classList.remove('hidden');
                     resolutions.forEach(res => {
                         const btn = document.createElement('button');
                         btn.className = 'block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700';
@@ -234,21 +237,28 @@
                         btn.onclick = () => switchResolution(res);
                         resolutionMenu.appendChild(btn);
                     });
-                    settingsBtn.classList.remove('hidden');
                 } else {
                     settingsBtn.classList.add('hidden');
                 }
                 
-                modalMainPlayer.src = currentItem.videoFiles[resolutions[0]];
+                const mainVideoUrl = currentItem.videoFiles && resolutions.length > 0 ? currentItem.videoFiles[resolutions[0]] : null;
+                if (mainVideoUrl) {
+                    modalMainPlayer.src = mainVideoUrl;
+                } else {
+                     console.error("No valid video source found for the main player.");
+                }
+
                 const customControls = document.getElementById('custom-controls-container');
 
                 const introSnap = await getDoc(doc(settingsCollRef, 'introVideo'));
-                if (introSnap.exists() && introSnap.data().url) {
-                    modalIntroPlayer.src = introSnap.data().url;
+                const introUrl = introSnap.exists() ? introSnap.data().url : null;
+                
+                if (introUrl) {
+                    modalIntroPlayer.src = introUrl;
                     const onIntroEnd = () => {
                         modalIntroPlayer.classList.add('hidden');
                         modalMainPlayer.classList.remove('hidden');
-                        modalMainPlayer.play();
+                        if(mainVideoUrl) modalMainPlayer.play().catch(e => console.error("Main video play failed:", e));
                         if (customControls) customControls.classList.remove('hidden');
                         modalIntroPlayer.removeEventListener('ended', onIntroEnd);
                     };
@@ -257,13 +267,13 @@
                     modalIntroPlayer.classList.remove('hidden');
                     modalMainPlayer.classList.add('hidden');
                     if (customControls) customControls.classList.add('hidden');
-                    modalIntroPlayer.play();
+                    modalIntroPlayer.play().catch(e => console.error("Intro video play failed:", e));
                 } else {
                     videoModal.classList.remove('hidden');
                     modalIntroPlayer.classList.add('hidden');
                     modalMainPlayer.classList.remove('hidden');
                     if (customControls) customControls.classList.remove('hidden');
-                    modalMainPlayer.play();
+                    if(mainVideoUrl) modalMainPlayer.play().catch(e => console.error("Main video play failed:", e));
                 }
             } catch (error) { console.error("Gagal memuat video:", error); }
         }
