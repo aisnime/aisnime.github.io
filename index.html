@@ -20,7 +20,7 @@
         <div class="container mx-auto p-4 lg:p-8">
             <header class="mb-8 text-center">
                 <img id="main-logo" src="" alt="Logo Aplikasi" class="w-auto h-20 mx-auto mb-4 hidden">
-                <h1 id="main-title-text" class="text-5xl font-extrabold text-white drop-shadow-lg"></h1>
+                <h1 id="main-title-text" class="text-5xl font-extrabold text-white drop-shadow-lg">Galeri Konten</h1>
             </header>
             <div class="mb-8 max-w-xl mx-auto">
                 <input type="search" id="search-input" placeholder="Cari berdasarkan judul..." class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition">
@@ -109,6 +109,9 @@
 
         async function loadSettings() {
             try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const accessCode = urlParams.get('code');
+
                 const settingsKeys = ['background', 'mainLogo', 'favicon', 'maintenanceMode'];
                 const promises = settingsKeys.map(key => getDoc(doc(settingsCollRef, key)));
                 const [backgroundSnap, mainLogoSnap, faviconSnap, maintenanceSnap] = await Promise.all(promises);
@@ -121,7 +124,7 @@
                     document.body.style.backgroundImage = `url('${backgroundSnap.data().url}')`;
                 }
 
-                if (maintenanceMode) {
+                if (maintenanceMode && accessCode !== '3396') {
                     mainContent.classList.add('hidden');
                     maintenanceOverlay.classList.remove('hidden');
                     if (faviconSnap.exists() && faviconSnap.data().url) {
@@ -142,6 +145,7 @@
                     loadInitialContent();
                     setupSearchListener();
                     setupEventListeners();
+                    setupCustomControls();
                 }
 
             } catch (error) { console.error("Gagal memuat pengaturan:", error); }
@@ -179,6 +183,7 @@
             modalIntroPlayer.src = '';
             modalMainPlayer.pause();
             modalMainPlayer.src = '';
+            document.getElementById('custom-controls-container').classList.add('hidden');
         }
 
         function switchResolution(res) {
@@ -223,6 +228,7 @@
                 }
                 
                 modalMainPlayer.src = currentItem.videoFiles[resolutions[0]];
+                const customControls = document.getElementById('custom-controls-container');
 
                 const introSnap = await getDoc(doc(settingsCollRef, 'introVideo'));
                 if (introSnap.exists() && introSnap.data().url) {
@@ -231,17 +237,20 @@
                         modalIntroPlayer.classList.add('hidden');
                         modalMainPlayer.classList.remove('hidden');
                         modalMainPlayer.play();
+                        customControls.classList.remove('hidden');
                         modalIntroPlayer.removeEventListener('ended', onIntroEnd);
                     };
                     modalIntroPlayer.addEventListener('ended', onIntroEnd);
                     videoModal.classList.remove('hidden');
                     modalIntroPlayer.classList.remove('hidden');
                     modalMainPlayer.classList.add('hidden');
+                    customControls.classList.add('hidden');
                     modalIntroPlayer.play();
                 } else {
                     videoModal.classList.remove('hidden');
                     modalIntroPlayer.classList.add('hidden');
                     modalMainPlayer.classList.remove('hidden');
+                    customControls.classList.remove('hidden');
                     modalMainPlayer.play();
                 }
             } catch (error) { console.error("Gagal memuat video:", error); }
@@ -278,10 +287,51 @@
                 contentListEl.appendChild(itemEl);
             });
         }
+
+        function setupCustomControls() {
+            const mainPlayer = document.getElementById('modal-main-player');
+            const playPauseBtn = document.getElementById('play-pause-btn');
+            const progressBarContainer = document.getElementById('progress-bar-container');
+            const progressFill = document.getElementById('progress-fill');
+            const timeDisplay = document.getElementById('time-display');
+            const playIconSVG = `<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"></path></svg>`;
+            const pauseIconSVG = `<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zm9 0a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z"></path></svg>`;
+            playPauseBtn.innerHTML = playIconSVG;
+
+            function formatTime(seconds) {
+                const minutes = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+
+            playPauseBtn.addEventListener('click', () => {
+                if (mainPlayer.paused) mainPlayer.play();
+                else mainPlayer.pause();
+            });
+
+            mainPlayer.addEventListener('play', () => { playPauseBtn.innerHTML = pauseIconSVG; });
+            mainPlayer.addEventListener('pause', () => { playPauseBtn.innerHTML = playIconSVG; });
+            
+            mainPlayer.addEventListener('loadedmetadata', () => {
+                timeDisplay.textContent = `${formatTime(0)} / ${formatTime(mainPlayer.duration)}`;
+            });
+
+            mainPlayer.addEventListener('timeupdate', () => {
+                const progress = (mainPlayer.currentTime / mainPlayer.duration) * 100;
+                progressFill.style.width = `${progress}%`;
+                timeDisplay.textContent = `${formatTime(mainPlayer.currentTime)} / ${formatTime(mainPlayer.duration)}`;
+            });
+
+            progressBarContainer.addEventListener('click', (e) => {
+                const rect = progressBarContainer.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const width = rect.width;
+                mainPlayer.currentTime = (x / width) * mainPlayer.duration;
+            });
+        }
         
         main();
     </script>
 </body>
 </html>
-
 
