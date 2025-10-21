@@ -48,7 +48,7 @@
             <div class="lg:w-2/3 w-full relative">
                 <div class="w-full aspect-video bg-black rounded-t-lg lg:rounded-l-lg lg:rounded-tr-none">
                     <video id="modal-intro-player" class="w-full h-full" playsinline muted></video>
-                    <video id="modal-main-player" class="w-full h-full hidden" controls controlslist="nodownload" disablepictureinpicture playsinline></video>
+                    <video id="modal-main-player" class="w-full h-full hidden" controlslist="nodownload" disablepictureinpicture playsinline></video>
                 </div>
                 <div id="player-controls" class="absolute bottom-0 right-0 z-10 m-4">
                     <div class="relative">
@@ -183,7 +183,8 @@
             modalIntroPlayer.src = '';
             modalMainPlayer.pause();
             modalMainPlayer.src = '';
-            document.getElementById('custom-controls-container').classList.add('hidden');
+            const customControls = document.getElementById('custom-controls-container');
+            if (customControls) customControls.classList.add('hidden');
         }
 
         function switchResolution(res) {
@@ -237,20 +238,20 @@
                         modalIntroPlayer.classList.add('hidden');
                         modalMainPlayer.classList.remove('hidden');
                         modalMainPlayer.play();
-                        customControls.classList.remove('hidden');
+                        if (customControls) customControls.classList.remove('hidden');
                         modalIntroPlayer.removeEventListener('ended', onIntroEnd);
                     };
                     modalIntroPlayer.addEventListener('ended', onIntroEnd);
                     videoModal.classList.remove('hidden');
                     modalIntroPlayer.classList.remove('hidden');
                     modalMainPlayer.classList.add('hidden');
-                    customControls.classList.add('hidden');
+                    if (customControls) customControls.classList.add('hidden');
                     modalIntroPlayer.play();
                 } else {
                     videoModal.classList.remove('hidden');
                     modalIntroPlayer.classList.add('hidden');
                     modalMainPlayer.classList.remove('hidden');
-                    customControls.classList.remove('hidden');
+                    if (customControls) customControls.classList.remove('hidden');
                     modalMainPlayer.play();
                 }
             } catch (error) { console.error("Gagal memuat video:", error); }
@@ -294,6 +295,8 @@
             const progressBarContainer = document.getElementById('progress-bar-container');
             const progressFill = document.getElementById('progress-fill');
             const timeDisplay = document.getElementById('time-display');
+            if(!playPauseBtn || !progressBarContainer || !progressFill || !timeDisplay) return; // Guard clause
+            
             const playIconSVG = `<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"></path></svg>`;
             const pauseIconSVG = `<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zm9 0a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z"></path></svg>`;
             playPauseBtn.innerHTML = playIconSVG;
