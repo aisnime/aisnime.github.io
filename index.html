@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AISNIME</title>
     
-    <!-- Pengaturan untuk PWA dan Ikon di Android/iOS -->
     <meta name="theme-color" content="#8B5CF6">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="https://i.imgur.com/7b4w4qH.png">
@@ -16,11 +15,12 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="overlay">
+    <!-- Konten Normal (Awalnya ditampilkan) -->
+    <div id="main-content" class="overlay">
         <div class="container mx-auto p-4 lg:p-8">
             <header class="mb-8 text-center">
                 <img id="main-logo" src="" alt="Logo Aplikasi" class="w-auto h-20 mx-auto mb-4 hidden">
-                <h1 id="main-title-text" class="text-5xl font-extrabold text-white drop-shadow-lg"></h1>
+                <h1 id="main-title-text" class="text-5xl font-extrabold text-white drop-shadow-lg">Galeri Konten</h1>
             </header>
             <div class="mb-8 max-w-xl mx-auto">
                 <input type="search" id="search-input" placeholder="Cari berdasarkan judul..." class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition">
@@ -33,6 +33,14 @@
             </main>
         </div>
     </div>
+
+    <!-- Tampilan Maintenance (Awalnya disembunyikan) -->
+    <div id="maintenance-overlay" class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center text-center bg-gray-900 p-4">
+        <img id="maintenance-logo" src="" alt="Logo" class="w-40 h-40 rounded-full mb-6 border-4 border-gray-700 shadow-lg">
+        <h1 class="text-4xl font-bold text-white">MAINTENANCE</h1>
+        <p class="text-gray-300 mt-2 max-w-md">Mohon Maaf, Kami sedang melakukan beberapa pembaruan</p>
+    </div>
+
     <div id="video-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 hidden z-50">
        <div class="bg-gray-900 rounded-lg shadow-2xl w-full max-w-6xl relative group flex flex-col lg:flex-row">
             <button id="close-modal-btn" class="absolute -top-3 -right-3 bg-white text-black rounded-full w-8 h-8 flex items-center justify-center font-bold text-xl z-20">&times;</button>
@@ -93,33 +101,76 @@
             try {
                 await signInAnonymously(auth);
                 await loadSettings();
-                loadInitialContent();
-                setupSearchListener();
-                setupEventListeners();
             } catch(e) { 
                 console.error("Initialization failed", e);
-                document.body.innerHTML = `<div class="bg-red-900 text-white p-8 rounded-lg shadow-2xl max-w-2xl mx-auto mt-20"><h1 class="text-3xl font-bold mb-4">Koneksi Gagal!</h1><p>Pastikan konfigurasi Firebase benar dan aturan database (Firestore Rules) sudah diatur.</p></div>`;
+                document.body.innerHTML = `<div class="bg-red-900 text-white p-8 rounded-lg shadow-2xl max-w-2xl mx-auto mt-20"><h1 class="text-3xl font-bold mb-4">Koneksi Gagal!</h1><p>Gagal terhubung ke server.</p></div>`;
             }
         }
 
         async function loadSettings() {
             try {
-                const settingsKeys = ['background', 'mainLogo', 'favicon'];
+                const settingsKeys = ['background', 'mainLogo', 'favicon', 'maintenanceMode'];
                 const promises = settingsKeys.map(key => getDoc(doc(settingsCollRef, key)));
-                const [backgroundSnap, mainLogoSnap, faviconSnap] = await Promise.all(promises);
+                const [backgroundSnap, mainLogoSnap, faviconSnap, maintenanceSnap] = await Promise.all(promises);
+
+                const maintenanceMode = maintenanceSnap.exists() && maintenanceSnap.data().status === 1;
+                const mainContent = document.getElementById('main-content');
+                const maintenanceOverlay = document.getElementById('maintenance-overlay');
 
                 if (backgroundSnap.exists() && backgroundSnap.data().url) {
                     document.body.style.backgroundImage = `url('${backgroundSnap.data().url}')`;
                 }
-                if (mainLogoSnap.exists() && mainLogoSnap.data().url) {
-                    mainLogoImg.src = mainLogoSnap.data().url;
-                    mainLogoImg.classList.remove('hidden');
-                    mainTitleText.classList.add('hidden');
+
+                if (maintenanceMode) {
+                    mainContent.classList.add('hidden');
+                    maintenanceOverlay.classList.remove('hidden');
+                    if (faviconSnap.exists() && faviconSnap.data().url) {
+                        document.getElementById('maintenance-logo').src = faviconSnap.data().url;
+                    }
+                } else {
+                    mainContent.classList.remove('hidden');
+                    maintenanceOverlay.classList.add('hidden');
+                    
+                    if (mainLogoSnap.exists() && mainLogoSnap.data().url) {
+                        document.getElementById('main-logo').src = mainLogoSnap.data().url;
+                        document.getElementById('main-logo').classList.remove('hidden');
+                        document.getElementById('main-title-text').classList.add('hidden');
+                    }
+                    if (faviconSnap.exists() && faviconSnap.data().url) {
+                        document.getElementById('favicon').href = faviconSnap.data().url;
+                    }
+                    loadInitialContent();
+                    setupSearchListener();
+                    setupEventListeners();
                 }
-                if (faviconSnap.exists() && faviconSnap.data().url) {
-                    document.getElementById('favicon').href = faviconSnap.data().url;
-                }
+
             } catch (error) { console.error("Gagal memuat pengaturan:", error); }
+        }
+
+        function loadInitialContent() {
+            const q = query(contentCollRef, where("publishAt", "<=", Timestamp.now()), orderBy("publishAt", "desc"));
+            onSnapshot(q, (snapshot) => {
+                allPublishedContent = snapshot.docs.map(doc => ({id: doc.id, data: doc.data()}));
+                renderContent(allPublishedContent);
+            }, (error) => {
+                console.error("Gagal memuat konten:", error);
+                contentListEl.innerHTML = '<p class="text-red-500 col-span-full text-center py-8">Error memuat konten.</p>';
+            });
+        }
+
+        function setupSearchListener() {
+            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase().trim();
+                const filtered = allPublishedContent.filter(item => item.data.title.toLowerCase().includes(searchTerm));
+                renderContent(filtered);
+            });
+        }
+
+        function setupEventListeners(){
+            settingsBtn.addEventListener('click', () => resolutionMenu.classList.toggle('hidden'));
+            closeModalBtn.addEventListener('click', closeVideoModal);
+            videoModal.addEventListener('click', (e) => { if (e.target === videoModal) closeVideoModal(); });
         }
 
         function closeVideoModal() {
@@ -197,6 +248,7 @@
         }
 
         function renderContent(contentToRender) {
+            const contentListEl = document.getElementById('content-list');
             contentListEl.innerHTML = '';
             if (contentToRender.length === 0) {
                 contentListEl.innerHTML = '<p class="text-gray-500 col-span-full text-center py-8">Tidak ada konten ditemukan.</p>';
@@ -227,35 +279,8 @@
             });
         }
         
-        function loadInitialContent() {
-            const q = query(contentCollRef, where("publishAt", "<=", Timestamp.now()), orderBy("publishAt", "desc"));
-            onSnapshot(q, (snapshot) => {
-                allPublishedContent = snapshot.docs.map(doc => ({id: doc.id, data: doc.data()}));
-                renderContent(allPublishedContent);
-            }, (error) => {
-                console.error("Gagal memuat konten:", error);
-                contentListEl.innerHTML = '<p class="text-red-500 col-span-full text-center py-8">Error memuat konten.</p>';
-            });
-        }
-
-        function setupSearchListener() {
-            const searchInput = document.getElementById('search-input');
-            searchInput.addEventListener('input', (e) => {
-                const searchTerm = e.target.value.toLowerCase().trim();
-                const filtered = allPublishedContent.filter(item => item.data.title.toLowerCase().includes(searchTerm));
-                renderContent(filtered);
-            });
-        }
-
-        function setupEventListeners(){
-            settingsBtn.addEventListener('click', () => resolutionMenu.classList.toggle('hidden'));
-            closeModalBtn.addEventListener('click', closeVideoModal);
-            videoModal.addEventListener('click', (e) => { if (e.target === videoModal) closeVideoModal(); });
-        }
-        
         main();
     </script>
 </body>
 </html>
-
 
