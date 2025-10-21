@@ -45,15 +45,26 @@
        <div class="bg-gray-900 rounded-lg shadow-2xl w-full max-w-6xl relative group flex flex-col lg:flex-row">
             <button id="close-modal-btn" class="absolute -top-3 -right-3 bg-white text-black rounded-full w-8 h-8 flex items-center justify-center font-bold text-xl z-20">&times;</button>
             
-            <div class="lg:w-2/3 w-full relative">
+            <div class="lg:w-2/3 w-full flex flex-col">
                 <div class="w-full aspect-video bg-black rounded-t-lg lg:rounded-l-lg lg:rounded-tr-none">
                     <video id="modal-intro-player" class="w-full h-full" playsinline muted></video>
                     <video id="modal-main-player" class="w-full h-full hidden" controlslist="nodownload" disablepictureinpicture playsinline></video>
                 </div>
-                <div id="player-controls" class="absolute bottom-0 right-0 z-10 m-4">
-                    <div class="relative">
-                        <button id="settings-btn" class="w-10 h-10 flex items-center justify-center bg-black bg-opacity-50 rounded-full text-white text-xl hidden">⚙️</button>
-                        <div id="resolution-menu" class="absolute bottom-full right-0 mb-2 bg-black bg-opacity-70 rounded-md py-1 hidden"></div>
+                <div id="custom-controls-container" class="bg-gray-800 p-3 space-y-2 hidden lg:rounded-bl-lg">
+                    <div id="progress-bar-container" class="w-full h-2 bg-gray-600 rounded-full cursor-pointer">
+                        <div id="progress-fill" class="h-full bg-purple-500 rounded-full"></div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center space-x-4">
+                            <button id="play-pause-btn" class="text-white"></button>
+                            <span id="time-display" class="text-xs text-gray-400">00:00 / 00:00</span>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div id="player-controls" class="relative">
+                                 <button id="settings-btn" class="w-8 h-8 flex items-center justify-center text-white text-xl">⚙️</button>
+                                 <div id="resolution-menu" class="absolute bottom-full right-0 mb-2 bg-black bg-opacity-70 rounded-md py-1 hidden"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -295,7 +306,7 @@
             const progressBarContainer = document.getElementById('progress-bar-container');
             const progressFill = document.getElementById('progress-fill');
             const timeDisplay = document.getElementById('time-display');
-            if(!playPauseBtn || !progressBarContainer || !progressFill || !timeDisplay) return; // Guard clause
+            if(!playPauseBtn || !progressBarContainer || !progressFill || !timeDisplay) return;
             
             const playIconSVG = `<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"></path></svg>`;
             const pauseIconSVG = `<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zm9 0a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z"></path></svg>`;
@@ -337,3 +348,4 @@
     </script>
 </body>
 </html>
+
