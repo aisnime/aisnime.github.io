@@ -1,4 +1,4 @@
-/* Gaya umum tetap sama */
+/* Gaya umum */
 body {
     font-family: 'Inter', sans-serif;
     background-size: cover;
@@ -33,6 +33,7 @@ body {
     object-fit: cover;
 }
 
+/* Kontrol Pemutar Video */
 #player-controls {
     position: absolute;
     bottom: 1rem;
@@ -89,42 +90,21 @@ body {
     background-color: rgba(124, 58, 237, 0.5);
 }
 
+/* Deskripsi di Modal */
 #modal-content-description {
     white-space: pre-wrap;
-    overflow-y: auto; /* Memastikan scrollbar muncul saat konten meluap */
-    flex-grow: 1; /* Membuat deskripsi mengisi sisa ruang */
-    max-height: 150px; /* Batasan tinggi untuk memicu scroll di perangkat kecil */
-    scrollbar-width: thin; /* Scrollbar tipis untuk Firefox */
-    scrollbar-color: #4B5563 #1F2937; /* Warna thumb dan track untuk Firefox */
+    overflow-y: auto;
+    flex-grow: 1;
+    max-height: 120px; 
 }
-
-/* Kustomisasi scrollbar untuk browser Webkit (Chrome, Safari, Edge) */
-#modal-content-description::-webkit-scrollbar {
-    width: 8px;
-}
-
-#modal-content-description::-webkit-scrollbar-track {
-    background: #1f2937; /* Warna track scrollbar */
-    border-radius: 10px;
-}
-
-#modal-content-description::-webkit-scrollbar-thumb {
-    background-color: #4B5563; /* Warna thumb scrollbar */
-    border-radius: 10px;
-    border: 2px solid #1f2937; /* Memberi efek padding */
-}
-
-#modal-content-description::-webkit-scrollbar-thumb:hover {
-    background-color: #6B7280; /* Warna thumb saat di-hover */
-}
-
 
 @media (min-width: 1024px) { /* lg (desktop) */
   #modal-content-description {
-     max-height: 200px; /* Atur tinggi maksimal untuk deskripsi di desktop agar bisa di-scroll */
+     max-height: 200px; /* Dibuat lebih pendek di desktop */
   }
 }
 
+/* Grid Konten */
 #content-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
