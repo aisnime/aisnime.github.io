@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifikasi Akses...</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center h-screen">
+    <div>
+        <p>Memverifikasi dan mengarahkan, harap tunggu...</p>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBkSf56I0akk5poCZ5t8QI1MNlUvZ8Aiu0",
+            authDomain: "aisnime.firebaseapp.com",
+            projectId: "aisnime",
+            storageBucket: "aisnime.appspot.com",
+            messagingSenderId: "736632750777",
+            appId: "1:736632750777:web:8756d28d0ffe2698739168",
+            measurementId: "G-1WF1269W5W"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const settingsCollRef = collection(db, 'settings');
+
+        async function checkMaintenance() {
+            try {
+                await signInAnonymously(auth);
+                
+                const maintenanceDocRef = doc(settingsCollRef, 'maintenanceMode');
+                const maintenanceDoc = await getDoc(maintenanceDocRef);
+
+                // Cek URL halaman utama Anda
+                const mainPageUrl = 'https://aisnime.github.io/aisnime/';
+
+                if (maintenanceDoc.exists() && maintenanceDoc.data().status === 1) {
+                    // Jika mode perbaikan aktif, alihkan dengan kode
+                    window.location.href = `${mainPageUrl}?code=3396`;
+                } else {
+                    // Jika tidak, alihkan secara normal
+                    window.location.href = mainPageUrl;
+                }
+            } catch (error) {
+                console.error("Gagal memverifikasi status:", error);
+                // Jika terjadi error, alihkan secara normal sebagai fallback
+                window.location.href = 'https://aisnime.github.io/aisnime/';
+            }
+        }
+
+        checkMaintenance();
+    </script>
+</body>
+</html>
