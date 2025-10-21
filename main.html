@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AISNIME</title>
+    
+    <meta name="theme-color" content="#8B5CF6">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="https://i.imgur.com/7b4w4qH.png">
+    
+    <link rel="icon" id="favicon" href="">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Konten Normal (Awalnya ditampilkan) -->
+    <div id="main-content" class="overlay">
+        <div class="container mx-auto p-4 lg:p-8">
+            <header class="mb-8 text-center">
+                <img id="main-logo" src="" alt="Logo Aplikasi" class="w-auto h-20 mx-auto mb-4 hidden">
+                <h1 id="main-title-text" class="text-5xl font-extrabold text-white drop-shadow-lg">Galeri Konten</h1>
+            </header>
+            <div class="mb-8 max-w-xl mx-auto">
+                <input type="search" id="search-input" placeholder="Cari berdasarkan judul..." class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition">
+            </div>
+            <main class="main-content-container p-6">
+                <h2 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-3">UPDATE TERBARU</h2>
+                <div id="content-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <p id="no-content-message" class="text-gray-500 col-span-full text-center py-8">Memuat konten...</p>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Tampilan Maintenance (Awalnya disembunyikan) -->
+    <div id="maintenance-overlay" class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center text-center bg-gray-900 p-4">
+        <img id="maintenance-logo" src="" alt="Logo" class="w-40 h-40 rounded-full mb-6 border-4 border-gray-700 shadow-lg">
+        <h1 class="text-4xl font-bold text-white">MAINTENANCE</h1>
+        <p class="text-gray-300 mt-2 max-w-md">Mohon Maaf, Kami sedang melakukan beberapa pembaruan</p>
+    </div>
+
+    <div id="video-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 hidden z-50">
+       <div class="bg-gray-900 rounded-lg shadow-2xl w-full max-w-6xl relative group flex flex-col lg:flex-row">
+            <button id="close-modal-btn" class="absolute -top-3 -right-3 bg-white text-black rounded-full w-8 h-8 flex items-center justify-center font-bold text-xl z-20">&times;</button>
+            
+            <div class="lg:w-2/3 w-full relative">
+                <div class="w-full aspect-video bg-black rounded-t-lg lg:rounded-l-lg lg:rounded-tr-none">
+                    <video id="modal-intro-player" class="w-full h-full" playsinline muted></video>
+                    <video id="modal-main-player" class="w-full h-full hidden" controlslist="nodownload" disablepictureinpicture playsinline></video>
+                </div>
+                <div id="player-controls" class="absolute bottom-0 right-0 z-10 m-4">
+                    <div class="relative">
+                        <button id="settings-btn" class="w-10 h-10 flex items-center justify-center bg-black bg-opacity-50 rounded-full text-white text-xl hidden">⚙️</button>
+                        <div id="resolution-menu" class="absolute bottom-full right-0 mb-2 bg-black bg-opacity-70 rounded-md py-1 hidden"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="modal-content-info" class="p-6 lg:w-1/3 w-full bg-gray-900 rounded-b-lg lg:rounded-r-lg lg:rounded-bl-none flex flex-col">
+                <div class="flex space-x-4 mb-4">
+                    <img id="modal-thumbnail" src="" class="w-24 h-36 object-cover rounded-md flex-shrink-0 border-2 border-gray-700">
+                    <div class="flex flex-col justify-start">
+                        <h3 id="modal-content-title" class="text-2xl font-bold text-white mb-2">Memuat judul...</h3>
+                        <div class="flex flex-wrap items-center text-sm text-gray-400 gap-x-4 gap-y-1">
+                            <div class="flex items-center space-x-1 text-yellow-400 font-semibold">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                                <span id="modal-content-rating">N/A</span>
+                            </div>
+                            <div class="flex items-center space-x-1">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M15 21a6 6 0 00-9-5.197m0 0A5.975 5.975 0 0112 13a5.975 5.975 0 01-3 5.197M9 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                <span id="modal-content-members">N/A</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p id="modal-content-description" class="text-gray-400 text-sm whitespace-pre-wrap flex-grow">Tidak ada deskripsi.</p>
+            </div>
+        </div>
+    </div>
+    <script type="module">
+        import { auth, db, contentCollRef, settingsCollRef } from 'https://aisnime.github.io/aisnime/firebase-init.js';
+        import { signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { query, where, orderBy, onSnapshot, doc, getDoc, updateDoc, Timestamp, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        const contentListEl = document.getElementById('content-list');
+        const videoModal = document.getElementById('video-modal');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        const modalIntroPlayer = document.getElementById('modal-intro-player');
+        const modalMainPlayer = document.getElementById('modal-main-player');
+        const settingsBtn = document.getElementById('settings-btn');
+        const resolutionMenu = document.getElementById('resolution-menu');
+        const mainLogoImg = document.getElementById('main-logo');
+        const mainTitleText = document.getElementById('main-title-text');
+            
+        let allPublishedContent = [];
+        let currentItem = null;
+
+        async function main() {
+            try {
+                await signInAnonymously(auth);
+                await loadSettings();
+            } catch(e) { 
+                console.error("Initialization failed", e);
+                document.body.innerHTML = `<div class="bg-red-900 text-white p-8 rounded-lg shadow-2xl max-w-2xl mx-auto mt-20"><h1 class="text-3xl font-bold mb-4">Koneksi Gagal!</h1><p>Gagal terhubung ke server.</p></div>`;
+            }
+        }
+
+        async function loadSettings() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const accessCode = urlParams.get('code');
+
+                const settingsKeys = ['background', 'mainLogo', 'favicon', 'maintenanceMode'];
+                const promises = settingsKeys.map(key => getDoc(doc(settingsCollRef, key)));
+                const [backgroundSnap, mainLogoSnap, faviconSnap, maintenanceSnap] = await Promise.all(promises);
+
+                const maintenanceMode = maintenanceSnap.exists() && maintenanceSnap.data().status === 1;
+                const mainContent = document.getElementById('main-content');
+                const maintenanceOverlay = document.getElementById('maintenance-overlay');
+
+                if (backgroundSnap.exists() && backgroundSnap.data().url) {
+                    document.body.style.backgroundImage = `url('${backgroundSnap.data().url}')`;
+                }
+
+                if (maintenanceMode && accessCode !== '3396') {
+                    mainContent.classList.add('hidden');
+                    maintenanceOverlay.classList.remove('hidden');
+                    if (faviconSnap.exists() && faviconSnap.data().url) {
+                        document.getElementById('maintenance-logo').src = faviconSnap.data().url;
+                    }
+                } else {
+                    mainContent.classList.remove('hidden');
+                    maintenanceOverlay.classList.add('hidden');
+                    
+                    if (mainLogoSnap.exists() && mainLogoSnap.data().url) {
+                        document.getElementById('main-logo').src = mainLogoSnap.data().url;
+                        document.getElementById('main-logo').classList.remove('hidden');
+                        document.getElementById('main-title-text').classList.add('hidden');
+                    }
+                    if (faviconSnap.exists() && faviconSnap.data().url) {
+                        document.getElementById('favicon').href = faviconSnap.data().url;
+                    }
+                    loadInitialContent();
+                    setupSearchListener();
+                    setupEventListeners();
+                    setupCustomControls();
+                }
+
+            } catch (error) { console.error("Gagal memuat pengaturan:", error); }
+        }
+
+        function loadInitialContent() {
+            const q = query(contentCollRef, where("publishAt", "<=", Timestamp.now()), orderBy("publishAt", "desc"));
+            onSnapshot(q, (snapshot) => {
+                allPublishedContent = snapshot.docs.map(doc => ({id: doc.id, data: doc.data()}));
+                renderContent(allPublishedContent);
+            }, (error) => {
+                console.error("Gagal memuat konten:", error);
+                contentListEl.innerHTML = '<p class="text-red-500 col-span-full text-center py-8">Error memuat konten.</p>';
+            });
+        }
+
+        function setupSearchListener() {
+            const searchInput = document.getElementById('search-input');
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase().trim();
+                const filtered = allPublishedContent.filter(item => item.data.title.toLowerCase().includes(searchTerm));
+                renderContent(filtered);
+            });
+        }
+
+        function setupEventListeners(){
+            settingsBtn.addEventListener('click', () => resolutionMenu.classList.toggle('hidden'));
+            closeModalBtn.addEventListener('click', closeVideoModal);
+            videoModal.addEventListener('click', (e) => { if (e.target === videoModal) closeVideoModal(); });
+        }
+
+        function closeVideoModal() {
+            videoModal.classList.add('hidden');
+            modalIntroPlayer.pause();
+            modalIntroPlayer.src = '';
+            modalMainPlayer.pause();
+            modalMainPlayer.src = '';
+            const customControls = document.getElementById('custom-controls-container');
+            if (customControls) customControls.classList.add('hidden');
+        }
+
+        function switchResolution(res) {
+            if (!currentItem || !currentItem.videoFiles[res]) return;
+            const currentTime = modalMainPlayer.currentTime;
+            const isPaused = modalMainPlayer.paused;
+            modalMainPlayer.src = currentItem.videoFiles[res];
+            modalMainPlayer.addEventListener('loadedmetadata', () => {
+                modalMainPlayer.currentTime = currentTime;
+                if (!isPaused) modalMainPlayer.play();
+            }, { once: true });
+            resolutionMenu.classList.add('hidden');
+        }
+
+        async function playVideoInModal(id) {
+            try {
+                const docRef = doc(contentCollRef, id);
+                const docSnap = await getDoc(docRef);
+                if (!docSnap.exists()) { alert("Konten tidak ditemukan."); return; }
+                
+                currentItem = docSnap.data();
+                
+                document.getElementById('modal-thumbnail').src = currentItem.thumbnailUrl;
+                document.getElementById('modal-content-title').textContent = currentItem.title;
+                document.getElementById('modal-content-description').textContent = currentItem.description || 'Tidak ada deskripsi.';
+                document.getElementById('modal-content-rating').textContent = (currentItem.rating || 'N/A').replace(' / 10', '');
+                document.getElementById('modal-content-members').textContent = (currentItem.members || 0).toLocaleString('id-ID') + ' Anggota';
+
+                resolutionMenu.innerHTML = '';
+                const resolutions = Object.keys(currentItem.videoFiles).sort((a,b) => parseInt(b) - parseInt(a));
+                if (resolutions.length > 1) {
+                    resolutions.forEach(res => {
+                        const btn = document.createElement('button');
+                        btn.className = 'block w-full text-left px-4 py-2 text-sm text-white hover:bg-gray-700';
+                        btn.textContent = `${res}p`;
+                        btn.onclick = () => switchResolution(res);
+                        resolutionMenu.appendChild(btn);
+                    });
+                    settingsBtn.classList.remove('hidden');
+                } else {
+                    settingsBtn.classList.add('hidden');
+                }
+                
+                modalMainPlayer.src = currentItem.videoFiles[resolutions[0]];
+                const customControls = document.getElementById('custom-controls-container');
+
+                const introSnap = await getDoc(doc(settingsCollRef, 'introVideo'));
+                if (introSnap.exists() && introSnap.data().url) {
+                    modalIntroPlayer.src = introSnap.data().url;
+                    const onIntroEnd = () => {
+                        modalIntroPlayer.classList.add('hidden');
+                        modalMainPlayer.classList.remove('hidden');
+                        modalMainPlayer.play();
+                        if (customControls) customControls.classList.remove('hidden');
+                        modalIntroPlayer.removeEventListener('ended', onIntroEnd);
+                    };
+                    modalIntroPlayer.addEventListener('ended', onIntroEnd);
+                    videoModal.classList.remove('hidden');
+                    modalIntroPlayer.classList.remove('hidden');
+                    modalMainPlayer.classList.add('hidden');
+                    if (customControls) customControls.classList.add('hidden');
+                    modalIntroPlayer.play();
+                } else {
+                    videoModal.classList.remove('hidden');
+                    modalIntroPlayer.classList.add('hidden');
+                    modalMainPlayer.classList.remove('hidden');
+                    if (customControls) customControls.classList.remove('hidden');
+                    modalMainPlayer.play();
+                }
+            } catch (error) { console.error("Gagal memuat video:", error); }
+        }
+
+        function renderContent(contentToRender) {
+            const contentListEl = document.getElementById('content-list');
+            contentListEl.innerHTML = '';
+            if (contentToRender.length === 0) {
+                contentListEl.innerHTML = '<p class="text-gray-500 col-span-full text-center py-8">Tidak ada konten ditemukan.</p>';
+                return;
+            }
+            contentToRender.forEach(itemData => {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'content-card bg-gray-800 bg-opacity-50 rounded-lg overflow-hidden shadow-lg transform hover:-translate-y-1';
+                itemEl.innerHTML = `
+                    <div class="relative w-full aspect-[2/3] bg-black">
+                        <img src="${itemData.data.thumbnailUrl}" alt="${itemData.data.title}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-4 space-y-1 text-left">
+                        <h4 class="font-semibold text-white leading-tight truncate" title="${itemData.data.title}">${itemData.data.title}</h4>
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center text-xs text-yellow-400">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                                <span>${(itemData.data.rating || 'N/A').replace(' / 10', '')}</span>
+                            </div>
+                            <div class="flex items-center text-xs text-gray-400">
+                               <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M15 21a6 6 0 00-9-5.197m0 0A5.975 5.975 0 0112 13a5.975 5.975 0 01-3 5.197M9 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                <span>${(itemData.data.members || 0).toLocaleString('id-ID')}</span>
+                            </div>
+                        </div>
+                    </div>`;
+                itemEl.addEventListener('click', () => playVideoInModal(itemData.id));
+                contentListEl.appendChild(itemEl);
+            });
+        }
+
+        function setupCustomControls() {
+            const mainPlayer = document.getElementById('modal-main-player');
+            const playPauseBtn = document.getElementById('play-pause-btn');
+            const progressBarContainer = document.getElementById('progress-bar-container');
+            const progressFill = document.getElementById('progress-fill');
+            const timeDisplay = document.getElementById('time-display');
+            if(!playPauseBtn || !progressBarContainer || !progressFill || !timeDisplay) return; // Guard clause
+            
+            const playIconSVG = `<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"></path></svg>`;
+            const pauseIconSVG = `<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path d="M5.75 4.5a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75zm9 0a.75.75 0 00-.75.75v10a.75.75 0 001.5 0v-10a.75.75 0 00-.75-.75z"></path></svg>`;
+            playPauseBtn.innerHTML = playIconSVG;
+
+            function formatTime(seconds) {
+                const minutes = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+
+            playPauseBtn.addEventListener('click', () => {
+                if (mainPlayer.paused) mainPlayer.play();
+                else mainPlayer.pause();
+            });
+
+            mainPlayer.addEventListener('play', () => { playPauseBtn.innerHTML = pauseIconSVG; });
+            mainPlayer.addEventListener('pause', () => { playPauseBtn.innerHTML = playIconSVG; });
+            
+            mainPlayer.addEventListener('loadedmetadata', () => {
+                timeDisplay.textContent = `${formatTime(0)} / ${formatTime(mainPlayer.duration)}`;
+            });
+
+            mainPlayer.addEventListener('timeupdate', () => {
+                const progress = (mainPlayer.currentTime / mainPlayer.duration) * 100;
+                progressFill.style.width = `${progress}%`;
+                timeDisplay.textContent = `${formatTime(mainPlayer.currentTime)} / ${formatTime(mainPlayer.duration)}`;
+            });
+
+            progressBarContainer.addEventListener('click', (e) => {
+                const rect = progressBarContainer.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const width = rect.width;
+                mainPlayer.currentTime = (x / width) * mainPlayer.duration;
+            });
+        }
+        
+        main();
+    </script>
+</body>
+</html>
