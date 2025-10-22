@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AISNIME</title>
     
-    <!-- Pengaturan untuk PWA dan Ikon di Android/iOS -->
     <meta name="theme-color" content="#8B5CF6">
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="https://i.imgur.com/7b4w4qH.png">
@@ -218,6 +217,11 @@
                 if (!docSnap.exists()) { alert("Konten tidak ditemukan."); return; }
                 
                 currentItem = docSnap.data();
+                 if (!currentItem.videoFiles || Object.keys(currentItem.videoFiles).length === 0) {
+                    console.error("Konten ini tidak memiliki file video:", currentItem);
+                    alert("Gagal memuat video: Sumber video tidak ditemukan.");
+                    return;
+                }
                 
                 document.getElementById('modal-thumbnail').src = currentItem.thumbnailUrl;
                 document.getElementById('modal-content-title').textContent = currentItem.title;
@@ -226,7 +230,7 @@
                 document.getElementById('modal-content-members').textContent = (currentItem.members || 0).toLocaleString('id-ID') + ' Anggota';
 
                 resolutionMenu.innerHTML = '';
-                const resolutions = currentItem.videoFiles ? Object.keys(currentItem.videoFiles).sort((a,b) => parseInt(b) - parseInt(a)) : [];
+                const resolutions = Object.keys(currentItem.videoFiles).sort((a,b) => parseInt(b) - parseInt(a));
                 
                 if (resolutions.length > 1) {
                     settingsBtn.classList.remove('hidden');
@@ -241,8 +245,8 @@
                     settingsBtn.classList.add('hidden');
                 }
                 
-                const mainVideoUrl = currentItem.videoFiles && resolutions.length > 0 ? currentItem.videoFiles[resolutions[0]] : null;
-                if (mainVideoUrl) {
+                const mainVideoUrl = currentItem.videoFiles[resolutions[0]];
+                 if (mainVideoUrl) {
                     modalMainPlayer.src = mainVideoUrl;
                 } else {
                      console.error("No valid video source found for the main player.");
@@ -256,22 +260,22 @@
                 if (introUrl) {
                     modalIntroPlayer.src = introUrl;
                     const onIntroEnd = () => {
-                        modalIntroPlayer.classList.add('hidden');
-                        modalMainPlayer.classList.remove('hidden');
+                        modalIntroPlayer.style.display = 'none';
+                        modalMainPlayer.style.display = 'block';
                         if(mainVideoUrl) modalMainPlayer.play().catch(e => console.error("Main video play failed:", e));
                         if (customControls) customControls.classList.remove('hidden');
                         modalIntroPlayer.removeEventListener('ended', onIntroEnd);
                     };
                     modalIntroPlayer.addEventListener('ended', onIntroEnd);
                     videoModal.classList.remove('hidden');
-                    modalIntroPlayer.classList.remove('hidden');
-                    modalMainPlayer.classList.add('hidden');
+                    modalIntroPlayer.style.display = 'block';
+                    modalMainPlayer.style.display = 'none';
                     if (customControls) customControls.classList.add('hidden');
                     modalIntroPlayer.play().catch(e => console.error("Intro video play failed:", e));
                 } else {
                     videoModal.classList.remove('hidden');
-                    modalIntroPlayer.classList.add('hidden');
-                    modalMainPlayer.classList.remove('hidden');
+                    modalIntroPlayer.style.display = 'none';
+                    modalMainPlayer.style.display = 'block';
                     if (customControls) customControls.classList.remove('hidden');
                     if(mainVideoUrl) modalMainPlayer.play().catch(e => console.error("Main video play failed:", e));
                 }
