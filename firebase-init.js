@@ -34,8 +34,8 @@ const contentCollRef = collection(db, 'content');
 const settingsCollRef = collection(db, 'settings');
 const seriesCollRef = collection(db, 'series');
 const globalChatCollRef = collection(db, 'globalChat');
-const unassignedVideosCollRef = collection(db, 'unassignedVideos'); // Rujukan baru
+// 'unassignedVideosCollRef' dihapus
 
 // Export all needed by other files
-export { auth, db, contentCollRef, settingsCollRef, seriesCollRef, globalChatCollRef, unassignedVideosCollRef };
+export { auth, db, contentCollRef, settingsCollRef, seriesCollRef, globalChatCollRef };
 
