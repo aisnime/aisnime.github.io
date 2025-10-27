@@ -2,68 +2,462 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale-1.0">
     <title>AISNIME</title>
+    
+    <meta name="theme-color" content="#8B5CF6">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="https://i.imgur.com/7b4w4qH.png">
+    
+    <link rel="icon" id="favicon" href="">
+    
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body class="bg-gray-900 text-white flex items-center justify-center h-screen">
-    <div id="status-container" class="text-center">
-        <p>Memverifikasi status server, harap tunggu...</p>
+<body>
+    <!-- Konten Normal (Awalnya ditampilkan) -->
+    <div id="main-content" class="overlay">
+        <div class="container mx-auto p-4 lg:p-8">
+            <header class="mb-8 text-center">
+                <img id="main-logo" src="" alt="Logo Aplikasi" class="w-auto h-20 mx-auto mb-4 hidden">
+                <h1 id="main-title-text" class="text-5xl font-extrabold text-white drop-shadow-lg"></h1>
+            </header>
+            <form id="search-form" class="mb-8 max-w-xl mx-auto flex items-center space-x-2">
+                <input type="search" id="search-input" placeholder="Cari Judul" class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition">
+            </form>
+            <main class="main-content-container p-6">
+                <h2 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-3">ANIME</h2>
+                <div id="content-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <p id="no-content-message" class="text-gray-500 col-span-full text-center py-8">Memuat konten...</p>
+                </div>
+            </main>
+        </div>
     </div>
 
+    <!-- Tampilan Maintenance (Awalnya disembunyikan) -->
+    <div id="maintenance-overlay" class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center text-center bg-gray-900 p-4">
+        <img id="maintenance-logo" src="" alt="Logo" class="w-40 h-40 rounded-full mb-6 border-4 border-gray-700 shadow-lg">
+        <h1 class="text-4xl font-bold text-white">MAINTENANCE</h1>
+        <p class="text-gray-300 mt-2 max-w-md">Mohon Maaf, Kami sedang melakukan beberapa pembaruan</p>
+    </div>
+
+    <!-- MODAL DAFTAR EPISODE -->
+    <div id="episode-list-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-40">
+        <div class="bg-gray-800 rounded-lg shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col">
+            <div class="p-4 border-b border-gray-700 flex justify-between items-center">
+                <h3 id="episode-list-title" class="text-2xl font-bold">Daftar Episode</h3>
+                <button id="close-episode-list-btn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            <div id="episode-list-container" class="p-4 space-y-3 overflow-y-auto">
+                <!-- Daftar episode akan dimuat di sini -->
+            </div>
+        </div>
+    </div>
+
+    <div id="video-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 hidden z-50">
+       <div class="bg-gray-900 rounded-lg shadow-2xl w-full max-w-6xl relative group flex flex-col lg:flex-row">
+            <button id="close-modal-btn" class="absolute -top-3 -right-3 bg-white text-black rounded-full w-8 h-8 flex items-center justify-center font-bold text-xl z-20">&times;</button>
+            
+            <div class="lg:w-2/3 w-full flex flex-col">
+                <div id="video-container" class="w-full aspect-video bg-black rounded-t-lg lg:rounded-l-lg lg:rounded-tr-none relative">
+                    <!-- Player Utama (HTML5 standar dengan kontrol) -->
+                    <video id="modal-main-player" class="w-full h-full" controls controlslist="nodownload" disablepictureinpicture playsinline></video>
+                </div>
+                <!-- Tombol Daftar Episode (Mobile) -->
+                <div class="p-4 lg:hidden">
+                    <button id="show-episodes-btn-mobile" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-md">
+                        Lihat Daftar Episode
+                    </button>
+                </div>
+            </div>
+
+            <div id="modal-content-info" class="p-6 lg:w-1/3 w-full bg-gray-900 rounded-b-lg lg:rounded-r-lg lg:rounded-bl-none flex flex-col">
+                <div class="flex space-x-4 mb-4">
+                    <img id="modal-thumbnail" src="" alt="Thumbnail Serial" class="w-24 h-36 object-cover rounded-md flex-shrink-0 border-2 border-gray-700">
+                    <div class="flex flex-col justify-start">
+                        <h3 id="modal-content-title" class="text-2xl font-bold text-white mb-2">Memuat judul...</h3>
+                        <div class="flex flex-col items-start text-sm text-gray-400 gap-y-2">
+                            <!-- Wrapper baru untuk Rating dan Vote -->
+                            <div class="flex flex-row flex-wrap items-center gap-x-4 gap-y-1">
+                                <!-- Rating -->
+                                <div class="flex items-center space-x-1 text-yellow-400 font-semibold">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                                    <span id="modal-content-rating">N/A</span>
+                                </div>
+                                <!-- Vote (menggantikan Members) -->
+                                <div class="flex items-center space-x-1">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                                    <span id="modal-content-vote">N/A</span>
+                                </div>
+                                <!-- Total Episode -->
+                                <div class="flex items-center space-x-1">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                                    <span id="modal-content-episodes">...</span>
+                                </div>
+                            </div>
+                            <!-- Ikon MAL -->
+                            <div>
+                                <span class="p-1 bg-blue-800 text-white text-xs font-bold rounded">MAL</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p id="modal-content-description" class="text-gray-400 text-sm whitespace-pre-wrap flex-grow">Tidak ada deskripsi.</p>
+                <!-- Tombol Daftar Episode (Desktop) -->
+                <div class="mt-auto pt-4 hidden lg:block">
+                    <button id="show-episodes-btn-desktop" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-md">
+                        Lihat Daftar Episode
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { auth, db, seriesCollRef, settingsCollRef } from 'https://aisnime.github.io/aisnime/firebase-init.js';
+        import { signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { collection, query, where, orderBy, onSnapshot, doc, getDoc, getDocs, updateDoc, deleteDoc, setDoc, Timestamp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        // Deklarasi variabel di scope yang lebih luas
+        let contentListEl, videoModal, closeModalBtn, modalMainPlayer;
+        let mainLogoImg, mainTitleText, episodeListModal;
+        let episodeBtnMobile, episodeBtnDesktop;
+        let allSeriesContent = [];
+        var currentSeriesId = null;
+        var currentSeriesData = null;
+        var currentItem = null;
+        
+        let saveTimeout; // Untuk debounce simpan durasi
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBkSf56I0akk5poCZ5t8QI1MNlUvZ8Aiu0",
-            authDomain: "aisnime.firebaseapp.com",
-            projectId: "aisnime",
-            storageBucket: "aisnime.appspot.com",
-            messagingSenderId: "736632750777",
-            appId: "1:736632750777:web:8756d28d0ffe2698739168",
-            measurementId: "G-1WF1269W5W"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-        const settingsCollRef = collection(db, 'settings');
-
-        async function checkMaintenance() {
+        async function main() {
             try {
+                // Inisialisasi variabel elemen DOM
+                contentListEl = document.getElementById('content-list');
+                videoModal = document.getElementById('video-modal');
+                closeModalBtn = document.getElementById('close-modal-btn');
+                modalMainPlayer = document.getElementById('modal-main-player');
+                mainLogoImg = document.getElementById('main-logo');
+                mainTitleText = document.getElementById('main-title-text');
+                episodeListModal = document.getElementById('episode-list-modal');
+                episodeBtnMobile = document.getElementById('show-episodes-btn-mobile');
+                episodeBtnDesktop = document.getElementById('show-episodes-btn-desktop');
+
                 await signInAnonymously(auth);
-                
-                const maintenanceDocRef = doc(settingsCollRef, 'maintenanceMode');
-                const maintenanceDoc = await getDoc(maintenanceDocRef);
-
-                const mainPageUrl = 'main.html';
-
-                if (maintenanceDoc.exists() && maintenanceDoc.data().status === 1) {
-                    // Jika mode perbaikan aktif, tampilkan pesan di halaman ini
-                    const container = document.getElementById('status-container');
-                    
-                    const faviconDoc = await getDoc(doc(settingsCollRef, 'favicon'));
-                    const logoUrl = faviconDoc.exists() ? faviconDoc.data().url : 'https://i.imgur.com/7b4w4qH.png';
-
-                    container.innerHTML = `
-                        <img src="${logoUrl}" alt="Logo" class="w-40 h-40 rounded-full mb-6 border-4 border-gray-700 shadow-lg mx-auto">
-                        <h1 class="text-4xl font-bold text-white">MAINTENANCE</h1>
-                        <p class="text-gray-300 mt-2 max-w-md">Mohon Maaf, Kami sedang melakukan beberapa pembaruan</p>
-                    `;
-                } else {
-                    // Jika tidak, alihkan ke halaman utama
-                    window.location.href = mainPageUrl;
-                }
-            } catch (error) {
-                console.error("Gagal memverifikasi status:", error);
-                // Jika terjadi error, alihkan ke halaman utama sebagai fallback
-                window.location.href = 'main.html';
+                await loadSettings();
+                setupVideoProgressSaving(); // Siapkan listener untuk autosave
+            } catch(e) { 
+                console.error("Initialization failed", e);
+                document.body.innerHTML = `<div class="bg-red-900 text-white p-8 rounded-lg shadow-2xl max-w-2xl mx-auto mt-20"><h1 class="text-3xl font-bold mb-4">Koneksi Gagal!</h1><p>Gagal terhubung ke server.</p></div>`;
             }
         }
 
-        checkMaintenance();
+        async function loadSettings() {
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const accessCode = urlParams.get('code');
+
+                const settingsKeys = ['background', 'mainLogo', 'favicon', 'maintenanceMode'];
+                const promises = settingsKeys.map(key => getDoc(doc(settingsCollRef, key)));
+                const [backgroundSnap, mainLogoSnap, faviconSnap, maintenanceSnap] = await Promise.all(promises);
+
+                const maintenanceMode = maintenanceSnap.exists() && maintenanceSnap.data().status === 1;
+                const mainContent = document.getElementById('main-content');
+                const maintenanceOverlay = document.getElementById('maintenance-overlay');
+
+                if (backgroundSnap.exists() && backgroundSnap.data().url) {
+                    document.body.style.backgroundImage = `url('${backgroundSnap.data().url}')`;
+                }
+
+                if (maintenanceMode && accessCode !== '3396') {
+                    mainContent.classList.add('hidden');
+                    maintenanceOverlay.classList.remove('hidden');
+                    if (faviconSnap.exists() && faviconSnap.data().url) {
+                        document.getElementById('maintenance-logo').src = faviconSnap.data().url;
+                    }
+                } else {
+                    mainContent.classList.remove('hidden');
+                    maintenanceOverlay.classList.add('hidden');
+                    
+                    if (mainLogoImg && mainLogoSnap.exists() && mainLogoSnap.data().url) {
+                        mainLogoImg.src = mainLogoSnap.data().url;
+                        mainLogoImg.classList.remove('hidden');
+                        mainTitleText.classList.add('hidden');
+                    }
+                    if (faviconSnap.exists() && faviconSnap.data().url) {
+                        document.getElementById('favicon').href = faviconSnap.data().url;
+                    }
+                    loadInitialContent();
+                    setupSearchListener();
+                    setupEventListeners();
+                }
+
+            } catch (error) { console.error("Gagal memuat pengaturan:", error); }
+        }
+
+        function loadInitialContent() {
+            const q = query(seriesCollRef, orderBy("createdAt", "desc"));
+            onSnapshot(q, (snapshot) => {
+                allSeriesContent = snapshot.docs.map(doc => ({id: doc.id, data: doc.data()}));
+                renderContent(allSeriesContent);
+            }, (error) => {
+                console.error("Gagal memuat konten:", error);
+                if (contentListEl) {
+                    contentListEl.innerHTML = '<p class="text-red-500 col-span-full text-center py-8">Error memuat konten.</p>';
+                }
+            });
+        }
+
+        function setupSearchListener() {
+            const searchInput = document.getElementById('search-input');
+            const searchForm = document.getElementById('search-form');
+            
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.toLowerCase().trim();
+                    const filtered = allSeriesContent.filter(item => 
+                        item.data.title.toLowerCase().includes(searchTerm) ||
+                        (item.data.genre && item.data.genre.join(', ').toLowerCase().includes(searchTerm))
+                    );
+                    renderContent(filtered);
+                });
+            }
+            
+            if (searchForm) searchForm.addEventListener('submit', (e) => e.preventDefault());
+        }
+
+        function setupEventListeners(){
+            closeModalBtn.addEventListener('click', closeVideoModal);
+            videoModal.addEventListener('click', (e) => { if (e.target === videoModal) closeVideoModal(); });
+            document.getElementById('close-episode-list-btn').addEventListener('click', () => {
+                episodeListModal.classList.add('hidden');
+            });
+
+            const openEpisodeListHandler = () => {
+                if (currentSeriesId && currentSeriesData) {
+                    closeVideoModal();
+                    openEpisodeList(currentSeriesId, currentSeriesData);
+                }
+            };
+
+            episodeBtnMobile.addEventListener('click', openEpisodeListHandler);
+            episodeBtnDesktop.addEventListener('click', openEpisodeListHandler);
+        }
+
+        function closeVideoModal() {
+            videoModal.classList.add('hidden');
+            saveWatchProgress(); // Simpan progres terakhir saat ditutup
+            if (saveTimeout) clearTimeout(saveTimeout); // Batalkan timer yang sedang berjalan
+            modalMainPlayer.pause();
+            modalMainPlayer.src = '';
+            modalMainPlayer.poster = ''; 
+        }
+        
+        function formatDuration(seconds) {
+            if (isNaN(seconds) || seconds === 0) return "00:00";
+            const minutes = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        async function openEpisodeList(seriesId, seriesData) {
+            currentSeriesId = seriesId;
+            currentSeriesData = seriesData; 
+
+            document.getElementById('episode-list-title').textContent = seriesData.title;
+            const episodeContainer = document.getElementById('episode-list-container');
+            episodeContainer.innerHTML = '<p class="text-gray-400">Memuat episode...</p>';
+            episodeListModal.classList.remove('hidden');
+
+            const episodesCollRef = collection(db, 'series', seriesId, 'episodes');
+            const q = query(episodesCollRef, orderBy("episodeNumber", "desc"));
+            
+            onSnapshot(q, (snapshot) => {
+                episodeContainer.innerHTML = '';
+                if(snapshot.empty) {
+                    episodeContainer.innerHTML = '<p class="text-gray-400">Belum ada episode untuk serial ini.</p>';
+                    return;
+                }
+                snapshot.forEach(doc => {
+                    const episode = doc.data();
+                    const durationStr = formatDuration(episode.duration || 0);
+                    
+                    const episodeEl = document.createElement('button'); 
+                    episodeEl.className = 'block w-full text-left p-3 bg-gray-700 hover:bg-gray-600 rounded-md transition flex justify-between items-center';
+                    
+                    episodeEl.innerHTML = `
+                        <span>
+                            <span class="font-bold text-white">${episode.episodeNumber}.</span>
+                            <span class="text-gray-300 ml-2">${episode.title || `Episode ${episode.episodeNumber}`}</span>
+                        </span>
+                        <span class="text-xs text-gray-400">${durationStr}</span>
+                    `;
+                    
+                    let videoUrl = null;
+                    if (episode.videoFiles && Object.keys(episode.videoFiles).length > 0) {
+                        const resolutions = Object.keys(episode.videoFiles).sort((a,b) => parseInt(b.replace('p','')) - parseInt(a.replace('p','')));
+                        
+                        if (episode.videoFiles['720p']) {
+                            videoUrl = episode.videoFiles['720p']; 
+                        } else {
+                            videoUrl = episode.videoFiles[resolutions[0]];
+                        }
+                    }
+                    
+                    episodeEl.onclick = () => {
+                        if (videoUrl) {
+                            playVideoInModal(seriesData, episode, videoUrl, doc.id); // Kirim doc.id
+                            episodeListModal.classList.add('hidden');
+                        } else {
+                            alert('Video untuk episode ini tidak tersedia.');
+                        }
+                    };
+                    
+                    episodeContainer.appendChild(episodeEl);
+                });
+            });
+        }
+
+        async function playVideoInModal(seriesData, episodeData, videoUrl, episodeId) {
+            try {
+                currentItem = { ...seriesData, ...episodeData, episodeId: episodeId }; // Simpan episodeId
+                
+                if (!videoUrl) {
+                    alert("Gagal memuat video: URL tidak sah.");
+                    return;
+                }
+                
+                document.getElementById('modal-thumbnail').src = seriesData.thumbnailUrl;
+                document.getElementById('modal-content-title').textContent = seriesData.title; 
+                document.getElementById('modal-content-description').textContent = seriesData.description || 'Tidak ada deskripsi.';
+                document.getElementById('modal-content-rating').textContent = (seriesData.rating || 'N/A').replace(' / 10', '');
+                document.getElementById('modal-content-vote').textContent = (seriesData.scored_by || 0).toLocaleString('id-ID') + ' Vote'; 
+
+                // [BARU] Logika untuk mengambil jumlah episode
+                const episodeCountEl = document.getElementById('modal-content-episodes');
+                episodeCountEl.textContent = '... Eps'; // Teks loading
+                if (currentSeriesId) {
+                    const episodesCollRef = collection(db, 'series', currentSeriesId, 'episodes');
+                    const snapshot = await getDocs(episodesCollRef);
+                    episodeCountEl.textContent = `${snapshot.size} Eps`;
+                }
+
+                
+                videoModal.classList.remove('hidden');
+                
+                const rawVideoUrl = videoUrl.replace(/\/upload\/.*?\//, '/upload/');
+
+                modalMainPlayer.style.display = 'block';
+                modalMainPlayer.src = rawVideoUrl;
+                modalMainPlayer.poster = "https://aisnime.github.io/aisnime/Setting/poster.png"; 
+
+                // Dapatkan progres tontonan dari localStorage
+                const progress = getWatchProgress(episodeId);
+
+                modalMainPlayer.addEventListener('canplay', () => {
+                    if (progress > 0) {
+                        modalMainPlayer.currentTime = progress;
+                    }
+                    modalMainPlayer.play().catch(e => console.error("Main video play failed:", e));
+                }, { once: true });
+                
+                modalMainPlayer.addEventListener('error', (e) => {
+                     console.error("Video player error:", e, modalMainPlayer.error);
+                }, { once: true });
+
+
+            } catch (error) { console.error("Gagal memuat video:", error); }
+        }
+
+        function renderContent(contentToRender) {
+            const contentListEl = document.getElementById('content-list');
+            if (!contentListEl) return; 
+            contentListEl.innerHTML = '';
+            if (contentToRender.length === 0) {
+                contentListEl.innerHTML = '<p class="text-gray-500 col-span-full text-center py-8">Tidak ada konten ditemukan.</p>';
+                return;
+            }
+            contentToRender.forEach(itemData => {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'content-card bg-gray-800 bg-opacity-50 rounded-lg overflow-hidden shadow-lg transform hover:-translate-y-1';
+                itemEl.innerHTML = `
+                    <div class="relative w-full aspect-[2/3] bg-black">
+                        <img src="${itemData.data.thumbnailUrl}" alt="${itemData.data.title}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-4 space-y-1 text-left">
+                        <h4 class="font-semibold text-white leading-tight truncate" title="${itemData.data.title}">${itemData.data.title}</h4>
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center text-xs text-yellow-400">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                                <span>${(itemData.data.rating || 'N/A').replace(' / 10', '')}</span>
+                            </div>
+                            <div class="flex items-center text-xs text-gray-400">
+                               <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M15 21a6 6 0 00-9-5.197m0 0A5.975 5.975 0 0112 13a5.975 5.975 0 01-3 5.197M9 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                                <span id="modal-content-vote-${itemData.id}">${(itemData.data.scored_by || 0).toLocaleString('id-ID')}</span>
+                            </div>
+                            <div class="flex items-center text-xs text-gray-400">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                                <span>${(itemData.data.episodeCount || 0)}</span>
+                            </div>
+                        </div>
+                    </div>`;
+                itemEl.addEventListener('click', () => openEpisodeList(itemData.id, itemData.data));
+                contentListEl.appendChild(itemEl);
+            });
+        }
+        
+        // --- FUNGSI BARU UNTUK AUTOSAVE ---
+
+        function getWatchProgress(episodeId) {
+            try {
+                const progressData = localStorage.getItem('aisnimeWatchProgress');
+                if (progressData) {
+                    const episodes = JSON.parse(progressData);
+                    if (episodes && episodes[episodeId]) {
+                        return episodes[episodeId];
+                    }
+                }
+                return 0;
+            } catch (error) {
+                console.error("Gagal mengambil progres dari localStorage:", error);
+                return 0;
+            }
+        }
+
+        function saveWatchProgress() {
+            if (!currentItem || !currentItem.episodeId || !modalMainPlayer) return;
+            
+            const episodeId = currentItem.episodeId;
+            const currentTime = modalMainPlayer.currentTime;
+            const duration = modalMainPlayer.duration;
+
+            // Jangan simpan jika di awal atau akhir video
+            if (currentTime < 10 || (duration - currentTime) < 10) return; 
+
+            try {
+                let progressData = localStorage.getItem('aisnimeWatchProgress');
+                let episodes = {};
+                if (progressData) {
+                    episodes = JSON.parse(progressData);
+                }
+                
+                episodes[episodeId] = currentTime;
+                
+                localStorage.setItem('aisnimeWatchProgress', JSON.stringify(episodes));
+            } catch (error) {
+                console.error("Gagal menyimpan progres ke localStorage:", error);
+            }
+        }
+
+        function setupVideoProgressSaving() {
+            modalMainPlayer.addEventListener('timeupdate', () => {
+                if (saveTimeout) clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(saveWatchProgress, 5000); // Simpan setiap 5 detik
+            });
+        }
+
+        // Menunggu sehingga DOM sedia sebelum menjalankan 'main'
+        window.addEventListener('DOMContentLoaded', main);
     </script>
 </body>
 </html>
