@@ -28,9 +28,12 @@
             </form>
             <main class="main-content-container p-6">
                 <h2 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-3">UPDATE TERBARU</h2>
-                <div id="content-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- [DIUBAH] Menggunakan sm:grid-cols-2 untuk semua ukuran layar (kecuali xs) -->
+                <div id="content-list" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <p id="no-content-message" class="text-gray-500 col-span-full text-center py-8">Memuat konten...</p>
                 </div>
+                <!-- [BARU] Kontainer untuk tombol "Muat Lebih Banyak" -->
+                <div id="load-more-container" class="text-center mt-8"></div>
             </main>
         </div>
     </div>
@@ -115,10 +118,8 @@
     </div>
     
     <script type="module">
-        // [DIPERBAIKI] Menggunakan path absolut untuk 'firebase-init.js' agar berfungsi di domain root
         import { auth, db, seriesCollRef, settingsCollRef } from 'https://aisnime.github.io/firebase-init.js';
         import { signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        // [BARU] Impor 'increment', 'setDoc', dan 'getDocs'
         import { collection, query, where, orderBy, onSnapshot, doc, getDoc, getDocs, updateDoc, deleteDoc, setDoc, Timestamp, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
         // Deklarasi variabel di scope yang lebih luas
@@ -131,6 +132,11 @@
         var currentItem = null;
         
         let saveTimeout; // Untuk debounce simpan durasi
+        
+        // [BARU] Variabel untuk paginasi
+        let isShowingAll = false;
+        const MOBILE_LIMIT = 8; // 4 baris x 2 kolom
+        const DESKTOP_LIMIT = 20; // 10 baris x 2 kolom
 
         async function main() {
             try {
@@ -148,7 +154,7 @@
                 await signInAnonymously(auth);
                 await loadSettings();
                 setupVideoProgressSaving(); // Siapkan listener untuk autosave
-                logPageView(); // [BARU] Panggil fungsi untuk mencatat kunjungan
+                logPageView(); 
             } catch(e) { 
                 console.error("Initialization failed", e);
                 document.body.innerHTML = `<div class="bg-red-900 text-white p-8 rounded-lg shadow-2xl max-w-2xl mx-auto mt-20"><h1 class="text-3xl font-bold mb-4">Koneksi Gagal!</h1><p>Gagal terhubung ke server.</p></div>`;
@@ -199,21 +205,16 @@
         }
 
         function loadInitialContent() {
-            // [DIPERBAIKI] Hapus 'orderBy("updatedAt")' untuk menghindari galat karena indeks/field mungkin tidak ada.
-            // Kita akan urutkan (sort) secara manual di client-side.
-            const q = query(seriesCollRef); // <--- Hapus orderBy
+            // Kita tetap mengambil semua data untuk fitur pencarian,
+            // tapi kita akan membatasi tampilannya di renderContent
+            const q = query(seriesCollRef, orderBy("updatedAt", "desc"));
             onSnapshot(q, (snapshot) => {
                 allSeriesContent = snapshot.docs.map(doc => ({id: doc.id, data: doc.data()}));
                 
-                // [BARU] Urutkan data secara manual di JavaScript
-                // Ini akan mengurutkan berdasarkan 'updatedAt' jika ada, atau 'createdAt' jika tidak ada
-                allSeriesContent.sort((a, b) => {
-                    const timeA = (a.data.updatedAt || a.data.createdAt || { toMillis: () => 0 }).toMillis();
-                    const timeB = (b.data.updatedAt || b.data.createdAt || { toMillis: () => 0 }).toMillis();
-                    return timeB - timeA; // Urutkan dari yang terbaru (descending)
-                });
-                
-                renderContent(allSeriesContent);
+                isShowingAll = false; // Reset status tampilan
+                renderContent(allSeriesContent); // Render dengan batas
+                setupLoadMoreButton(allSeriesContent.length); // Tampilkan tombol jika perlu
+
             }, (error) => {
                 console.error("Gagal memuat konten:", error);
                 if (contentListEl) {
@@ -225,15 +226,27 @@
         function setupSearchListener() {
             const searchInput = document.getElementById('search-input');
             const searchForm = document.getElementById('search-form');
+            const loadMoreContainer = document.getElementById('load-more-container');
             
             if (searchInput) {
                 searchInput.addEventListener('input', (e) => {
                     const searchTerm = e.target.value.toLowerCase().trim();
-                    const filtered = allSeriesContent.filter(item => 
-                        item.data.title.toLowerCase().includes(searchTerm) ||
-                        (item.data.genre && item.data.genre.join(', ').toLowerCase().includes(searchTerm))
-                    );
-                    renderContent(filtered);
+                    
+                    if (searchTerm.length > 0) {
+                        // Jika mencari, tampilkan semua hasil
+                        isShowingAll = true; 
+                        const filtered = allSeriesContent.filter(item => 
+                            item.data.title.toLowerCase().includes(searchTerm) ||
+                            (item.data.genre && item.data.genre.join(', ').toLowerCase().includes(searchTerm))
+                        );
+                        renderContent(filtered);
+                        loadMoreContainer.innerHTML = ''; // Sembunyikan tombol saat mencari
+                    } else {
+                        // Jika pencarian kosong, kembali ke tampilan terbatas
+                        isShowingAll = false;
+                        renderContent(allSeriesContent);
+                        setupLoadMoreButton(allSeriesContent.length);
+                    }
                 });
             }
             
@@ -257,6 +270,28 @@
             episodeBtnMobile.addEventListener('click', openEpisodeListHandler);
             episodeBtnDesktop.addEventListener('click', openEpisodeListHandler);
         }
+        
+        // [BARU] Fungsi untuk membuat tombol "Tampilkan Semua"
+        function setupLoadMoreButton(totalItems) {
+            const container = document.getElementById('load-more-container');
+            const limit = window.innerWidth < 768 ? MOBILE_LIMIT : DESKTOP_LIMIT;
+
+            // Hanya tampilkan tombol jika jumlah total item melebihi batas dan kita tidak sedang menampilkan semua
+            if (totalItems > limit && !isShowingAll) {
+                container.innerHTML = `<button id="load-more-btn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-full transition">
+                                Tampilkan Semua (${totalItems} Serial)
+                               </button>`;
+                
+                document.getElementById('load-more-btn').addEventListener('click', () => {
+                    isShowingAll = true;
+                    renderContent(allSeriesContent);
+                    container.innerHTML = ''; // Sembunyikan tombol setelah diklik
+                });
+            } else {
+                container.innerHTML = ''; // Tidak perlu tombol
+            }
+        }
+
 
         function closeVideoModal() {
             videoModal.classList.add('hidden');
@@ -296,7 +331,6 @@
                     const episode = doc.data();
                     const durationStr = formatDuration(episode.duration || 0);
                     
-                    // [BARU] Dapatkan status tontonan
                     const progressData = getWatchProgress(doc.id);
                     const isWatched = progressData.watched;
                     const watchedIcon = isWatched 
@@ -308,8 +342,7 @@
                     
                     episodeEl.innerHTML = `
                         <span>
-                            <span class="font-bold text-white">${episode.episodeNumber}.</span>
-                            <span class="text-gray-300 ml-2">${episode.title || `Episode ${episode.episodeNumber}`}</span>
+                            <span class="text-gray-300">${episode.title || `Episode ${episode.episodeNumber}`}</span>
                         </span>
                         <span class="text-xs text-gray-400 flex items-center">
                             ${durationStr}
@@ -357,15 +390,12 @@
                 document.getElementById('modal-content-rating').textContent = (seriesData.rating || 'N/A').replace(' / 10', '');
                 document.getElementById('modal-content-vote').textContent = (seriesData.scored_by || 0).toLocaleString('id-ID') + ' Vote'; 
 
-                // [BARU] Logika untuk mengambil jumlah episode
                 const episodeCountEl = document.getElementById('modal-content-episodes');
-                episodeCountEl.textContent = '... Eps'; // Teks loading
+                episodeCountEl.textContent = '... Eps'; 
                 if (currentSeriesId) {
-                    // Gunakan data yang sudah ada jika tersedia
                     if (seriesData.episodeCount !== undefined) {
                          episodeCountEl.textContent = `${seriesData.episodeCount} Eps`;
                     } else {
-                        // Fallback jika 'episodeCount' tidak ada di data series
                         const episodesCollRef = collection(db, 'series', currentSeriesId, 'episodes');
                         const snapshot = await getDocs(episodesCollRef);
                         episodeCountEl.textContent = `${snapshot.size} Eps`;
@@ -381,9 +411,8 @@
                 modalMainPlayer.src = rawVideoUrl;
                 modalMainPlayer.poster = "https://aisnime.github.io/aisnime/Setting/poster.png"; 
 
-                // Dapatkan progres tontonan dari localStorage
                 const progressData = getWatchProgress(episodeId);
-                const progress = progressData.time; // Ambil properti 'time'
+                const progress = progressData.time; 
 
                 modalMainPlayer.addEventListener('canplay', () => {
                     if (progress > 0) {
@@ -396,22 +425,34 @@
                      console.error("Video player error:", e, modalMainPlayer.error);
                 }, { once: true });
                 
-                // [BARU] Catat pemutaran video
                 logVideoPlay(currentSeriesId);
 
 
             } catch (error) { console.error("Gagal memuat video:", error); }
         }
 
+        // [DIUBAH] Fungsi renderContent kini menerima semua data, tetapi hanya menampilkan sebagian
         function renderContent(contentToRender) {
             const contentListEl = document.getElementById('content-list');
             if (!contentListEl) return; 
             contentListEl.innerHTML = '';
-            if (contentToRender.length === 0) {
-                contentListEl.innerHTML = '<p class="text-gray-500 col-span-full text-center py-8">Tidak ada konten ditemukan.</p>';
+            
+            // [BARU] Tentukan batas berdasarkan ukuran layar
+            const limit = window.innerWidth < 768 ? MOBILE_LIMIT : DESKTOP_LIMIT;
+            
+            // [BARU] Potong array jika kita tidak sedang menampilkan semua
+            const itemsToRender = isShowingAll ? contentToRender : contentToRender.slice(0, limit);
+            
+            if (itemsToRender.length === 0) {
+                 if (isShowingAll) { // Jika sedang mencari dan tidak ada hasil
+                    contentListEl.innerHTML = '<p class="text-gray-500 col-span-full text-center py-8">Tidak ada konten ditemukan.</p>';
+                 } else {
+                     contentListEl.innerHTML = '<p class="text-gray-500 col-span-full text-center py-8">Memuat konten...</p>';
+                 }
                 return;
             }
-            contentToRender.forEach(itemData => {
+            
+            itemsToRender.forEach(itemData => {
                 const itemEl = document.createElement('div');
                 itemEl.className = 'content-card bg-gray-800 bg-opacity-50 rounded-lg overflow-hidden shadow-lg transform hover:-translate-y-1';
                 itemEl.innerHTML = `
