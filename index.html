@@ -28,12 +28,11 @@
             </form>
             <main class="main-content-container p-6">
                 <h2 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-3">UPDATE TERBARU</h2>
-                <!-- [DIUBAH] Menggunakan sm:grid-cols-3 untuk semua ukuran layar (kecuali xs) -->
-                <div id="content-list" class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <!-- [DIUBAH] Menggunakan sm:grid-cols-2 untuk semua ukuran layar (kecuali xs) -->
+                <div id="content-list" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     <p id="no-content-message" class="text-gray-500 col-span-full text-center py-8">Memuat konten...</p>
                 </div>
-                <!-- [BARU] Kontainer untuk tombol "Muat Lebih Banyak" -->
-                <div id="load-more-container" class="text-center mt-8"></div>
+                <!-- [DIHAPUS] Kontainer untuk tombol "Muat Lebih Banyak" -->
             </main>
         </div>
     </div>
@@ -127,14 +126,17 @@
         let mainLogoImg, mainTitleText, episodeListModal;
         let episodeBtnMobile, episodeBtnDesktop;
         let allSeriesContent = [];
+        let filteredSeriesContent = []; // [BARU] Untuk menyimpan hasil filter
         var currentSeriesId = null;
         var currentSeriesData = null;
         var currentItem = null;
         
         let saveTimeout; // Untuk debounce simpan durasi
         
-        // [BARU] Variabel untuk paginasi
-        let isShowingAll = false;
+        // [BARU] Variabel untuk infinite scroll
+        let isLoadingMore = false;
+        let isSearching = false;
+        let currentDisplayCount = 0;
         const MOBILE_LIMIT = 8; // 4 baris x 2 kolom
         const DESKTOP_LIMIT = 20; // 10 baris x 2 kolom
 
@@ -205,15 +207,22 @@
         }
 
         function loadInitialContent() {
-            // Kita tetap mengambil semua data untuk fitur pencarian,
-            // tapi kita akan membatasi tampilannya di renderContent
-            const q = query(seriesCollRef, orderBy("updatedAt", "desc"));
+            // [DIUBAH] Hapus orderBy, kita akan sort manual
+            const q = query(seriesCollRef);
             onSnapshot(q, (snapshot) => {
                 allSeriesContent = snapshot.docs.map(doc => ({id: doc.id, data: doc.data()}));
                 
-                isShowingAll = false; // Reset status tampilan
-                renderContent(allSeriesContent); // Render dengan batas
-                setupLoadMoreButton(allSeriesContent.length); // Tampilkan tombol jika perlu
+                // [DIUBAH] Urutkan data secara manual di JavaScript
+                allSeriesContent.sort((a, b) => {
+                    const timeA = (a.data.updatedAt || a.data.createdAt || { toMillis: () => 0 }).toMillis();
+                    const timeB = (b.data.updatedAt || b.data.createdAt || { toMillis: () => 0 }).toMillis();
+                    return timeB - timeA; // Urutkan dari yang terbaru (descending)
+                });
+                
+                filteredSeriesContent = allSeriesContent; // Set data filter awal
+                currentDisplayCount = 0; // Reset hitungan
+                contentListEl.innerHTML = ''; // Kosongkan daftar
+                renderMoreContent(); // Render batch pertama
 
             }, (error) => {
                 console.error("Gagal memuat konten:", error);
@@ -226,27 +235,25 @@
         function setupSearchListener() {
             const searchInput = document.getElementById('search-input');
             const searchForm = document.getElementById('search-form');
-            const loadMoreContainer = document.getElementById('load-more-container');
             
             if (searchInput) {
                 searchInput.addEventListener('input', (e) => {
                     const searchTerm = e.target.value.toLowerCase().trim();
                     
                     if (searchTerm.length > 0) {
-                        // Jika mencari, tampilkan semua hasil
-                        isShowingAll = true; 
-                        const filtered = allSeriesContent.filter(item => 
+                        isSearching = true; // [BARU] Aktifkan mode pencarian
+                        filteredSeriesContent = allSeriesContent.filter(item => 
                             item.data.title.toLowerCase().includes(searchTerm) ||
                             (item.data.genre && item.data.genre.join(', ').toLowerCase().includes(searchTerm))
                         );
-                        renderContent(filtered);
-                        loadMoreContainer.innerHTML = ''; // Sembunyikan tombol saat mencari
                     } else {
-                        // Jika pencarian kosong, kembali ke tampilan terbatas
-                        isShowingAll = false;
-                        renderContent(allSeriesContent);
-                        setupLoadMoreButton(allSeriesContent.length);
+                        isSearching = false; // Matikan mode pencarian
+                        filteredSeriesContent = allSeriesContent;
                     }
+                    // Reset tampilan untuk data baru
+                    currentDisplayCount = 0;
+                    contentListEl.innerHTML = '';
+                    renderMoreContent(); // Render batch pertama dari hasil filter/penuh
                 });
             }
             
@@ -269,26 +276,21 @@
 
             episodeBtnMobile.addEventListener('click', openEpisodeListHandler);
             episodeBtnDesktop.addEventListener('click', openEpisodeListHandler);
+
+            // [BARU] Listener untuk infinite scroll
+            window.addEventListener('scroll', handleScroll);
         }
         
-        // [BARU] Fungsi untuk membuat tombol "Tampilkan Semua"
-        function setupLoadMoreButton(totalItems) {
-            const container = document.getElementById('load-more-container');
-            const limit = window.innerWidth < 768 ? MOBILE_LIMIT : DESKTOP_LIMIT;
+        // [DIHAPUS] Fungsi setupLoadMoreButton() dihapus
 
-            // Hanya tampilkan tombol jika jumlah total item melebihi batas dan kita tidak sedang menampilkan semua
-            if (totalItems > limit && !isShowingAll) {
-                container.innerHTML = `<button id="load-more-btn" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-8 rounded-full transition">
-                                Tampilkan Semua (${totalItems} Serial)
-                               </button>`;
-                
-                document.getElementById('load-more-btn').addEventListener('click', () => {
-                    isShowingAll = true;
-                    renderContent(allSeriesContent);
-                    container.innerHTML = ''; // Sembunyikan tombol setelah diklik
-                });
-            } else {
-                container.innerHTML = ''; // Tidak perlu tombol
+        // [BARU] Fungsi Scroll handler
+        function handleScroll() {
+            // Jangan muat lebih banyak jika sedang mencari atau sudah memuat
+            if (isSearching || isLoadingMore) return;
+
+            // Cek jika sudah scroll dekat ke bawah (500px dari bawah)
+            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
+                renderMoreContent();
             }
         }
 
@@ -431,32 +433,31 @@
             } catch (error) { console.error("Gagal memuat video:", error); }
         }
 
-        // [DIUBAH] Fungsi renderContent kini menerima semua data, tetapi hanya menampilkan sebagian
-        function renderContent(contentToRender) {
-            const contentListEl = document.getElementById('content-list');
-            if (!contentListEl) return; 
-            contentListEl.innerHTML = '';
-            
-            // [BARU] Tentukan batas berdasarkan ukuran layar
+        // [DIUBAH] Fungsi renderContent diubah menjadi renderMoreContent untuk infinite scroll
+        function renderMoreContent() {
+            if (isLoadingMore) return; // Mencegah pemuatan ganda
+            isLoadingMore = true;
+
+            // Tentukan batas berdasarkan data yang sedang ditampilkan (filter atau semua)
+            const dataToRender = isSearching ? filteredSeriesContent : allSeriesContent;
             const limit = window.innerWidth < 768 ? MOBILE_LIMIT : DESKTOP_LIMIT;
             
-            // [BARU] Potong array jika kita tidak sedang menampilkan semua
-            const itemsToRender = isShowingAll ? contentToRender : contentToRender.slice(0, limit);
+            const newItems = dataToRender.slice(currentDisplayCount, currentDisplayCount + limit);
             
-            if (itemsToRender.length === 0) {
-                 if (isShowingAll) { // Jika sedang mencari dan tidak ada hasil
+            if (newItems.length === 0) {
+                if (currentDisplayCount === 0) {
                     contentListEl.innerHTML = '<p class="text-gray-500 col-span-full text-center py-8">Tidak ada konten ditemukan.</p>';
-                 } else {
-                     contentListEl.innerHTML = '<p class="text-gray-500 col-span-full text-center py-8">Memuat konten...</p>';
-                 }
+                }
+                // Jika tidak ada item baru, berarti sudah di akhir. Tidak perlu apa-apa.
+                isLoadingMore = false;
                 return;
             }
             
-            itemsToRender.forEach(itemData => {
+            newItems.forEach(itemData => {
                 const itemEl = document.createElement('div');
                 itemEl.className = 'content-card bg-gray-800 bg-opacity-50 rounded-lg overflow-hidden shadow-lg transform hover:-translate-y-1';
                 itemEl.innerHTML = `
-                    <div class="relative w-full aspect-[2/3] bg-black">
+                    <div class="relative w-full aspect-[7/9] bg-black">
                         <img src="${itemData.data.thumbnailUrl}" alt="${itemData.data.title}" class="w-full h-full object-cover">
                     </div>
                     <div class="p-4 space-y-1 text-left">
@@ -479,6 +480,9 @@
                 itemEl.addEventListener('click', () => openEpisodeList(itemData.id, itemData.data));
                 contentListEl.appendChild(itemEl);
             });
+
+            currentDisplayCount += newItems.length; // Update hitungan
+            isLoadingMore = false; // Buka kunci
         }
         
         // --- FUNGSI BARU UNTUK AUTOSAVE ---
