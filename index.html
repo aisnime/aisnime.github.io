@@ -19,23 +19,92 @@
     <!-- Konten Normal (Awalnya ditampilkan) -->
     <div id="main-content" class="overlay">
         <div class="container mx-auto p-4 lg:p-8">
-            <header class="mb-8 text-center">
-                <img id="main-logo" src="" alt="Logo Aplikasi" class="w-auto h-20 mx-auto mb-4 hidden">
-                <h1 id="main-title-text" class="text-5xl font-extrabold text-white drop-shadow-lg"></h1>
-            </header>
-            <form id="search-form" class="mb-8 max-w-xl mx-auto flex items-center space-x-2">
-                <input type="search" id="search-input" placeholder="Cari berdasarkan judul atau genre..." class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition">
-            </form>
-            <main class="main-content-container p-6">
-                <h2 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-3">UPDATE TERBARU</h2>
-                <!-- [DIUBAH] Menggunakan sm:grid-cols-2 untuk semua ukuran layar (kecuali xs) -->
-                <div id="content-list" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <p id="no-content-message" class="text-gray-500 col-span-full text-center py-8">Memuat konten...</p>
+            
+            <!-- [DIUBAH] Kolom Atas (Header) kini menjadi grid 3-kolom (Poster di kiri, Logo/Search di kanan) -->
+            <div class="lg:grid lg:grid-cols-3 lg:gap-8 lg:items-center mb-8">
+                
+                <!-- [DIUBAH] Kolom Kiri: Poster Landscape (Span 1) -->
+                <div class="hidden lg:block lg:col-span-1">
+                    <div class="aspect-video w-full bg-gray-800 rounded-lg overflow-hidden shadow-lg">
+                        <!-- Menggunakan ID agar bisa diisi dari database/settings nanti -->
+                        <img id="header-poster" src="https://placehold.co/1600x900/1F2937/FFFFFF?text=Poster+Landscape" alt="Header Poster" class="w-full h-full object-cover">
+                    </div>
                 </div>
-                <!-- [DIHAPUS] Kontainer untuk tombol "Muat Lebih Banyak" -->
-            </main>
+
+                <!-- [DIUBAH] Kolom Kanan: Logo dan Pencarian (Span 2) -->
+                <div class="lg:col-span-2"> 
+                    <!-- [DIUBAH] Header kini lg:text-right -->
+                    <header class="text-center lg:text-right mb-4 lg:mb-0 relative">
+                        <!-- [DIUBAH] Logo kini lg:ml-auto dan lg:mx-0 -->
+                        <img id="main-logo" src="" alt="Logo Aplikasi" class="w-auto h-10 mx-auto lg:ml-auto lg:mx-0 mb-4 hidden">
+                        <h1 id="main-title-text" class="text-5xl lg:text-4xl font-extrabold text-white drop-shadow-lg"></h1>
+                        
+                        <!-- Tombol Buka Chat Mobile (posisi tetap, tapi disembunyikan di lg) -->
+                        <button id="open-chat-btn" class="absolute top-0 right-0 p-2 text-white bg-gray-700 bg-opacity-50 rounded-full lg:hidden">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 21l1.949-3.828a9.863 9.863 0 01-1.042-4.172C3.907 7.582 7.94 4 12 4c4.97 0 9 3.582 9 8z"></path></svg>
+                        </button>
+                    </header>
+                    
+                    <!-- Pencarian (sekarang di bawah logo di kanan) -->
+                    <!-- [DIUBAH] Form kini lg:ml-auto dan lg:mr-0 -->
+                    <form id="search-form" class="w-full max-w-xl mx-auto lg:ml-auto lg:mr-0 mt-4 flex items-center space-x-2">
+                        <input type="search" id="search-input" placeholder="Cari berdasarkan judul atau genre..." class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition">
+                    </form>
+                </div>
+
+            </div>
+
+
+            <!-- [BARU] Wrapper untuk layout desktop Grid (Konten + Chat) -->
+            <div class="relative lg:grid lg:grid-cols-3 lg:gap-8">
+                
+                <!-- [DIUBAH] Kolom Kiri: Konten -->
+                <main class="main-content-container p-6 lg:col-span-2">
+                    <h2 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-3">UPDATE TERBARU</h2>
+                    <!-- [DIUBAH] Menggunakan sm:grid-cols-2 untuk semua ukuran layar (kecuali xs) -->
+                    <div id="content-list" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <p id="no-content-message" class="text-gray-500 col-span-full text-center py-8">Memuat konten...</p>
+                    </div>
+                    <!-- [DIHAPUS] Kontainer untuk tombol "Muat Lebih Banyak" -->
+                </main>
+
+                <!-- [DIUBAH] Kolom Kanan: Chat -->
+                <div id="chat-container" class="fixed top-0 right-0 h-full w-80 bg-gray-800 shadow-xl z-50 transform translate-x-full transition-transform duration-300 
+                                                lg:block lg:relative lg:translate-x-0 lg:z-auto lg:w-full lg:col-span-1 lg:sticky lg:top-8" 
+                     style="max-height: 100vh; lg:max-height: calc(100vh - 10rem);"> <!-- [DIUBAH] Sesuaikan tinggi maks -->
+                    
+                    <!-- Wrapper untuk styling (border, bg) dan flex column -->
+                    <div class="bg-gray-800 lg:bg-opacity-50 rounded-lg flex flex-col h-full">
+                        <!-- Header Chat -->
+                        <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0">
+                            <h3 class="font-bold text-white">Chat Publik</h3>
+                            <button id="close-chat-btn" class="text-gray-400 hover:text-white text-2xl lg:hidden">&times;</button>
+                        </div>
+                        
+                        <!-- Area Pesan -->
+                        <div id="chat-messages" class="flex-grow p-4 space-y-3 overflow-y-auto">
+                            <!-- Pesan akan dimuat di sini -->
+                            <p class="text-xs text-gray-500 text-center">Menyambungkan ke chat...</p>
+                        </div>
+                        
+                        <!-- Input Pesan -->
+                        <div class="p-4 border-t border-gray-700 flex-shrink-0">
+                            <form id="chat-form" class="flex space-x-2">
+                                <input type="text" id="chat-input" placeholder="Ketik pesan..." class="flex-1 bg-gray-700 rounded-full py-2 px-4 text-white focus:ring-2 focus:ring-purple-500" autocomplete="off">
+                                <button type="submit" id="chat-send-btn" class="bg-purple-600 hover:bg-purple-700 rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 16.5V3.5a1 1 0 00.894-1.053l-1.48 8.88A1 1 0 0010.894 2.553z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </div>
+
+    <!-- [BARU] Overlay Chat Mobile -->
+    <div id="chat-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
 
     <!-- Tampilan Maintenance (Awalnya disembunyikan) -->
     <div id="maintenance-overlay" class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center text-center bg-gray-900 p-4">
@@ -119,26 +188,31 @@
     <script type="module">
         import { auth, db, seriesCollRef, settingsCollRef } from 'https://aisnime.github.io/firebase-init.js';
         import { signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { collection, query, where, orderBy, onSnapshot, doc, getDoc, getDocs, updateDoc, deleteDoc, setDoc, Timestamp, increment } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        // [DIUBAH] Impor 'limit'
+        import { collection, query, where, orderBy, onSnapshot, doc, getDoc, getDocs, updateDoc, deleteDoc, setDoc, Timestamp, increment, limit } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
         // Deklarasi variabel di scope yang lebih luas
         let contentListEl, videoModal, closeModalBtn, modalMainPlayer;
         let mainLogoImg, mainTitleText, episodeListModal;
         let episodeBtnMobile, episodeBtnDesktop;
         let allSeriesContent = [];
-        let filteredSeriesContent = []; // [BARU] Untuk menyimpan hasil filter
+        let filteredSeriesContent = []; 
         var currentSeriesId = null;
         var currentSeriesData = null;
         var currentItem = null;
         
         let saveTimeout; // Untuk debounce simpan durasi
         
-        // [BARU] Variabel untuk infinite scroll
         let isLoadingMore = false;
         let isSearching = false;
         let currentDisplayCount = 0;
         const MOBILE_LIMIT = 8; // 4 baris x 2 kolom
         const DESKTOP_LIMIT = 20; // 10 baris x 2 kolom
+        
+        // [BARU] Variabel Chat
+        let chatCollRef = null;
+        let currentUserId = null;
+        let chatUnsubscribe = null; // Untuk listener chat
 
         async function main() {
             try {
@@ -154,9 +228,12 @@
                 episodeBtnDesktop = document.getElementById('show-episodes-btn-desktop');
 
                 await signInAnonymously(auth);
+                currentUserId = auth.currentUser?.uid || crypto.randomUUID(); // Dapatkan User ID
+                
                 await loadSettings();
-                setupVideoProgressSaving(); // Siapkan listener untuk autosave
+                setupVideoProgressSaving(); 
                 logPageView(); 
+                setupChat(); // [BARU] Setup chat
             } catch(e) { 
                 console.error("Initialization failed", e);
                 document.body.innerHTML = `<div class="bg-red-900 text-white p-8 rounded-lg shadow-2xl max-w-2xl mx-auto mt-20"><h1 class="text-3xl font-bold mb-4">Koneksi Gagal!</h1><p>Gagal terhubung ke server.</p></div>`;
@@ -168,9 +245,9 @@
                 const urlParams = new URLSearchParams(window.location.search);
                 const accessCode = urlParams.get('code');
 
-                const settingsKeys = ['background', 'mainLogo', 'favicon', 'maintenanceMode'];
+                const settingsKeys = ['background', 'mainLogo', 'favicon', 'maintenanceMode', 'headerPoster']; // [DIUBAH]
                 const promises = settingsKeys.map(key => getDoc(doc(settingsCollRef, key)));
-                const [backgroundSnap, mainLogoSnap, faviconSnap, maintenanceSnap] = await Promise.all(promises);
+                const [backgroundSnap, mainLogoSnap, faviconSnap, maintenanceSnap, headerPosterSnap] = await Promise.all(promises); // [DIUBAH]
 
                 const maintenanceMode = maintenanceSnap.exists() && maintenanceSnap.data().status === 1;
                 const mainContent = document.getElementById('main-content');
@@ -198,6 +275,13 @@
                     if (faviconSnap.exists() && faviconSnap.data().url) {
                         document.getElementById('favicon').href = faviconSnap.data().url;
                     }
+                    
+                    // [BARU] Muat Header Poster
+                    const headerPosterEl = document.getElementById('header-poster');
+                    if (headerPosterEl && headerPosterSnap.exists() && headerPosterSnap.data().url) {
+                        headerPosterEl.src = headerPosterSnap.data().url;
+                    }
+                    
                     loadInitialContent();
                     setupSearchListener();
                     setupEventListeners();
@@ -281,8 +365,6 @@
             window.addEventListener('scroll', handleScroll);
         }
         
-        // [DIHAPUS] Fungsi setupLoadMoreButton() dihapus
-
         // [BARU] Fungsi Scroll handler
         function handleScroll() {
             // Jangan muat lebih banyak jika sedang mencari atau sudah memuat
@@ -587,6 +669,86 @@
             } catch (error) {
                  console.error("Gagal mencatat pemutaran video:", error);
             }
+        }
+        
+        // --- [BARU] FUNGSI CHAT ---
+        function setupChat() {
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            chatCollRef = collection(db, 'artifacts', appId, 'public', 'data', 'chat');
+            
+            const chatContainer = document.getElementById('chat-container');
+            const chatOverlay = document.getElementById('chat-overlay');
+            const openChatBtn = document.getElementById('open-chat-btn');
+            const closeChatBtn = document.getElementById('close-chat-btn');
+            
+            const chatForm = document.getElementById('chat-form');
+            const chatInput = document.getElementById('chat-input');
+            const chatMessagesEl = document.getElementById('chat-messages');
+
+            const toggleChat = (open) => {
+                if (open) {
+                    chatContainer.classList.remove('translate-x-full');
+                    chatOverlay.classList.remove('hidden');
+                } else {
+                    chatContainer.classList.add('translate-x-full');
+                    chatOverlay.classList.add('hidden');
+                }
+            };
+
+            openChatBtn.addEventListener('click', () => toggleChat(true));
+            closeChatBtn.addEventListener('click', () => toggleChat(false));
+            chatOverlay.addEventListener('click', () => toggleChat(false));
+            
+            // Listener untuk kirim pesan
+            chatForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const message = chatInput.value.trim();
+                if (message && currentUserId) {
+                    try {
+                        addDoc(chatCollRef, {
+                            text: message,
+                            userId: currentUserId, // Simpan ID untuk identifikasi
+                            createdAt: Timestamp.now()
+                        });
+                        chatInput.value = '';
+                    } catch (error) {
+                        console.error("Gagal mengirim pesan:", error);
+                    }
+                }
+            });
+            
+            // Listener untuk pesan baru
+            const q = query(chatCollRef, orderBy("createdAt", "desc"), limit(50));
+            
+            if (chatUnsubscribe) chatUnsubscribe(); // Hentikan listener lama jika ada
+            
+            chatUnsubscribe = onSnapshot(q, (snapshot) => {
+                chatMessagesEl.innerHTML = ''; // Kosongkan
+                const messages = [];
+                snapshot.forEach(doc => {
+                    messages.push(doc.data());
+                });
+
+                // Balikkan urutan agar pesan terbaru di bawah
+                messages.reverse().forEach(msg => {
+                    const isMe = msg.userId === currentUserId;
+                    const msgEl = document.createElement('div');
+                    msgEl.className = `flex flex-col ${isMe ? 'items-end' : 'items-start'}`;
+                    
+                    msgEl.innerHTML = `
+                        <span class="text-xs text-gray-400 mb-1 ${isMe ? 'mr-2' : 'ml-2'}">
+                            ${msg.userId.substring(0, 6)}...
+                        </span>
+                        <div class="max-w-[80%] break-words p-3 rounded-lg ${isMe ? 'bg-purple-600 text-white' : 'bg-gray-700 text-white'}">
+                            <p class="text-sm">${msg.text}</p>
+                        </div>
+                    `;
+                    chatMessagesEl.appendChild(msgEl);
+                });
+                
+                // Auto-scroll ke bawah
+                chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+            });
         }
 
         // Menunggu sehingga DOM sedia sebelum menjalankan 'main'
