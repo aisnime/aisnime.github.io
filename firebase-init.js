@@ -1,6 +1,5 @@
 // Impor fungsi-fungsi inti
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAnalytics } from "firebase/analytics";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { 
     getFirestore, 
@@ -31,15 +30,14 @@ const firebaseConfig = {
   projectId: "aisnime",
   storageBucket: "aisnime.firebasestorage.app",
   messagingSenderId: "736632750777",
-  appId: "1:736632750777:web:8756d28d0ffe2698739168",
-  measurementId: "G-1WF1269W5W"
+  appId: "1:736632750777:web:8756d28d0ffe2698739168"
+  // [DIHAPUS] measurementId: "G-1WF1269W5W" // Baris ini menyebabkan error pemuatan modul
 };
 
 // Inisialisasi
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
-const analytics = getAnalytics(app);
 
 // Referensi Koleksi
 const seriesCollRef = firestoreCollection(db, 'series');
