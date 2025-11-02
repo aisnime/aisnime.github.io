@@ -25,7 +25,7 @@
                 
                 <!-- [DIUBAH] Kolom Kiri: Poster Landscape (Span 1) -->
                 <div class="hidden lg:block lg:col-span-1">
-                    <div class="aspect-video w-full bg-gray-800 rounded-lg overflow-hidden shadow-lg">
+                    <div class="aspect-video w-full bg-gray-800 rounded-lg overflow-hidden shadow-lg relative">
                         <!-- [BARU] Wrapper untuk slider -->
                         <div id="header-poster-slider" class="relative w-full h-full">
                             <!-- Poster akan dimasukkan oleh JS di sini -->
@@ -119,9 +119,81 @@
         <p class="text-gray-300 mt-2 max-w-md">Mohon Maaf, Kami sedang melakukan beberapa pembaruan</p>
     </div>
 
-    <!-- [DIHAPUS] MODAL DAFTAR EPISODE -->
-    
-    <!-- [DIHAPUS] MODAL VIDEO -->
+    <!-- [DIKEMBALIKAN] MODAL DAFTAR EPISODE -->
+    <div id="episode-list-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-40">
+        <div class="bg-gray-800 rounded-lg shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col">
+            <div class="p-4 border-b border-gray-700 flex justify-between items-center">
+                <h3 id="episode-list-title" class="text-2xl font-bold">Daftar Episode</h3>
+                <button id="close-episode-list-btn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            <div id="episode-list-container" class="p-4 space-y-3 overflow-y-auto">
+                <!-- Daftar episode akan dimuat oleh watch-module.js -->
+            </div>
+        </div>
+    </div>
+
+    <!-- [DIKEMBALIKAN] MODAL VIDEO -->
+    <div id="video-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 hidden z-50">
+       <div class="bg-gray-900 rounded-lg shadow-2xl w-full max-w-6xl relative group flex flex-col lg:flex-row">
+            <button id="close-modal-btn" class="absolute -top-3 -right-3 bg-white text-black rounded-full w-8 h-8 flex items-center justify-center font-bold text-xl z-20">&times;</button>
+            
+            <div class="lg:w-2/3 w-full flex flex-col">
+                <div id="video-container" class="w-full aspect-video bg-black rounded-t-lg lg:rounded-l-lg lg:rounded-tr-none relative">
+                    <!-- [BARU] Ikon Memuat (Loading Icon) -->
+                    <img id="video-loading-icon" src="" alt="Memuat..." class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 animate-pulse hidden z-10">
+                    
+                    <!-- [DIUBAH] Player Utama (HTML5 standar dengan kontrol) -->
+                    <video id="modal-main-player" class="w-full h-full relative z-0" controls controlslist="nodownload" disablepictureinpicture playsinline autoplay muted></video>
+                </div>
+                <!-- Tombol Daftar Episode (Mobile) -->
+                <div class="p-4 lg:hidden">
+                    <button id="show-episodes-btn-mobile" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-md">
+                        Lihat Daftar Episode
+                    </button>
+                </div>
+            </div>
+
+            <div id="modal-content-info" class="p-6 lg:w-1/3 w-full bg-gray-900 rounded-b-lg lg:rounded-r-lg lg:rounded-bl-none flex flex-col">
+                <div class="flex space-x-4 mb-4">
+                    <img id="modal-thumbnail" src="" alt="Thumbnail Serial" class="w-24 h-36 object-cover rounded-md flex-shrink-0 border-2 border-gray-700">
+                    <div class="flex flex-col justify-start">
+                        <h3 id="modal-content-title" class="text-2xl font-bold text-white mb-2">Memuat judul...</h3>
+                        <div class="flex flex-col items-start text-sm text-gray-400 gap-y-2">
+                            <!-- Wrapper baru untuk Rating dan Vote -->
+                            <div class="flex flex-row flex-wrap items-center gap-x-4 gap-y-1">
+                                <!-- Rating -->
+                                <div class="flex items-center space-x-1 text-yellow-400 font-semibold">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                                    <span id="modal-content-rating">N/A</span>
+                                </div>
+                                <!-- Vote (menggantikan Members) -->
+                                <div class="flex items-center space-x-1">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                                    <span id="modal-content-vote">N/A</span>
+                                </div>
+                                <!-- Total Episode -->
+                                <div class="flex items-center space-x-1">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                                    <span id="modal-content-episodes">...</span>
+                                </div>
+                            </div>
+                            <!-- Ikon MAL -->
+                            <div>
+                                <span class="p-1 bg-blue-800 text-white text-xs font-bold rounded">MAL</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p id="modal-content-description" class="text-gray-400 text-sm whitespace-pre-wrap flex-grow">Tidak ada deskripsi.</p>
+                <!-- Tombol Daftar Episode (Desktop) -->
+                <div class="mt-auto pt-4 hidden lg:block">
+                    <button id="show-episodes-btn-desktop" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-md">
+                        Lihat Daftar Episode
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <script type="module">
         // [DIPERBAIKI] Menggunakan path absolut domain baru Anda
@@ -147,6 +219,9 @@
         let chatUnsubscribe = null; // Untuk listener chat
         
         let faviconUrl = ''; // [BARU] Untuk menyimpan URL favicon
+        
+        // [BARU] Variabel untuk melacak status pemuatan modul
+        let isWatchModuleLoaded = false;
 
         async function main() {
             try {
@@ -154,7 +229,7 @@
                 contentListEl = document.getElementById('content-list');
                 mainLogoImg = document.getElementById('main-logo');
                 mainTitleText = document.getElementById('main-title-text');
-
+                
                 await signInAnonymously(auth);
                 currentUserId = auth.currentUser?.uid || crypto.randomUUID(); // Dapatkan User ID
                 
@@ -360,11 +435,59 @@
             }
         }
 
-        // [DIHAPUS] Semua fungsi modal video/episode:
-        // closeVideoModal()
-        // formatDuration()
-        // openEpisodeList()
-        // playVideoInModal()
+        // [BARU] Fungsi untuk memuat modul video secara dinamis
+        async function loadAndShowEpisodeList(seriesId, seriesData) {
+            // Tampilkan status memuat sederhana
+            const msgEl = document.getElementById('no-content-message');
+            msgEl.textContent = "Memuat pemutar video...";
+            
+            if (!isWatchModuleLoaded) {
+                try {
+                    // Impor modul eksternal
+                    // [DIUBAH] Menggunakan URL absolut ke domain Anda
+                    const watchModule = await import('https://aisnime.site/watch-module.js');
+                    
+                    // Inisialisasi modul dengan referensi database
+                    // Kita perlu meneruskan semua referensi dan variabel yang diperlukan
+                    watchModule.initWatchModule({
+                        db,
+                        seriesCollRef,
+                        auth,
+                        faviconUrl,
+                        collection, 
+                        query, 
+                        where, 
+                        orderBy, 
+                        onSnapshot, 
+                        doc, 
+                        getDoc, 
+                        getDocs, 
+                        updateDoc, 
+                        setDoc, 
+                        Timestamp, 
+                        increment, 
+                        limit
+                    });
+                    
+                    isWatchModuleLoaded = true;
+                } catch (error) {
+                    console.error("Gagal memuat watch-module.js:", error);
+                    msgEl.textContent = "Gagal memuat pemutar video. Coba refresh.";
+                    return;
+                }
+            }
+            
+            // Setelah dimuat, panggil fungsi global yang diekspos oleh modul
+            if (window.openEpisodeList) {
+                window.openEpisodeList(seriesId, seriesData);
+            } else {
+                console.error("Fungsi openEpisodeList tidak ditemukan di window.");
+            }
+            
+            // Reset pesan status
+            msgEl.textContent = "Memuat konten...";
+        }
+
 
         // [DIUBAH] Fungsi renderContent diubah menjadi renderMoreContent untuk infinite scroll
         function renderMoreContent() {
@@ -381,43 +504,42 @@
                 if (currentDisplayCount === 0) {
                     contentListEl.innerHTML = '<p class="text-gray-500 col-span-full text-center py-8">Tidak ada konten ditemukan.</p>';
                 }
-                // Jika tidak ada item baru, berarti sudah di akhir. Tidak perlu apa-apa.
                 isLoadingMore = false;
                 return;
             }
             
             newItems.forEach(itemData => {
                 const itemEl = document.createElement('div');
-                itemEl.className = 'content-card bg-gray-800 bg-opacity-50 rounded-lg overflow-hidden shadow-lg transform hover:-translate-y-1';
+                itemEl.className = 'content-card bg-gray-800 bg-opacity-50 rounded-lg overflow-hidden shadow-lg transform hover:-translate-y-1 cursor-pointer';
                 
-                // [DIUBAH] Klik kini mengarahkan ke watch.html
+                // [DIUBAH] Klik kini memicu loadAndShowEpisodeList
                 itemEl.innerHTML = `
-                    <a href="watch.html?id=${itemData.id}">
-                        <div class="relative w-full aspect-[7/9] bg-black">
-                            <img src="${itemData.data.thumbnailUrl}" alt="${itemData.data.title}" class="w-full h-full object-cover">
-                        </div>
-                        <div class="p-4 space-y-1 text-left">
-                            <h4 class="font-semibold text-white leading-tight truncate text-xs" title="${itemData.data.title}">${itemData.data.title}</h4>
-                            <div class="flex items-center justify-between mt-1"> 
-                                <div class="flex items-center text-[9px] text-yellow-400">
-                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                                    <span>${(itemData.data.rating || 'N/A').replace(' / 10', '')}</span>
-                                </div>
-                                
-                                <div class="flex items-center text-[9px] text-gray-400">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
-                                    <span>${(itemData.data.episodeCount || 0)} Eps</span>
-                                </div>
-                                <!-- [BARU] Total Penonton -->
-                                <div class="flex items-center text-[9px] text-gray-400">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                                    <span>${(itemData.data.viewCount || 0).toLocaleString('id-ID')}</span>
-                                </div>
+                    <div class="relative w-full aspect-[7/9] bg-black">
+                        <img src="${itemData.data.thumbnailUrl}" alt="${itemData.data.title}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-4 space-y-1 text-left">
+                        <h4 class="font-semibold text-white leading-tight truncate text-xs" title="${itemData.data.title}">${itemData.data.title}</h4>
+                        <div class="flex items-center justify-between mt-1"> 
+                            <div class="flex items-center text-[9px] text-yellow-400">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                                <span>${(itemData.data.rating || 'N/A').replace(' / 10', '')}</span>
+                            </div>
+                            
+                            <div class="flex items-center text-[9px] text-gray-400">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                                <span>${(itemData.data.episodeCount || 0)} Eps</span>
+                            </div>
+                            <!-- [BARU] Total Penonton -->
+                            <div class="flex items-center text-[9px] text-gray-400">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                                <span>${(itemData.data.viewCount || 0).toLocaleString('id-ID')}</span>
                             </div>
                         </div>
-                    </a>`;
-                // [DIUBAH] Event listener kini di dalam elemen 'a' (anchor)
-                // itemEl.addEventListener('click', () => openEpisodeList(itemData.id, itemData.data));
+                    </div>`;
+                // [DIUBAH] Tambahkan listener klik di sini
+                itemEl.addEventListener('click', () => {
+                    loadAndShowEpisodeList(itemData.id, itemData.data);
+                });
                 contentListEl.appendChild(itemEl);
             });
 
@@ -425,11 +547,6 @@
             isLoadingMore = false; // Buka kunci
         }
         
-        // --- [DIHAPUS] FUNGSI AUTOSAVE (dipindahkan ke watch.html) ---
-        // getWatchProgress()
-        // saveWatchProgress()
-        // setupVideoProgressSaving()
-
         // --- FUNGSI BARU UNTUK VISITOR & VIEWS ---
         
         async function logPageView() {
@@ -447,8 +564,6 @@
                 console.error("Gagal mencatat kunjungan unik:", error);
             }
         }
-        
-        // [DIHAPUS] logVideoPlay() (dipindahkan ke watch.html)
         
         // --- [BARU] FUNGSI CHAT ---
         function setupChat() {
@@ -535,4 +650,5 @@
     </script>
 </body>
 </html>
+
 
