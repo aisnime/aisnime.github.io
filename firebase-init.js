@@ -1,6 +1,4 @@
 // Impor fungsi-fungsi inti
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { 
@@ -40,7 +38,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
-const analytics = getAnalytics(app);
 
 // Referensi Koleksi
 const seriesCollRef = firestoreCollection(db, 'series');
@@ -89,6 +86,4 @@ export {
     arrayRemove,
     addDoc // [DIPERBAIKI]
 };
-
-
 
