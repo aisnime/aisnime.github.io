@@ -236,14 +236,17 @@
     </div>
     
     <script type="module">
-        // [DIPERBAIKI] Menggunakan path absolut domain baru Anda
-        import { auth, db, seriesCollRef, settingsCollRef, addDoc, collection, query, where, orderBy, onSnapshot, doc, getDoc, getDocs, updateDoc, deleteDoc, setDoc, Timestamp, increment, limit } from 'https://aisnime.site/firebase-init.js';
+        // [PERBAIKAN] Hapus seriesCollRef & settingsCollRef dari import, kita akan set di bawah
+        import { auth, db, addDoc, collection, query, where, orderBy, onSnapshot, doc, getDoc, getDocs, updateDoc, deleteDoc, setDoc, Timestamp, increment, limit } from 'https://aisnime.site/firebase-init.js';
         import { signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         
         // [DIHAPUS] Import Firestore yang berlebihan
         
         // Deklarasi variabel di scope yang lebih luas
         let contentListEl, mainLogoImg, mainTitleText;
+        // [PERBAIKAN] Deklarasikan sebagai let agar bisa diubah
+        let seriesCollRef, settingsCollRef; 
+        
         let allSeriesContent = [];
         let filteredSeriesContent = []; 
         
@@ -300,6 +303,11 @@
             // [BARU] Tampilkan loading overlay
             const loadingOverlay = document.getElementById('loading-overlay');
             const loadingFavicon = document.getElementById('loading-favicon');
+            
+            // [PERBAIKAN] Tentukan path yang benar di sini
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            seriesCollRef = collection(db, 'artifacts', appId, 'public', 'data', 'series');
+            settingsCollRef = collection(db, 'artifacts', appId, 'public', 'data', 'settings');
 
             try {
                 const urlParams = new URLSearchParams(window.location.search);
@@ -568,6 +576,7 @@
                     watchModule.initWatchModule({
                         db,
                         seriesCollRef, // [PENTING] Teruskan path yang sudah benar
+                        settingsCollRef, // [PERBAIKAN] Teruskan settingsCollRef juga
                         auth,
                         faviconUrl,
                         collection, 
