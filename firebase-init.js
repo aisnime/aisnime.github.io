@@ -1,4 +1,6 @@
 // Impor fungsi-fungsi inti
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { 
@@ -25,18 +27,20 @@ import {
 // Konfigurasi (Placeholder)
 // GANTI DENGAN KUNCI API ANDA
 const firebaseConfig = {
-    apiKey: "AIza...",
-    authDomain: "PROJECT_ID.firebaseapp.com",
-    projectId: "PROJECT_ID",
-    storageBucket: "PROJECT_ID.appspot.com",
-    messagingSenderId: "SENDER_ID",
-    appId: "APP_ID"
+  apiKey: "AIzaSyBkSf56I0akk5poCZ5t8QI1MNlUvZ8Aiu0",
+  authDomain: "aisnime.firebaseapp.com",
+  projectId: "aisnime",
+  storageBucket: "aisnime.firebasestorage.app",
+  messagingSenderId: "736632750777",
+  appId: "1:736632750777:web:8756d28d0ffe2698739168",
+  measurementId: "G-1WF1269W5W"
 };
 
 // Inisialisasi
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
+const analytics = getAnalytics(app);
 
 // Referensi Koleksi
 const seriesCollRef = firestoreCollection(db, 'series');
