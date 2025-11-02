@@ -1,4 +1,5 @@
 // Impor fungsi-fungsi inti
+import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
@@ -88,5 +89,6 @@ export {
     arrayRemove,
     addDoc // [DIPERBAIKI]
 };
+
 
 
