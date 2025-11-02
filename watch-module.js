@@ -70,8 +70,13 @@ window.openEpisodeList = async (seriesId, seriesData) => {
             episodesList.push({ id: doc.id, data: doc.data() });
         });
 
-        // Sort manual berdasarkan judul (A-Z)
-        episodesList.sort((a, b) => (a.data.title || '').localeCompare(b.data.title || ''));
+        // [DIUBAH] Sort array Z-A (descending) berdasarkan judul
+        episodesList.sort((a, b) => {
+            const titleA = a.data.title || ''; 
+            const titleB = b.data.title || '';
+            // localeCompare dibalik (B vs A) untuk susunan Z-A
+            return titleB.localeCompare(titleA); 
+        });
 
         episodesList.forEach(item => {
             const episode = item.data;
@@ -79,7 +84,7 @@ window.openEpisodeList = async (seriesId, seriesData) => {
             
             const progressData = getWatchProgress(episodeId);
             const isWatched = progressData.watched;
-            const watchedIcon = isWatched
+            const watchedIcon = isWatched 
                 ? `<svg class="w-4 h-4 ml-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`
                 : '';
 
@@ -305,3 +310,4 @@ async function logVideoPlay(seriesId) {
          console.error("Gagal mencatat pemutaran video:", error);
     }
 }
+
