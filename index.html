@@ -22,7 +22,7 @@
     <div id="loading-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-900">
         <!-- [DIUBAH] Menggunakan URL .ico baru Anda -->
         <img id="loading-favicon" src="https://aisnime.site/loading.ico" alt="Memuat..." class="w-16 h-16 rounded-lg animate-pulse">
-        <p class="text-gray-400 mt-4"></p>
+        <p class="text-gray-400 mt-4">Memuat data...</p>
     </div>
 
     <!-- [DIUBAH] Konten Normal (Awalnya disembunyikan) -->
@@ -70,7 +70,7 @@
                     <!-- Pencarian (sekarang di bawah logo di kanan) -->
                     <!-- [DIUBAH] Form kini lg:ml-auto dan lg:mr-0 -->
                     <form id="search-form" class="w-full max-w-xl mx-auto lg:ml-auto lg:mr-0 mt-4 flex items-center space-x-2">
-                        <input type="search" id="search-input" placeholder="Mau nyari judul apa?" class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition">
+                        <input type="search" id="search-input" placeholder="Cari berdasarkan judul atau genre..." class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition">
                     </form>
                 </div>
 
@@ -85,13 +85,13 @@
                     
                     <!-- [BARU] Filter Genre Desktop -->
                     <div id="genre-filter-desktop" class="hidden lg:block mb-6 pb-4 border-b border-gray-700">
-                        <h3 class="text-xl font-semibold mb-3">Genre</h3>
+                        <h3 class="text-xl font-semibold mb-3">Filter Genre</h3>
                         <div id="genre-list-desktop" class="flex flex-wrap gap-2">
                             <!-- Genre buttons will be loaded here -->
                         </div>
                     </div>
                     
-                    <h2 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-3">ANIME</h2>
+                    <h2 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-3">UPDATE TERBARU</h2>
                     <div id="content-list" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <p id="no-content-message" class="text-gray-500 col-span-full text-center py-8">Memuat konten...</p>
                     </div>
@@ -107,7 +107,7 @@
                     <div class="bg-gray-800 lg:bg-opacity-50 rounded-lg flex flex-col h-full">
                         <!-- Header Chat -->
                         <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0">
-                            <h3 class="font-bold text-white">Chat</h3>
+                            <h3 class="font-bold text-white">Chat Publik</h3>
                             <button id="close-chat-btn" class="text-gray-400 hover:text-white text-2xl lg:hidden">&times;</button>
                         </div>
                         
@@ -140,7 +140,7 @@
     <div id="genre-sidebar" class="fixed top-0 left-0 h-full w-72 bg-gray-800 shadow-xl z-50 transform -translate-x-full transition-transform duration-300 flex flex-col">
         <!-- Header -->
         <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0">
-            <h3 class="font-bold text-white">Genre</h3>
+            <h3 class="font-bold text-white">Filter Genre</h3>
             <button id="close-genre-btn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
         </div>
         <!-- Daftar Genre -->
@@ -237,10 +237,10 @@
     
     <script type="module">
         // [DIPERBAIKI] Menggunakan path absolut domain baru Anda
-        import { auth, db, seriesCollRef, settingsCollRef } from 'https://aisnime.site/firebase-init.js';
+        import { auth, db, seriesCollRef, settingsCollRef, addDoc, collection, query, where, orderBy, onSnapshot, doc, getDoc, getDocs, updateDoc, deleteDoc, setDoc, Timestamp, increment, limit } from 'https://aisnime.site/firebase-init.js';
         import { signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        // [DIPERBAIKI] Menambahkan 'addDoc'
-        import { collection, query, where, orderBy, onSnapshot, doc, getDoc, getDocs, updateDoc, deleteDoc, setDoc, Timestamp, increment, limit, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        // [DIHAPUS] Import Firestore yang berlebihan
         
         // Deklarasi variabel di scope yang lebih luas
         let contentListEl, mainLogoImg, mainTitleText;
@@ -452,8 +452,18 @@
         function loadInitialContent() {
             // [DIUBAH] Hapus orderBy, kita akan sort manual
             const q = query(seriesCollRef);
+            
+            // [DEBUG] Tambahkan log untuk path koleksi
+            console.log(`[DEBUG] Listening to Firestore path: ${seriesCollRef.path}`);
+
             onSnapshot(q, (snapshot) => {
+                // [DEBUG] Tambahkan log untuk hasil snapshot
+                console.log(`[DEBUG] Snapshot received. Empty: ${snapshot.empty}. Size: ${snapshot.size}`);
+                
                 allSeriesContent = snapshot.docs.map(doc => ({id: doc.id, data: doc.data()}));
+                
+                // [DEBUG] Tambahkan log untuk jumlah dokumen
+                console.log(`[DEBUG] Total documents found: ${allSeriesContent.length}`);
                 
                 // [DIUBAH] Urutkan data secara manual di JavaScript
                 allSeriesContent.sort((a, b) => {
@@ -557,7 +567,7 @@
                     // Kita perlu meneruskan semua referensi dan variabel yang diperlukan
                     watchModule.initWatchModule({
                         db,
-                        seriesCollRef,
+                        seriesCollRef, // [PENTING] Teruskan path yang sudah benar
                         auth,
                         faviconUrl,
                         collection, 
@@ -578,7 +588,7 @@
                     isWatchModuleLoaded = true;
                 } catch (error) {
                     console.error("Gagal memuat watch-module.js:", error);
-                    // [DIUBAH] Gunakan alert jika gagal memuat modul
+                    // [DIUBAH] Gunakan UI kustom jika gagal memuat modul
                     alert("Gagal memuat pemutar video. Coba refresh halaman.");
                     return;
                 }
@@ -705,6 +715,15 @@
             }
 
             newItems.forEach(itemData => {
+                
+                // [DEBUG] Periksa apakah data penting (title, thumbnail) ada
+                if (!itemData.data.thumbnailUrl || !itemData.data.title) {
+                    console.warn(`[DEBUG] SKIPPING item, missing 'thumbnailUrl' or 'title':`, itemData.id, itemData.data);
+                    return; // Lewati item ini jika data tidak lengkap
+                }
+                console.log(`[DEBUG] Rendering item: ${itemData.data.title}`);
+                // [DEBUG] Akhir blok
+                
                 const itemEl = document.createElement('div');
                 itemEl.className = 'content-card bg-gray-800 bg-opacity-50 rounded-lg overflow-hidden shadow-lg transform hover:-translate-y-1 cursor-pointer';
                 
@@ -723,7 +742,7 @@
                             
                             <div class="flex items-center text-[9px] text-gray-400">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
-                                <span>${(itemData.data.episodeCount || 0)}</span>
+                                <span>${(itemData.data.episodeCount || 0)} Eps</span>
                             </div>
                             <!-- [BARU] Total Penonton -->
                             <div class="flex items-center text-[9px] text-gray-400">
@@ -755,7 +774,8 @@
                 // Gunakan localStorage untuk memastikan pengunjung unik per perangkat
                 const hasVisited = localStorage.getItem('aisnimeVisited');
                 if (!hasVisited) {
-                    const statsRef = doc(db, 'settings', 'analytics');
+                    // [DIPERBAIKI] Path harus menggunakan settingsCollRef
+                    const statsRef = doc(settingsCollRef, 'analytics');
                     await setDoc(statsRef, {
                         uniqueVisitors: increment(1)
                     }, { merge: true });
@@ -784,6 +804,7 @@
         // --- [DIUBAH] FUNGSI CHAT (DENGAN SENSOR) ---
         function setupChat() {
             const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            // [DIPERBAIKI] Path harus menggunakan path publik yang benar
             chatCollRef = collection(db, 'artifacts', appId, 'public', 'data', 'chat');
             
             const chatContainer = document.getElementById('chat-container');
@@ -870,6 +891,4 @@
     </script>
 </body>
 </html>
-
-
 
