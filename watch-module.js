@@ -2,7 +2,8 @@
 // Ia hanya dimuatkan apabila pengguna mengklik kad konten di index.html.
 
 // Variabel global untuk modul ini
-let db, seriesCollRef, auth, faviconUrl;
+// [PERBAIKAN] Tambahkan settingsCollRef
+let db, seriesCollRef, settingsCollRef, auth, faviconUrl;
 let collection, query, where, orderBy, onSnapshot, doc, getDoc, getDocs, updateDoc, setDoc, Timestamp, increment, limit;
 
 let videoModal, closeModalBtn, modalMainPlayer;
@@ -16,6 +17,7 @@ let saveTimeout;
 export function initWatchModule(firebaseRefs) {
     db = firebaseRefs.db;
     seriesCollRef = firebaseRefs.seriesCollRef;
+    settingsCollRef = firebaseRefs.settingsCollRef; // [PERBAIKAN] Terima settingsCollRef
     auth = firebaseRefs.auth;
     faviconUrl = firebaseRefs.faviconUrl;
     
@@ -55,7 +57,8 @@ window.openEpisodeList = async (seriesId, seriesData) => {
     episodeContainer.innerHTML = '<p class="text-gray-400">Memuat episode...</p>';
     episodeListModal.classList.remove('hidden');
 
-    const episodesCollRef = collection(db, 'series', seriesId, 'episodes');
+    // [PERBAIKAN] Gunakan path yang benar dari seriesCollRef
+    const episodesCollRef = collection(db, seriesCollRef.path, seriesId, 'episodes');
     const q = query(episodesCollRef); // Hapus orderBy
 
     onSnapshot(q, (snapshot) => {
@@ -107,12 +110,16 @@ window.openEpisodeList = async (seriesId, seriesData) => {
                     playVideoInModal(seriesData, episode, videoUrl, episodeId);
                     episodeListModal.classList.add('hidden');
                 } else {
-                    alert('Video untuk episode ini tidak tersedia.');
+                    // [PERBAIKAN] Ganti alert()
+                    console.warn('Video untuk episode ini tidak tersedia.');
                 }
             };
             
             episodeContainer.appendChild(episodeEl);
         });
+    }, (error) => { // [PERBAIKAN] Tambahkan penanganan error
+        console.error("Gagal memuat episode:", error);
+        episodeContainer.innerHTML = '<p class="text-red-500">Gagal memuat episode. Coba lagi.</p>';
     });
 }
 
@@ -151,7 +158,8 @@ async function playVideoInModal(seriesData, episodeData, videoUrl, episodeId) {
         currentItem = { ...seriesData, ...episodeData, episodeId: episodeId };
         
         if (!videoUrl) {
-            alert("Gagal memuat video: URL tidak sah.");
+            // [PERBAIKAN] Ganti alert()
+            console.warn("Gagal memuat video: URL tidak sah.");
             return;
         }
 
@@ -231,6 +239,7 @@ function saveWatchProgress() {
     
     const episodeId = currentItem.episodeId;
     const currentTime = modalMainPlayer.currentTime;
+    const duration = modalMainPlayer.duration; // [PERBAIKAN] Dapatkan durasi
     
     if (currentTime < 10) return; 
 
@@ -244,7 +253,8 @@ function saveWatchProgress() {
         let episodeProgress = getWatchProgress(episodeId);
         episodeProgress.time = currentTime;
 
-        if (currentTime >= 900) {
+        // [PERBAIKAN] Tandai ditonton jika lebih dari 95%
+        if (duration && (currentTime / duration > 0.95)) {
             episodeProgress.watched = true;
         }
         
@@ -284,12 +294,14 @@ async function logVideoPlay(seriesId) {
         if (now - lastViewTime > oneHour) {
             console.log(`Mencatat penonton baru untuk serial ${seriesId}.`);
             
-            const seriesRef = doc(db, 'series', seriesId);
+            // [PERBAIKAN] Gunakan path yang benar
+            const seriesRef = doc(db, seriesCollRef.path, seriesId);
             await updateDoc(seriesRef, {
                 viewCount: increment(1)
             });
             
-            const statsRef = doc(db, 'settings', 'analytics');
+            // [PERBAIKAN] Gunakan path yang benar
+            const statsRef = doc(db, settingsCollRef.path, 'analytics');
             await setDoc(statsRef, {
                 totalViews: increment(1)
             }, { merge: true });
