@@ -9,81 +9,70 @@
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="https://i.imgur.com/7b4w4qH.png">
     
-    <!-- [DIUBAH] Menggunakan URL .ico baru Anda -->
     <link rel="icon" id="favicon" href="https://aisnime.site/loading.ico">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css"> 
 </head>
-<body class="bg-gray-900 text-white">
+<body class="bg-gray-900 text-white" style="font-family: 'Inter', sans-serif;">
     
     <!-- [BARU] Loading Overlay -->
     <div id="loading-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-900">
-        <!-- [DIUBAH] Menggunakan URL .ico baru Anda -->
         <img id="loading-favicon" src="https://aisnime.site/loading.ico" alt="Memuat..." class="w-16 h-16 rounded-lg animate-pulse">
         <p class="text-gray-400 mt-4">Memuat data...</p>
     </div>
 
-    <!-- [DIUBAH] Konten Normal (Awalnya disembunyikan) -->
+    <!-- Konten Normal (Awalnya disembunyikan) -->
     <div id="main-content" class="overlay hidden">
         <div class="container mx-auto p-4 lg:p-8">
             
-            <!-- [DIUBAH] Kolom Atas (Header) kini menjadi grid 3-kolom (Poster di kiri, Logo/Search di kanan) -->
+            <!-- Kolom Atas (Header) -->
             <div class="lg:grid lg:grid-cols-3 lg:gap-8 lg:items-center mb-8">
                 
-                <!-- [DIUBAH] Kolom Kiri: Poster Landscape (Span 1) -->
-                <!-- [BARU] Menambahkan ID 'header-poster-wrapper' -->
+                <!-- Kolom Kiri: Poster Landscape -->
                 <div id="header-poster-wrapper" class="hidden lg:block lg:col-span-1">
-                    <!-- [BARU] Menambahkan ID 'poster-bg' -->
                     <div id="poster-bg" class="aspect-video w-full bg-gray-800 rounded-lg overflow-hidden shadow-lg relative">
-                        <!-- [BARU] Wrapper untuk slider -->
                         <div id="header-poster-slider" class="relative w-full h-full">
                             <!-- Poster akan dimasukkan oleh JS di sini -->
                         </div>
-                         <!-- [BARU] Navigasi titik slider -->
                         <div id="slider-dots" class="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-2">
                             <!-- Titik akan dimasukkan oleh JS -->
                         </div>
                     </div>
                 </div>
 
-                <!-- [DIUBAH] Kolom Kanan: Logo dan Pencarian (Span 2) -->
+                <!-- Kolom Kanan: Logo dan Pencarian -->
                 <div class="lg:col-span-2"> 
-                    <!-- [DIUBAH] Header kini lg:text-right -->
                     <header class="text-center lg:text-right mb-4 lg:mb-0 relative">
-                        <!-- [BARU] Tombol Buka Filter Genre Mobile -->
+                        <!-- Tombol Buka Filter Genre Mobile -->
                         <button id="open-genre-btn" class="absolute top-0 left-0 p-2 text-white bg-gray-700 bg-opacity-50 rounded-full lg:hidden">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
                         </button>
 
-                        <!-- [DIUBAH] Logo kini lg:ml-auto dan lg:mx-0 -->
                         <img id="main-logo" src="" alt="Logo Aplikasi" class="w-auto h-10 mx-auto lg:ml-auto lg:mx-0 mb-4 hidden">
                         <h1 id="main-title-text" class="text-5xl lg:text-4xl font-extrabold text-white drop-shadow-lg"></h1>
                         
-                        <!-- Tombol Buka Chat Mobile (posisi tetap, tapi disembunyikan di lg) -->
+                        <!-- Tombol Buka Chat Mobile -->
                         <button id="open-chat-btn" class="absolute top-0 right-0 p-2 text-white bg-gray-700 bg-opacity-50 rounded-full lg:hidden">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 21l1.949-3.828a9.863 9.863 0 01-1.042-4.172C3.907 7.582 7.94 4 12 4c4.97 0 9 3.582 9 8z"></path></svg>
                         </button>
                     </header>
                     
-                    <!-- Pencarian (sekarang di bawah logo di kanan) -->
-                    <!-- [DIUBAH] Form kini lg:ml-auto dan lg:mr-0 -->
+                    <!-- Pencarian -->
                     <form id="search-form" class="w-full max-w-xl mx-auto lg:ml-auto lg:mr-0 mt-4 flex items-center space-x-2">
                         <input type="search" id="search-input" placeholder="Cari berdasarkan judul atau genre..." class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition">
                     </form>
                 </div>
-
             </div>
 
-
-            <!-- [BARU] Wrapper untuk layout desktop Grid (Konten + Chat) -->
+            <!-- Wrapper untuk layout desktop Grid (Konten + Chat) -->
             <div class="relative lg:grid lg:grid-cols-3 lg:gap-8">
                 
-                <!-- [DIUBAH] Kolom Kiri: Konten -->
+                <!-- Kolom Kiri: Konten -->
                 <main class="main-content-container p-6 lg:col-span-2">
                     
-                    <!-- [BARU] Filter Genre Desktop -->
+                    <!-- Filter Genre Desktop -->
                     <div id="genre-filter-desktop" class="hidden lg:block mb-6 pb-4 border-b border-gray-700">
                         <h3 class="text-xl font-semibold mb-3">Filter Genre</h3>
                         <div id="genre-list-desktop" class="flex flex-wrap gap-2">
@@ -95,15 +84,13 @@
                     <div id="content-list" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <p id="no-content-message" class="text-gray-500 col-span-full text-center py-8">Memuat konten...</p>
                     </div>
-                    <!-- [DIHAPUS] Kontainer untuk tombol "Muat Lebih Banyak" -->
                 </main>
 
-                <!-- [DIUBAH] Kolom Kanan: Chat -->
+                <!-- Kolom Kanan: Chat -->
                 <div id="chat-container" class="fixed top-0 right-0 h-full w-80 bg-gray-800 shadow-xl z-50 transform translate-x-full transition-transform duration-300 
                                                 lg:block lg:relative lg:translate-x-0 lg:z-auto lg:w-full lg:col-span-1 lg:sticky lg:top-8" 
-                     style="max-height: 100vh; lg:max-height: calc(100vh - 10rem);"> <!-- [DIUBAH] Sesuaikan tinggi maks -->
+                     style="max-height: 100vh; lg:max-height: calc(100vh - 10rem);">
                     
-                    <!-- Wrapper untuk styling (border, bg) dan flex column -->
                     <div class="bg-gray-800 lg:bg-opacity-50 rounded-lg flex flex-col h-full">
                         <!-- Header Chat -->
                         <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0">
@@ -113,7 +100,6 @@
                         
                         <!-- Area Pesan -->
                         <div id="chat-messages" class="flex-grow p-4 space-y-3 overflow-y-auto">
-                            <!-- Pesan akan dimuat di sini -->
                             <p class="text-xs text-gray-500 text-center">Menyambungkan ke chat...</p>
                         </div>
                         
@@ -128,15 +114,14 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 
-    <!-- [BARU] Overlay Chat Mobile -->
+    <!-- Overlay Chat Mobile -->
     <div id="chat-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
     
-    <!-- [BARU] Sidebar Genre Mobile -->
+    <!-- Sidebar Genre Mobile -->
     <div id="genre-sidebar" class="fixed top-0 left-0 h-full w-72 bg-gray-800 shadow-xl z-50 transform -translate-x-full transition-transform duration-300 flex flex-col">
         <!-- Header -->
         <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0">
@@ -148,7 +133,7 @@
             <!-- Genre buttons will be loaded here -->
         </div>
     </div>
-    <!-- [BARU] Overlay Genre Mobile -->
+    <!-- Overlay Genre Mobile -->
     <div id="genre-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
 
 
@@ -159,7 +144,7 @@
         <p class="text-gray-300 mt-2 max-w-md">Mohon Maaf, Kami sedang melakukan beberapa pembaruan</p>
     </div>
 
-    <!-- [DIKEMBALIKAN] MODAL DAFTAR EPISODE -->
+    <!-- MODAL DAFTAR EPISODE -->
     <div id="episode-list-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-40">
         <div class="bg-gray-800 rounded-lg shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col">
             <div class="p-4 border-b border-gray-700 flex justify-between items-center">
@@ -172,20 +157,16 @@
         </div>
     </div>
 
-    <!-- [DIKEMBALIKAN] MODAL VIDEO -->
+    <!-- MODAL VIDEO -->
     <div id="video-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 hidden z-50">
        <div class="bg-gray-900 rounded-lg shadow-2xl w-full max-w-6xl relative group flex flex-col lg:flex-row">
             <button id="close-modal-btn" class="absolute -top-3 -right-3 bg-white text-black rounded-full w-8 h-8 flex items-center justify-center font-bold text-xl z-20">&times;</button>
             
             <div class="lg:w-2/3 w-full flex flex-col">
                 <div id="video-container" class="w-full aspect-video bg-black rounded-t-lg lg:rounded-l-lg lg:rounded-tr-none relative">
-                    <!-- [BARU] Ikon Memuat (Loading Icon) -->
                     <img id="video-loading-icon" src="" alt="Memuat..." class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 animate-pulse hidden z-10">
-                    
-                    <!-- [DIUBAH] Player Utama (HTML5 standar dengan kontrol) -->
                     <video id="modal-main-player" class="w-full h-full relative z-0" controls controlslist="nodownload" disablepictureinpicture playsinline autoplay muted></video>
                 </div>
-                <!-- Tombol Daftar Episode (Mobile) -->
                 <div class="p-4 lg:hidden">
                     <button id="show-episodes-btn-mobile" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-md">
                         Lihat Daftar Episode
@@ -199,14 +180,13 @@
                     <div class="flex flex-col justify-start">
                         <h3 id="modal-content-title" class="text-2xl font-bold text-white mb-2">Memuat judul...</h3>
                         <div class="flex flex-col items-start text-sm text-gray-400 gap-y-2">
-                            <!-- Wrapper baru untuk Rating dan Vote -->
                             <div class="flex flex-row flex-wrap items-center gap-x-4 gap-y-1">
                                 <!-- Rating -->
                                 <div class="flex items-center space-x-1 text-yellow-400 font-semibold">
                                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
                                     <span id="modal-content-rating">N/A</span>
                                 </div>
-                                <!-- Vote (menggantikan Members) -->
+                                <!-- Vote -->
                                 <div class="flex items-center space-x-1">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
                                     <span id="modal-content-vote">N/A</span>
@@ -225,7 +205,6 @@
                     </div>
                 </div>
                 <p id="modal-content-description" class="text-gray-400 text-sm whitespace-pre-wrap flex-grow">Tidak ada deskripsi.</p>
-                <!-- Tombol Daftar Episode (Desktop) -->
                 <div class="mt-auto pt-4 hidden lg:block">
                     <button id="show-episodes-btn-desktop" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-md">
                         Lihat Daftar Episode
@@ -235,51 +214,73 @@
         </div>
     </div>
     
+    <!-- [DIHAPUS] Log Progres di Layar -->
+    <!-- <div id="log-container" ... > ... </div> -->
+
+    
     <script type="module">
-        // [PERBAIKAN] Hapus seriesCollRef & settingsCollRef dari import, kita akan set di bawah
-        import { auth, db, addDoc, collection, query, where, orderBy, onSnapshot, doc, getDoc, getDocs, updateDoc, deleteDoc, setDoc, Timestamp, increment, limit } from 'https://aisnime.site/firebase-init.js';
-        import { signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        // --- Firebase Config ---
+        const firebaseConfig = {
+          apiKey: "AIzaSyBkSf56I0akk5poCZ5t8QI1MNlUvZ8Aiu0",
+          authDomain: "aisnime.firebaseapp.com",
+          projectId: "aisnime",
+          storageBucket: "aisnime.firebasestorage.app",
+          messagingSenderId: "736632750777",
+          appId: "1:736632750777:web:8756d28d0ffe2698739168"
+        };
         
-        // [DIHAPUS] Import Firestore yang berlebihan
+        // --- Firebase Imports ---
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js"; 
+        import { 
+            getFirestore, collection, query, where, orderBy, onSnapshot, 
+            doc, getDoc, getDocs, updateDoc, deleteDoc, setDoc, 
+            Timestamp, increment, limit, addDoc
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
-        // Deklarasi variabel di scope yang lebih luas
+        // --- Firebase Init ---
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        // --- Collection Refs ---
+        const seriesCollRef = collection(db, 'series'); 
+        const settingsCollRef = collection(db, 'settings');
+        
+        // Deklarasi variabel
         let contentListEl, mainLogoImg, mainTitleText;
-        // [PERBAIKAN] Deklarasikan sebagai let agar bisa diubah
-        let seriesCollRef, settingsCollRef; 
-        
         let allSeriesContent = [];
         let filteredSeriesContent = []; 
-        
         let isLoadingMore = false;
         let isSearching = false;
         let currentDisplayCount = 0;
-        const MOBILE_LIMIT = 8; // 4 baris x 2 kolom
-        const DESKTOP_LIMIT = 20; // 10 baris x 2 kolom
-        
-        // [BARU] Variabel Chat & Sensor
+        const MOBILE_LIMIT = 8;
+        const DESKTOP_LIMIT = 20;
         let chatCollRef = null;
         let currentUserId = null;
         let chatUnsubscribe = null; 
-        let blockedWordsList = []; // [BARU]
-        
-        let faviconUrl = ''; // [BARU] Untuk menyimpan URL favicon
-        
-        // [BARU] Variabel untuk melacak status pemuatan modul
+        let blockedWordsList = [];
+        let faviconUrl = '';
         let isWatchModuleLoaded = false;
-        
-        // [BARU] Variabel Sidebar Genre
         let genreSidebar, genreOverlay, openGenreBtn, closeGenreBtn, genreListMobile, genreListDesktop;
         let allGenres = new Set();
         let activeGenre = 'All';
 
+        // --- [DIHAPUS] Fungsi Log di Layar ---
+        // const logContent = document.getElementById('log-content');
+        // const clearLogBtn = document.getElementById('clear-log-btn');
+        // function logToPage(message, type = 'info') { ... }
+        // if (clearLogBtn) { ... }
+        // --- Akhir Fungsi Log ---
+
+
         async function main() {
             try {
-                // Inisialisasi variabel elemen DOM
+                // logToPage("Memulai inisialisasi..."); // [LOG]
+                
                 contentListEl = document.getElementById('content-list');
                 mainLogoImg = document.getElementById('main-logo');
                 mainTitleText = document.getElementById('main-title-text');
-                
-                // [BARU] Inisialisasi DOM Genre
                 genreSidebar = document.getElementById('genre-sidebar');
                 genreOverlay = document.getElementById('genre-overlay');
                 openGenreBtn = document.getElementById('open-genre-btn');
@@ -287,48 +288,57 @@
                 genreListMobile = document.getElementById('genre-list-mobile');
                 genreListDesktop = document.getElementById('genre-list-desktop');
 
-                await signInAnonymously(auth);
-                currentUserId = auth.currentUser?.uid || crypto.randomUUID(); // Dapatkan User ID
+                // --- Firebase Auth ---
+                try {
+                    // logToPage("Mencoba autentikasi anonim..."); // [LOG]
+                    await signInAnonymously(auth);
+                    // logToPage("Autentikasi berhasil.", 'success'); // [LOG]
+                } catch (authError) {
+                    // logToPage(`Autentikasi Gagal: ${authError.message}`, 'error'); // [LOG]
+                    console.error(`Autentikasi Gagal: ${authError.message}`); // [DIKEMBALIKAN]
+                    const loadingMsg = document.getElementById('loading-overlay').querySelector('p');
+                    loadingMsg.textContent = "Gagal terhubung ke server autentikasi. Pastikan domain ini telah diizinkan di Firebase Auth.";
+                    loadingMsg.classList.add("text-red-500", "p-4");
+                    return; 
+                }
+                currentUserId = auth.currentUser?.uid || crypto.randomUUID();
                 
                 await loadSettings();
                 logPageView(); 
                 setupChat(); 
             } catch(e) { 
-                console.error("Initialization failed", e);
+                // logToPage(`Initialization failed: ${e.message}`, 'error'); // [LOG]
+                console.error(`Initialization failed: ${e.message}`); // [DIKEMBALIKAN]
                 document.body.innerHTML = `<div class="bg-red-900 text-white p-8 rounded-lg shadow-2xl max-w-2xl mx-auto mt-20"><h1 class="text-3xl font-bold mb-4">Koneksi Gagal!</h1><p>Gagal terhubung ke server.</p></div>`;
             }
         }
 
         async function loadSettings() {
-            // [BARU] Tampilkan loading overlay
             const loadingOverlay = document.getElementById('loading-overlay');
             const loadingFavicon = document.getElementById('loading-favicon');
-            
-            // [PERBAIKAN] Tentukan path yang benar di sini
-            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-            seriesCollRef = collection(db, 'artifacts', appId, 'public', 'data', 'series');
-            settingsCollRef = collection(db, 'artifacts', appId, 'public', 'data', 'settings');
 
             try {
+                // logToPage(`Mencoba memuat pengaturan dari: ${settingsCollRef.path}`); // [LOG]
+
                 const urlParams = new URLSearchParams(window.location.search);
                 const accessCode = urlParams.get('code');
 
-                // [DIUBAH] Ambil favicon DULU
                 const faviconSnap = await getDoc(doc(settingsCollRef, 'favicon'));
                 if (faviconSnap.exists() && faviconSnap.data().url) {
                     faviconUrl = faviconSnap.data().url;
-                    // [DIUBAH] Hanya set href, biarkan src di loading-favicon
                     document.getElementById('favicon').href = faviconUrl; 
-                    loadingFavicon.src = faviconUrl; // Set loading icon
+                    loadingFavicon.src = faviconUrl;
                 }
                 
                 const settingsKeys = ['background', 'mainLogo', 'maintenanceMode', 'headerPosters', 'censorship'];
                 const promises = settingsKeys.map(key => getDoc(doc(settingsCollRef, key)));
                 const [backgroundSnap, mainLogoSnap, maintenanceSnap, headerPostersSnap, censorSnap] = await Promise.all(promises);
+                
+                // logToPage("Pengaturan dasar (logo, bg, dll) berhasil dimuat.", 'success'); // [LOG]
 
-                // [BARU] Muat daftar sensor
                 if (censorSnap.exists() && censorSnap.data().blockedWords) {
                     blockedWordsList = censorSnap.data().blockedWords;
+                    // logToPage(`Memuat ${blockedWordsList.length} kata sensor.`); // [LOG]
                 }
 
                 const maintenanceMode = maintenanceSnap.exists() && maintenanceSnap.data().status === 1;
@@ -337,6 +347,9 @@
 
                 if (backgroundSnap.exists() && backgroundSnap.data().url) {
                     document.body.style.backgroundImage = `url('${backgroundSnap.data().url}')`;
+                    document.body.style.backgroundSize = 'cover';
+                    document.body.style.backgroundPosition = 'center';
+                    document.body.style.backgroundAttachment = 'fixed';
                 }
 
                 if (maintenanceMode && accessCode !== '3396') {
@@ -345,38 +358,43 @@
                     if (faviconSnap.exists() && faviconSnap.data().url) {
                         document.getElementById('maintenance-logo').src = faviconSnap.data().url;
                     }
-                    // [BARU] Sembunyikan loading overlay jika maintenance
                     loadingOverlay.classList.add('hidden');
+                    // logToPage("Mode maintenance aktif. Menampilkan halaman maintenance.", 'warn'); // [LOG]
                 } else {
-                    // mainContent.classList.remove('hidden'); // [DIUBAH] Tunda ini
                     maintenanceOverlay.classList.add('hidden');
                     
                     if (mainLogoImg && mainLogoSnap.exists() && mainLogoSnap.data().url) {
                         mainLogoImg.src = mainLogoSnap.data().url;
                         mainLogoImg.classList.remove('hidden');
                         mainTitleText.classList.add('hidden');
+                        // [LOG BARU] Konfirmasi logo dimuat
+                        // logToPage("Logo utama berhasil dimuat dari database.", 'success'); 
+                    } else {
+                        mainTitleText.textContent = "AISNIME"; 
+                        mainTitleText.classList.remove('hidden');
+                        mainLogoImg.classList.add('hidden');
+                        // [LOG DIPERBAIKI] Tampilkan status snapshot
+                        // logToPage(`Logo utama tidak ditemukan. Snap exists: ${mainLogoSnap.exists()}`, 'warn'); 
                     }
                     
-                    // [DIUBAH] Muat Header Poster (Slider)
                     const sliderContainer = document.getElementById('header-poster-slider');
                     const dotsContainer = document.getElementById('slider-dots');
-                    const posterWrapper = document.getElementById('header-poster-wrapper'); // [BARU]
-                    const posterBg = document.getElementById('poster-bg'); // [BARU]
+                    const posterWrapper = document.getElementById('header-poster-wrapper');
+                    const posterBg = document.getElementById('poster-bg');
 
                     if (sliderContainer && headerPostersSnap.exists() && headerPostersSnap.data().urls && headerPostersSnap.data().urls.length > 0) {
                         const posters = headerPostersSnap.data().urls;
-                        sliderContainer.innerHTML = ''; // Kosongkan placeholder
-                        dotsContainer.innerHTML = ''; // Kosongkan titik
+                        // logToPage(`Memuat ${posters.length} poster header.`); // [LOG]
+                        sliderContainer.innerHTML = '';
+                        dotsContainer.innerHTML = '';
 
                         posters.forEach((url, index) => {
-                            // Tambah gambar poster
                             const img = document.createElement('img');
                             img.src = url;
                             img.alt = `Header Poster ${index + 1}`;
                             img.className = `header-poster-img absolute w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${index === 0 ? 'opacity-100' : 'opacity-0'}`;
                             sliderContainer.appendChild(img);
                             
-                            // Tambah titik navigasi
                             const dot = document.createElement('div');
                             dot.className = `slider-dot w-2 h-2 rounded-full cursor-pointer ${index === 0 ? 'bg-white' : 'bg-gray-500'}`;
                             dot.dataset.index = index;
@@ -384,11 +402,9 @@
                         });
                         
                         startHeaderSlider(posters.length);
-                        // [DIUBAH] Pastikan wrapper terlihat, tapi biarkan bg
                         if (posterWrapper) posterWrapper.classList.remove('hidden');
-
                     } else if (sliderContainer) {
-                        // [DIUBAH] Jangan sembunyikan wrapper, tapi buat BG transparan
+                        // logToPage("Tidak ada poster header ditemukan.", 'warn'); // [LOG]
                          if (posterWrapper && posterBg) {
                             posterBg.classList.remove('bg-gray-800', 'shadow-lg');
                             posterBg.classList.add('bg-transparent');
@@ -399,24 +415,24 @@
                     setupSearchListener();
                     setupEventListeners(); 
                     
-                    // [BARU] SEMBUNYIKAN LOADING DAN TAMPILKAN KONTEN
                     loadingOverlay.classList.add('hidden');
                     mainContent.classList.remove('hidden');
+                    // logToPage("Inisialisasi selesai. Menampilkan konten.", 'success'); // [LOG]
                 }
 
             } catch (error) { 
-                console.error("Gagal memuat pengaturan:", error); 
+                // logToPage(`Gagal memuat pengaturan: ${error.message}`, 'error'); // [LOG]
+                console.error(`Gagal memuat pengaturan: ${error.message}`); // [DIKEMBALIKAN]
                 loadingFavicon.src = 'https://placehold.co/64x64/ef4444/FFFFFF?text=Error';
                 loadingFavicon.classList.remove('animate-pulse');
-                document.getElementById('loading-overlay').textContent = "Gagal memuat pengaturan. Coba refresh.";
+                document.getElementById('loading-overlay').querySelector('p').textContent = "Gagal memuat pengaturan. Coba refresh.";
             }
         }
         
-        // [BARU] Fungsi untuk slider poster header
         let currentSlideIndex = 0;
         let slideInterval;
         function startHeaderSlider(totalSlides) {
-            if (totalSlides <= 1) return; // Jangan jalankan slider jika hanya 1 gambar
+            if (totalSlides <= 1) return; 
             
             const images = document.querySelectorAll('.header-poster-img');
             const dots = document.querySelectorAll('.slider-dot');
@@ -433,20 +449,17 @@
                 currentSlideIndex = index;
             };
 
-            // Hentikan interval lama jika ada
             if (slideInterval) clearInterval(slideInterval);
             
             slideInterval = setInterval(() => {
                 let nextIndex = (currentSlideIndex + 1) % totalSlides;
                 showSlide(nextIndex);
-            }, 5000); // Ganti slide setiap 5 detik
+            }, 5000);
 
-            // (Opsional) Klik titik untuk ganti slide
             dots.forEach(dot => {
                 dot.addEventListener('click', (e) => {
                     const index = parseInt(e.target.dataset.index, 10);
                     showSlide(index);
-                    // Reset interval
                     clearInterval(slideInterval);
                     slideInterval = setInterval(() => {
                         let nextIndex = (currentSlideIndex + 1) % totalSlides;
@@ -458,36 +471,28 @@
 
 
         function loadInitialContent() {
-            // [DIUBAH] Hapus orderBy, kita akan sort manual
             const q = query(seriesCollRef);
+            // logToPage(`Mendengarkan data dari: ${seriesCollRef.path}`); // [LOG]
             
-            // [DEBUG] Tambahkan log untuk path koleksi
-            console.log(`[DEBUG] Listening to Firestore path: ${seriesCollRef.path}`);
-
             onSnapshot(q, (snapshot) => {
-                // [DEBUG] Tambahkan log untuk hasil snapshot
-                console.log(`[DEBUG] Snapshot received. Empty: ${snapshot.empty}. Size: ${snapshot.size}`);
-                
+                // logToPage(`Data diterima, total dokumen: ${snapshot.size}`, 'success'); // [LOG]
                 allSeriesContent = snapshot.docs.map(doc => ({id: doc.id, data: doc.data()}));
                 
-                // [DEBUG] Tambahkan log untuk jumlah dokumen
-                console.log(`[DEBUG] Total documents found: ${allSeriesContent.length}`);
-                
-                // [DIUBAH] Urutkan data secara manual di JavaScript
                 allSeriesContent.sort((a, b) => {
                     const timeA = (a.data.updatedAt || a.data.createdAt || { toMillis: () => 0 }).toMillis();
                     const timeB = (b.data.updatedAt || b.data.createdAt || { toMillis: () => 0 }).toMillis();
-                    return timeB - timeA; // Urutkan dari yang terbaru (descending)
+                    return timeB - timeA;
                 });
                 
-                filteredSeriesContent = allSeriesContent; // Set data filter awal
-                currentDisplayCount = 0; // Reset hitungan
-                contentListEl.innerHTML = ''; // Kosongkan daftar
-                renderMoreContent(); // Render batch pertama
-                setupGenreFilter(); // [BARU] Panggil setup genre setelah data dimuat
+                filteredSeriesContent = allSeriesContent;
+                currentDisplayCount = 0;
+                contentListEl.innerHTML = '';
+                renderMoreContent();
+                setupGenreFilter();
 
             }, (error) => {
-                console.error("Gagal memuat konten:", error);
+                // logToPage(`Gagal memuat konten dari ${seriesCollRef.path}: ${error.message}`, 'error'); // [LOG]
+                console.error(`Gagal memuat konten dari ${seriesCollRef.path}: ${error.message}`); // [DIKEMBALIKAN]
                 if (contentListEl) {
                     contentListEl.innerHTML = '<p class="text-red-500 col-span-full text-center py-8">Error memuat konten.</p>';
                 }
@@ -503,31 +508,28 @@
                     const searchTerm = e.target.value.toLowerCase().trim();
                     
                     if (searchTerm.length > 0) {
-                        isSearching = true; // [BARU] Aktifkan mode pencarian
+                        isSearching = true;
                         filteredSeriesContent = allSeriesContent.filter(item => 
                             item.data.title.toLowerCase().includes(searchTerm) ||
                             (item.data.genre && item.data.genre.join(', ').toLowerCase().includes(searchTerm))
                         );
                     } else {
-                        isSearching = false; // Matikan mode pencarian
-                        filteredSeriesContent = allSeriesContent;
+                        isSearching = false;
+                        filterContent(activeGenre); 
+                        return;
                     }
-                    // Reset tampilan untuk data baru
                     currentDisplayCount = 0;
                     contentListEl.innerHTML = '';
-                    renderMoreContent(); // Render batch pertama dari hasil filter/penuh
+                    renderMoreContent();
                 });
             }
             
             if (searchForm) searchForm.addEventListener('submit', (e) => e.preventDefault());
         }
 
-        // [DIUBAH] Diringkaskan, hanya untuk scroll
         function setupEventListeners(){
-            // [BARU] Listener untuk infinite scroll
             window.addEventListener('scroll', handleScroll);
             
-            // [BARU] Listener untuk sidebar genre
             const toggleGenreSidebar = (open) => {
                 if (open) {
                     genreSidebar.classList.remove('-translate-x-full');
@@ -542,41 +544,46 @@
             closeGenreBtn.addEventListener('click', () => toggleGenreSidebar(false));
             genreOverlay.addEventListener('click', () => toggleGenreSidebar(false));
 
-            // [BARU] Mematikan (disable) klik kanan di seluruh halaman
             document.body.addEventListener('contextmenu', (e) => {
-                e.preventDefault();
+                // e.preventDefault(); 
             });
         }
         
-        // [BARU] Fungsi Scroll handler
         function handleScroll() {
-            // Jangan muat lebih banyak jika sedang mencari atau sudah memuat
-            if (isSearching || isLoadingMore) return;
-
-            // Cek jika sudah scroll dekat ke bawah (500px dari bawah)
+            if (isSearching || activeGenre !== 'All' || isLoadingMore) return;
             if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
                 renderMoreContent();
             }
         }
 
-        // [BARU] Fungsi untuk memuat modul video secara dinamis
         async function loadAndShowEpisodeList(seriesId, seriesData) {
-            // [DIHAPUS] Baris yang menyebabkan error
-            // const msgEl = document.getElementById('no-content-message'); 
-            // if(msgEl) msgEl.textContent = "Memuat pemutar video...";
+            // logToPage(`Membuka daftar episode untuk: ${seriesData.title}`); // [LOG]
             
             if (!isWatchModuleLoaded) {
+                // logToPage("Modul pemutar (watch-module.js) belum dimuat. Memulai impor..."); // [LOG]
                 try {
-                    // Impor modul eksternal
-                    // [DIUBAH] Menggunakan URL absolut ke domain Anda
-                    const watchModule = await import('https://aisnime.site/watch-module.js');
+                    let watchModule;
+                    try {
+                        watchModule = await import('https://aisnime.site/watch-module.js');
+                    } catch (e1) {
+                        // logToPage("Gagal memuat modul dari domain, mencoba path relatif ./watch-module.js", 'warn'); // [LOG]
+                        console.warn("Gagal memuat modul dari domain, mencoba path relatif ./watch-module.js"); // [DIKEMBALIKAN]
+                        try {
+                            watchModule = await import('./watch-module.js');
+                        } catch (e2) {
+                            // logToPage(`Gagal memuat watch-module.js dari domain DAN path relatif: ${e2.message}`, 'error'); // [LOG]
+                            console.error(`Gagal memuat watch-module.js dari domain DAN path relatif: ${e2.message}`); // [DIKEMBALIKAN]
+                            alert("Gagal memuat pemutar video (Modul tidak ditemukan).");
+                            return;
+                        }
+                    }
                     
-                    // Inisialisasi modul dengan referensi database
-                    // Kita perlu meneruskan semua referensi dan variabel yang diperlukan
+                    // logToPage("Modul pemutar berhasil diimpor.", 'success'); // [LOG]
+                    
                     watchModule.initWatchModule({
                         db,
-                        seriesCollRef, // [PENTING] Teruskan path yang sudah benar
-                        settingsCollRef, // [PERBAIKAN] Teruskan settingsCollRef juga
+                        seriesCollRef,
+                        settingsCollRef,
                         auth,
                         faviconUrl,
                         collection, 
@@ -596,25 +603,22 @@
                     
                     isWatchModuleLoaded = true;
                 } catch (error) {
-                    console.error("Gagal memuat watch-module.js:", error);
-                    // [DIUBAH] Gunakan UI kustom jika gagal memuat modul
+                    // logToPage(`Gagal memuat watch-module.js: ${error.message}`, 'error'); // [LOG]
+                    console.error(`Gagal memuat watch-module.js: ${error.message}`); // [DIKEMBALIKAN]
                     alert("Gagal memuat pemutar video. Coba refresh halaman.");
                     return;
                 }
             }
             
-            // Setelah dimuat, panggil fungsi global yang diekspos oleh modul
             if (window.openEpisodeList) {
+                // logToPage("Menjalankan window.openEpisodeList..."); // [LOG]
                 window.openEpisodeList(seriesId, seriesData);
             } else {
-                console.error("Fungsi openEpisodeList tidak ditemukan di window.");
+                // logToPage("Fungsi openEpisodeList tidak ditemukan di window.", 'error'); // [LOG]
+                console.error("Fungsi openEpisodeList tidak ditemukan di window."); // [DIKEMBALIKAN]
             }
-            
-            // [DIHAPUS] Baris yang menyebabkan error
-            // if(msgEl) msgEl.textContent = "Memuat konten...";
         }
 
-        // [BARU] Fungsi untuk setup filter genre
         function setupGenreFilter() {
             allGenres = new Set();
             allSeriesContent.forEach(item => {
@@ -623,67 +627,59 @@
                 }
             });
 
-            // Kosongkan list
             genreListMobile.innerHTML = '';
             genreListDesktop.innerHTML = '';
-
-            // Buat tombol "All"
             createGenreButton('All');
-
-            // Buat tombol untuk setiap genre unik
             Array.from(allGenres).sort().forEach(genre => {
                 createGenreButton(genre);
             });
-            
-            // Update tampilan tombol aktif
             updateActiveGenreButtons();
         }
         
-        // [BARU] Fungsi untuk membuat tombol genre
         function createGenreButton(genre) {
             const button = document.createElement('button');
             button.textContent = genre;
             button.className = 'genre-btn text-xs font-medium py-1 px-3 rounded-full transition';
             button.dataset.genre = genre;
             
-            // Tambahkan listener
             button.addEventListener('click', () => filterContent(genre));
             
-            // Tambahkan ke kedua list (desktop dan mobile)
             genreListMobile.appendChild(button.cloneNode(true));
             genreListDesktop.appendChild(button.cloneNode(true));
             
-            // Re-tambahkan listener ke versi kloningan (penting!)
             genreListMobile.lastChild.addEventListener('click', () => filterContent(genre));
             genreListDesktop.lastChild.addEventListener('click', () => filterContent(genre));
         }
         
-        // [BARU] Fungsi untuk memfilter konten
         function filterContent(genre) {
-            activeGenre = genre; // Set genre aktif
+            activeGenre = genre;
+            
+            const searchInput = document.getElementById('search-input');
+            if (searchInput.value) {
+                searchInput.value = '';
+            }
             
             if (genre === 'All') {
-                isSearching = false; // Matikan mode filter/pencarian
+                isSearching = false;
                 filteredSeriesContent = allSeriesContent;
+                // logToPage("Filter diubah ke: Semua"); // [LOG]
             } else {
-                isSearching = true; // Aktifkan mode filter
+                isSearching = true;
                 filteredSeriesContent = allSeriesContent.filter(item => 
                     item.data.genre && item.data.genre.includes(genre)
                 );
+                // logToPage(`Filter diubah ke: ${genre}`); // [LOG]
             }
             
-            // Tutup sidebar mobile jika terbuka
             genreSidebar.classList.add('-translate-x-full');
             genreOverlay.classList.add('hidden');
             
-            // Reset tampilan
             currentDisplayCount = 0;
             contentListEl.innerHTML = '';
-            renderMoreContent(); // Render batch pertama dari hasil filter
+            renderMoreContent();
             updateActiveGenreButtons();
         }
         
-        // [BARU] Fungsi untuk update UI tombol genre
         function updateActiveGenreButtons() {
             const allButtons = document.querySelectorAll('.genre-btn');
             allButtons.forEach(btn => {
@@ -698,48 +694,55 @@
         }
 
 
-        // [DIUBAH] Fungsi renderContent diubah menjadi renderMoreContent untuk infinite scroll
         function renderMoreContent() {
-            if (isLoadingMore) return; // Mencegah pemuatan ganda
+            if (isLoadingMore) return;
             isLoadingMore = true;
 
-            // [DIUBAH] Tentukan data berdasarkan filter
             const dataToRender = (isSearching || activeGenre !== 'All') ? filteredSeriesContent : allSeriesContent;
-            const limit = window.innerWidth < 768 ? MOBILE_LIMIT : DESKTOP_LIMIT;
             
-            const newItems = dataToRender.slice(currentDisplayCount, currentDisplayCount + limit);
+            let itemsToLoad;
+            if (isSearching || activeGenre !== 'All') {
+                itemsToLoad = dataToRender;
+                 if (currentDisplayCount > 0) {
+                    isLoadingMore = false;
+                    return;
+                }
+            } else {
+                const limit = window.innerWidth < 768 ? MOBILE_LIMIT : DESKTOP_LIMIT;
+                itemsToLoad = dataToRender.slice(currentDisplayCount, currentDisplayCount + limit);
+            }
             
-            if (newItems.length === 0) {
+            
+            if (itemsToLoad.length === 0) {
                 if (currentDisplayCount === 0) {
                     contentListEl.innerHTML = '<p class="text-gray-500 col-span-full text-center py-8">Tidak ada konten ditemukan.</p>';
+                    // logToPage("Tidak ada konten ditemukan untuk filter saat ini.", 'warn'); // [LOG]
                 }
                 isLoadingMore = false;
                 return;
             }
             
-            // [DIPERBAIKI] Hapus 'no-content-message' jika ada sebelum menambah item
             if (currentDisplayCount === 0) {
                  const msgEl = document.getElementById('no-content-message');
                  if (msgEl) msgEl.remove();
+                 // logToPage(`Merender ${itemsToLoad.length} item...`); // [LOG]
+            } else {
+                 // logToPage(`Merender ${itemsToLoad.length} item berikutnya...`); // [LOG]
             }
 
-            newItems.forEach(itemData => {
-                
-                // [DEBUG] Periksa apakah data penting (title, thumbnail) ada
+            itemsToLoad.forEach(itemData => {
                 if (!itemData.data.thumbnailUrl || !itemData.data.title) {
-                    console.warn(`[DEBUG] SKIPPING item, missing 'thumbnailUrl' or 'title':`, itemData.id, itemData.data);
-                    return; // Lewati item ini jika data tidak lengkap
+                    // logToPage(`MELEWATI item ${itemData.id}, 'thumbnailUrl' atau 'title' hilang.`, 'warn'); // [LOG]
+                    console.warn(`MELEWATI item ${itemData.id}, 'thumbnailUrl' atau 'title' hilang.`); // [DIKEMBALIKAN]
+                    return; 
                 }
-                console.log(`[DEBUG] Rendering item: ${itemData.data.title}`);
-                // [DEBUG] Akhir blok
-                
+
                 const itemEl = document.createElement('div');
-                itemEl.className = 'content-card bg-gray-800 bg-opacity-50 rounded-lg overflow-hidden shadow-lg transform hover:-translate-y-1 cursor-pointer';
+                itemEl.className = 'content-card bg-gray-800 bg-opacity-50 rounded-lg overflow-hidden shadow-lg transform transition-transform duration-200 hover:-translate-y-1 cursor-pointer';
                 
-                // [DIUBAH] Klik kini memicu loadAndShowEpisodeList
                 itemEl.innerHTML = `
                     <div class="relative w-full aspect-[7/9] bg-black">
-                        <img src="${itemData.data.thumbnailUrl}" alt="${itemData.data.title}" class="w-full h-full object-cover">
+                        <img src="${itemData.data.thumbnailUrl}" alt="${itemData.data.title}" class="w-full h-full object-cover" loading="lazy">
                     </div>
                     <div class="p-4 space-y-1 text-left">
                         <h4 class="font-semibold text-white leading-tight truncate text-xs" title="${itemData.data.title}">${itemData.data.title}</h4>
@@ -753,37 +756,28 @@
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
                                 <span>${(itemData.data.episodeCount || 0)} Eps</span>
                             </div>
-                            <!-- [BARU] Total Penonton -->
                             <div class="flex items-center text-[9px] text-gray-400">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                                 <span>${(itemData.data.viewCount || 0).toLocaleString('id-ID')}</span>
                             </div>
                         </div>
                     </div>`;
-                // [DIUBAH] Tambahkan listener klik di sini
                 itemEl.addEventListener('click', () => {
                     loadAndShowEpisodeList(itemData.id, itemData.data);
                 });
                 contentListEl.appendChild(itemEl);
             });
 
-            currentDisplayCount += newItems.length; // Update hitungan
-            isLoadingMore = false; // Buka kunci
+            currentDisplayCount += itemsToLoad.length;
+            isLoadingMore = false;
         }
         
-        // --- [DIHAPUS] FUNGSI AUTOSAVE (dipindahkan ke watch-module.js) ---
-        // getWatchProgress()
-        // saveWatchProgress()
-        // setupVideoProgressSaving()
 
-        // --- FUNGSI BARU UNTUK VISITOR & VIEWS ---
-        
         async function logPageView() {
             try {
-                // Gunakan localStorage untuk memastikan pengunjung unik per perangkat
                 const hasVisited = localStorage.getItem('aisnimeVisited');
                 if (!hasVisited) {
-                    // [DIPERBAIKI] Path harus menggunakan settingsCollRef
+                    // logToPage("Pengunjung unik baru terdeteksi, mencatat..."); // [LOG]
                     const statsRef = doc(settingsCollRef, 'analytics');
                     await setDoc(statsRef, {
                         uniqueVisitors: increment(1)
@@ -791,36 +785,32 @@
                     localStorage.setItem('aisnimeVisited', 'true');
                 }
             } catch (error) {
-                console.error("Gagal mencatat kunjungan unik:", error);
+                // logToPage(`Gagal mencatat kunjungan unik: ${error.message}`, 'error'); // [LOG]
+                console.error(`Gagal mencatat kunjungan unik: ${error.message}`); // [DIKEMBALIKAN]
             }
         }
         
-        // [DIHAPUS] logVideoPlay() (dipindahkan ke watch-module.js)
         
-        // --- [BARU] FUNGSI SENSOR CHAT ---
         function censorMessage(message, blocklist) {
             if (!blocklist || blocklist.length === 0) return message;
             
             let censoredText = message;
             blocklist.forEach(word => {
-                // 'gi' = global (mencari semua) dan 'i' = case-insensitive (tidak peduli huruf besar/kecil)
                 const regex = new RegExp(word, 'gi'); 
                 censoredText = censoredText.replace(regex, (match) => '*'.repeat(match.length));
             });
             return censoredText;
         }
 
-        // --- [DIUBAH] FUNGSI CHAT (DENGAN SENSOR) ---
         function setupChat() {
-            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-            // [DIPERBAIKI] Path harus menggunakan path publik yang benar
-            chatCollRef = collection(db, 'artifacts', appId, 'public', 'data', 'chat');
+            // [DIPERBAIKI] Path diubah ke root agar sesuai dengan database Anda
+            chatCollRef = collection(db, 'chat');
+            // logToPage("Setup chat dimulai..."); // [LOG]
             
             const chatContainer = document.getElementById('chat-container');
             const chatOverlay = document.getElementById('chat-overlay');
             const openChatBtn = document.getElementById('open-chat-btn');
             const closeChatBtn = document.getElementById('close-chat-btn');
-            
             const chatForm = document.getElementById('chat-form');
             const chatInput = document.getElementById('chat-input');
             const chatMessagesEl = document.getElementById('chat-messages');
@@ -839,41 +829,38 @@
             closeChatBtn.addEventListener('click', () => toggleChat(false));
             chatOverlay.addEventListener('click', () => toggleChat(false));
             
-            // Listener untuk kirim pesan
             chatForm.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const message = chatInput.value.trim();
-                
-                // [BARU] Terapkan sensor sebelum mengirim
                 const censoredMessage = censorMessage(message, blockedWordsList);
 
                 if (censoredMessage && currentUserId) {
                     try {
                         addDoc(chatCollRef, {
-                            text: censoredMessage, // [DIUBAH] Kirim pesan yang sudah disensor
-                            userId: currentUserId, // Simpan ID untuk identifikasi
+                            text: censoredMessage,
+                            userId: currentUserId,
                             createdAt: Timestamp.now()
                         });
+                        // logToPage("Pesan chat terkirim."); // [LOG]
                         chatInput.value = '';
                     } catch (error) {
-                        console.error("Gagal mengirim pesan:", error);
+                        // logToPage(`Gagal mengirim pesan chat: ${error.message}`, 'error'); // [LOG]
+                        console.error(`Gagal mengirim pesan chat: ${error.message}`); // [DIKEMBALIKAN]
                     }
                 }
             });
             
-            // Listener untuk pesan baru
-            const q = query(chatCollRef, orderBy("createdAt", "desc"), limit(100)); // [DIUBAH] limit(100)
+            const q = query(chatCollRef, orderBy("createdAt", "desc"), limit(100));
             
-            if (chatUnsubscribe) chatUnsubscribe(); // Hentikan listener lama jika ada
+            if (chatUnsubscribe) chatUnsubscribe();
             
             chatUnsubscribe = onSnapshot(q, (snapshot) => {
-                chatMessagesEl.innerHTML = ''; // Kosongkan
+                chatMessagesEl.innerHTML = '';
                 const messages = [];
                 snapshot.forEach(doc => {
                     messages.push(doc.data());
                 });
 
-                // Balikkan urutan agar pesan terbaru di bawah
                 messages.reverse().forEach(msg => {
                     const isMe = msg.userId === currentUserId;
                     const msgEl = document.createElement('div');
@@ -890,8 +877,11 @@
                     chatMessagesEl.appendChild(msgEl);
                 });
                 
-                // Auto-scroll ke bawah
                 chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+            }, (error) => {
+                // logToPage(`Gagal terhubung ke chat: ${error.message}`, 'error'); // [LOG]
+                console.error(`Gagal terhubung ke chat: ${error.message}`); // [DIKEMBALIKAN]
+                chatMessagesEl.innerHTML = '<p class="text-xs text-red-500 text-center">Gagal terhubung ke chat.</p>';
             });
         }
 
@@ -900,4 +890,6 @@
     </script>
 </body>
 </html>
+
+
 
