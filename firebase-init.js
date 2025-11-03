@@ -1,9 +1,7 @@
-// Import the functions you need from the SDKs you need
+// Impor fungsi-fungsi inti
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAnalytics } from "firebase/analytics";
-
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+// [DIPERBAIKI] Menggunakan path CDN untuk analytics
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { 
     getFirestore, 
@@ -25,8 +23,8 @@ import {
     arrayRemove as firestoreArrayRemove,
     addDoc as firestoreAddDoc // [DIPERBAIKI] Pastikan addDoc diekspor
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+
+// Konfigurasi
 const firebaseConfig = {
   apiKey: "AIzaSyBkSf56I0akk5poCZ5t8QI1MNlUvZ8Aiu0",
   authDomain: "aisnime.firebaseapp.com",
@@ -37,16 +35,19 @@ const firebaseConfig = {
   measurementId: "G-1WF1269W5W"
 };
 
-// Initialize Firebase
+// Inisialisasi
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-
+const db = getFirestore(app);
 const auth = getAuth(app);
 const analytics = getAnalytics(app);
 
+// [DIPERBAIKI] Menambahkan appId untuk path koleksi yang benar
+const appId = typeof __app_id !== 'undefined' ? __app_id : 'aisnime';
+
 // Referensi Koleksi
-const seriesCollRef = firestoreCollection(db, 'series');
-const settingsCollRef = firestoreCollection(db, 'settings');
+// [DIPERBAIKI] Menggunakan path koleksi yang benar
+const seriesCollRef = firestoreCollection(db, 'artifacts', appId, 'public', 'data', 'series');
+const settingsCollRef = firestoreCollection(db, 'artifacts', appId, 'public', 'data', 'settings');
 
 // Ekspor fungsi-fungsi dengan nama yang disingkat (alias)
 const collection = firestoreCollection;
@@ -71,6 +72,7 @@ const addDoc = firestoreAddDoc; // [DIPERBAIKI]
 export { 
     db, 
     auth, 
+    analytics, // [DITAMBAHKAN] Ekspor analytics
     seriesCollRef, 
     settingsCollRef,
     collection, 
