@@ -11,13 +11,14 @@ let episodeListModal;
 let currentSeriesId = null;
 let currentItem = null;
 let saveTimeout;
+let videoDuration = 0; // [BARU] Untuk menyimpan durasi video
 
 // 1. Fungsi Inisialisasi
 // Fungsi ini dipanggil oleh index.html untuk 'menyuntik' referensi database
 export function initWatchModule(firebaseRefs) {
     db = firebaseRefs.db;
     seriesCollRef = firebaseRefs.seriesCollRef;
-    settingsCollRef = firebaseRefs.settingsCollRef; // [PERBAIKAN] Terima settingsCollRef
+    settingsCollRef = firebaseRefs.settingsCollRef; // [PERBAIKAN] Ambil settingsCollRef
     auth = firebaseRefs.auth;
     faviconUrl = firebaseRefs.faviconUrl;
     
@@ -74,7 +75,10 @@ window.openEpisodeList = async (seriesId, seriesData) => {
         });
 
         // Sort manual berdasarkan judul (A-Z)
-        episodesList.sort((a, b) => (a.data.title || '').localeCompare(b.data.title || ''));
+        // [PERBAIKAN] Tambahkan 'numeric: true' untuk sorting nomor episode yang benar
+        episodesList.sort((a, b) => 
+            (a.data.title || '').localeCompare(b.data.title || '', undefined, { numeric: true, sensitivity: 'base' })
+        );
 
         episodesList.forEach(item => {
             const episode = item.data;
@@ -110,16 +114,16 @@ window.openEpisodeList = async (seriesId, seriesData) => {
                     playVideoInModal(seriesData, episode, videoUrl, episodeId);
                     episodeListModal.classList.add('hidden');
                 } else {
-                    // [PERBAIKAN] Ganti alert()
+                    // [DIUBAH] Hapus alert, ganti dengan console.warn
                     console.warn('Video untuk episode ini tidak tersedia.');
                 }
             };
             
             episodeContainer.appendChild(episodeEl);
         });
-    }, (error) => { // [PERBAIKAN] Tambahkan penanganan error
+    }, (error) => { // [BARU] Tambahkan penanganan error
         console.error("Gagal memuat episode:", error);
-        episodeContainer.innerHTML = '<p class="text-red-500">Gagal memuat episode. Coba lagi.</p>';
+        episodeContainer.innerHTML = '<p class="text-red-400">Gagal memuat episode. Cek koneksi atau izin database.</p>';
     });
 }
 
@@ -151,6 +155,7 @@ function closeVideoModal() {
     modalMainPlayer.pause();
     modalMainPlayer.src = '';
     modalMainPlayer.poster = '';
+    videoDuration = 0; // [BARU] Reset durasi
 }
 
 async function playVideoInModal(seriesData, episodeData, videoUrl, episodeId) {
@@ -158,7 +163,7 @@ async function playVideoInModal(seriesData, episodeData, videoUrl, episodeId) {
         currentItem = { ...seriesData, ...episodeData, episodeId: episodeId };
         
         if (!videoUrl) {
-            // [PERBAIKAN] Ganti alert()
+             // [DIUBAH] Hapus alert
             console.warn("Gagal memuat video: URL tidak sah.");
             return;
         }
@@ -170,6 +175,7 @@ async function playVideoInModal(seriesData, episodeData, videoUrl, episodeId) {
         
         modalMainPlayer.style.display = 'none';
         modalMainPlayer.poster = "";
+        videoDuration = 0; // [BARU] Reset durasi
 
         document.getElementById('modal-thumbnail').src = seriesData.thumbnailUrl;
         document.getElementById('modal-content-title').textContent = seriesData.title;
@@ -190,6 +196,11 @@ async function playVideoInModal(seriesData, episodeData, videoUrl, episodeId) {
         const newPlayer = modalMainPlayer.cloneNode(true);
         modalMainPlayer.parentNode.replaceChild(newPlayer, modalMainPlayer);
         modalMainPlayer = newPlayer;
+
+        // [BARU] Listener untuk mendapatkan durasi video
+        modalMainPlayer.addEventListener('loadedmetadata', () => {
+            videoDuration = modalMainPlayer.duration;
+        }, { once: true });
 
         modalMainPlayer.addEventListener('canplay', () => {
             loadingIcon.classList.add('hidden');
@@ -239,7 +250,6 @@ function saveWatchProgress() {
     
     const episodeId = currentItem.episodeId;
     const currentTime = modalMainPlayer.currentTime;
-    const duration = modalMainPlayer.duration; // [PERBAIKAN] Dapatkan durasi
     
     if (currentTime < 10) return; 
 
@@ -253,8 +263,8 @@ function saveWatchProgress() {
         let episodeProgress = getWatchProgress(episodeId);
         episodeProgress.time = currentTime;
 
-        // [PERBAIKAN] Tandai ditonton jika lebih dari 95%
-        if (duration && (currentTime / duration > 0.95)) {
+        // [PERBAIKAN] Tandai 'watched' jika sudah 95% selesai
+        if (videoDuration > 0 && (currentTime / videoDuration) >= 0.95) {
             episodeProgress.watched = true;
         }
         
@@ -294,13 +304,13 @@ async function logVideoPlay(seriesId) {
         if (now - lastViewTime > oneHour) {
             console.log(`Mencatat penonton baru untuk serial ${seriesId}.`);
             
-            // [PERBAIKAN] Gunakan path yang benar
+            // [PERBAIKAN] Gunakan path yang benar dari seriesCollRef
             const seriesRef = doc(db, seriesCollRef.path, seriesId);
             await updateDoc(seriesRef, {
                 viewCount: increment(1)
             });
             
-            // [PERBAIKAN] Gunakan path yang benar
+            // [PERBAIKAN] Gunakan path yang benar dari settingsCollRef
             const statsRef = doc(db, settingsCollRef.path, 'analytics');
             await setDoc(statsRef, {
                 totalViews: increment(1)
