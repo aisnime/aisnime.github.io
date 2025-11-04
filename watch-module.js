@@ -192,7 +192,9 @@ async function playVideoInModal(seriesData, episodeData, videoUrl, episodeId) {
         if (watermarkImg) watermarkImg.classList.remove('hidden'); // [BARU] Tampilkan watermark
         videoModal.classList.remove('hidden');
 
-        const fixedUrl = videoUrl.replace(/(EP)(\d{2})\.(mp4|mkv)/i, '$1 $2.$3');
+        // [DIPERBAIKI] Baris ini sepertinya menyebabkan error jika nama file tidak cocok
+        // const fixedUrl = videoUrl.replace(/(EP)(\d{2})\.(mp4|mkv)/i, '$1 $2.$3');
+        const fixedUrl = videoUrl; // Gunakan URL langsung dari database
         
         modalMainPlayer.src = fixedUrl;
 
@@ -342,4 +344,5 @@ async function logVideoPlay(seriesId) {
          console.error("Gagal mencatat pemutaran video:", error);
     }
 }
+
 
