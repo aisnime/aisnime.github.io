@@ -569,13 +569,14 @@
                 try {
                     let watchModule;
                     try {
-                        watchModule = await import('https://aisnime.site/watch-module.js');
+                        /* [DIUBAH] Mencoba path relatif dulu, lalu domain */
+                        watchModule = await import('./watch-module.js');
                     } catch (e1) {
-                        console.warn("Gagal memuat modul dari domain, mencoba path relatif ./watch-module.js");
+                        console.warn("Gagal memuat modul dari ./watch-module.js, mencoba path domain...", e1);
                         try {
-                            watchModule = await import('./watch-module.js');
+                            watchModule = await import('https://aisnime.site/watch-module.js');
                         } catch (e2) {
-                            console.error(`Gagal memuat watch-module.js dari domain DAN path relatif: ${e2.message}`);
+                            console.error(`Gagal memuat watch-module.js dari path relatif DAN domain: ${e2.message}`);
                             alert("Gagal memuat pemutar video (Modul tidak ditemukan).");
                             return;
                         }
