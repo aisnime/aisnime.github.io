@@ -13,8 +13,9 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- [DIPERBAIKI] Menambahkan ?v=1.1 untuk "cache busting" -->
-    <link rel="stylesheet" href="styles.css?v=1.1"> 
+    
+    <!-- [DIPERBAIKI] Cache bust diperbarui ke v=1.2 -->
+    <link rel="stylesheet" href="styles.css?v=1.2"> 
 </head>
 <body class="bg-gray-900 text-white" style="font-family: 'Inter', sans-serif;">
     
@@ -164,48 +165,29 @@
             <button id="close-modal-btn" class="absolute -top-3 -right-3 bg-white text-black rounded-full w-8 h-8 flex items-center justify-center font-bold text-xl z-20">&times;</button>
             
             <div class="lg:w-2/3 w-full flex flex-col">
-                <!-- [DIUBAH] Kontainer video sekarang memiliki class 'group' untuk 'hover' -->
-                <div id="video-container" class="w-full aspect-video bg-black rounded-t-lg lg:rounded-l-lg lg:rounded-tr-none relative group">
+                <!-- [DIUBAH] group dihapus, #video-container akan ditarget oleh CSS -->
+                <div id="video-container" class="w-full aspect-video bg-black rounded-t-lg lg:rounded-l-lg lg:rounded-tr-none relative">
                     <img id="video-loading-icon" src="" alt="Memuat..." class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 animate-pulse hidden z-10">
                     
-                    <!-- [DIUBAH] Kontrol bawaan dihapus, ditambah event listener klik -->
+                    <!-- [DIUBAH] 'controls' dihapus -->
                     <video id="modal-main-player" class="w-full h-full relative z-0" controlslist="nodownload" disablepictureinpicture playsinline autoplay muted></video>
                     
-                    <!-- Watermark (Dibuat oleh watch-module.js) -->
-                    
                     <!-- [BARU] Kontrol Kustom -->
-                    <div id="custom-controls-container" class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/70 to-transparent p-4 flex items-center space-x-3 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                    <div id="custom-controls-container">
                         <!-- Tombol Play/Pause -->
-                        <button id="play-pause-btn" class="control-btn p-2 text-white">
-                            <!-- Ikon Play (Default) -->
-                            <svg id="play-icon" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
-                            </svg>
-                            <!-- Ikon Pause (Disembunyikan) -->
-                            <svg id="pause-icon" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1H8zm5 0a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1h-1z" clip-rule="evenodd" />
-                            </svg>
+                        <button id="play-pause-btn" class="control-btn">
+                            <svg id="play-icon" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path></svg>
+                            <svg id="pause-icon" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd"></path></svg>
                         </button>
-                        
-                        <!-- Waktu Saat Ini / Total Waktu -->
-                        <span id="time-display" class="text-white text-xs font-mono">0:00 / 0:00</span>
-
                         <!-- Progress Bar -->
-                        <input id="progress-bar" type="range" min="0" max="100" value="0" class="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer range-sm">
-
+                        <input type="range" id="progress-bar" min="0" max="100" value="0">
+                        <!-- Tampilan Waktu -->
+                        <span id="time-display" class="font-mono text-xs">00:00 / 00:00</span>
                         <!-- Tombol Fullscreen -->
-                        <button id="fullscreen-btn" class="control-btn p-2 text-white">
-                            <!-- Ikon Enter Fullscreen (Default) -->
-                            <svg id="fullscreen-enter-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 1v4m0 0h-4m4 0l-5-5" />
-                            </svg>
-                            <!-- Ikon Exit Fullscreen (Disembunyikan) -->
-                            <svg id="fullscreen-exit-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19v-4m0 0h4M15 15l-5-5M9 5v4m0 0H5M9 9l5 5" />
-                            </svg>
+                        <button id="fullscreen-btn" class="control-btn">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1v4m0 0h-4m4-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 1v-4m0 0h-4m4 4l-5-5"></path></svg>
                         </button>
                     </div>
-
                 </div>
                 <div class="p-4 lg:hidden">
                     <button id="show-episodes-btn-mobile" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-md">
@@ -254,6 +236,7 @@
         </div>
     </div>
     
+    
     <script type="module">
         /* --- Firebase Config --- */
         const firebaseConfig = {
@@ -283,7 +266,7 @@
         const seriesCollRef = collection(db, 'series'); 
         const settingsCollRef = collection(db, 'settings');
         
-        // Deklarasi variabel
+        /* Deklarasi variabel */
         let contentListEl, mainLogoImg, mainTitleText;
         let allSeriesContent = [];
         let filteredSeriesContent = []; 
@@ -302,8 +285,10 @@
         let allGenres = new Set();
         let activeGenre = 'All';
 
+
         async function main() {
             try {
+                
                 contentListEl = document.getElementById('content-list');
                 mainLogoImg = document.getElementById('main-logo');
                 mainTitleText = document.getElementById('main-title-text');
@@ -318,7 +303,7 @@
                 try {
                     await signInAnonymously(auth);
                 } catch (authError) {
-                    console.error(`Autentikasi Gagal: ${authError.message}`);
+                    console.error(`Autentikasi Gagal: ${authError.message}`); 
                     const loadingMsg = document.getElementById('loading-overlay').querySelector('p');
                     loadingMsg.textContent = "Gagal terhubung ke server autentikasi. Pastikan domain ini telah diizinkan di Firebase Auth.";
                     loadingMsg.classList.add("text-red-500", "p-4");
@@ -330,7 +315,7 @@
                 logPageView(); 
                 setupChat(); 
             } catch(e) { 
-                console.error(`Initialization failed: ${e.message}`);
+                console.error(`Initialization failed: ${e.message}`); 
                 document.body.innerHTML = `<div class="bg-red-900 text-white p-8 rounded-lg shadow-2xl max-w-2xl mx-auto mt-20"><h1 class="text-3xl font-bold mb-4">Koneksi Gagal!</h1><p>Gagal terhubung ke server.</p></div>`;
             }
         }
@@ -430,7 +415,7 @@
                 }
 
             } catch (error) { 
-                console.error(`Gagal memuat pengaturan: ${error.message}`);
+                console.error(`Gagal memuat pengaturan: ${error.message}`); 
                 loadingFavicon.src = 'https://placehold.co/64x64/ef4444/FFFFFF?text=Error';
                 loadingFavicon.classList.remove('animate-pulse');
                 document.getElementById('loading-overlay').querySelector('p').textContent = "Gagal memuat pengaturan. Coba refresh.";
@@ -497,7 +482,7 @@
                 setupGenreFilter();
 
             }, (error) => {
-                console.error(`Gagal memuat konten dari ${seriesCollRef.path}: ${error.message}`);
+                console.error(`Gagal memuat konten dari ${seriesCollRef.path}: ${error.message}`); 
                 if (contentListEl) {
                     contentListEl.innerHTML = '<p class="text-red-500 col-span-full text-center py-8">Error memuat konten.</p>';
                 }
@@ -549,9 +534,8 @@
             closeGenreBtn.addEventListener('click', () => toggleGenreSidebar(false));
             genreOverlay.addEventListener('click', () => toggleGenreSidebar(false));
 
-            /* Hapus listener 'play'/'pause'/'ended' dari sini, dipindahkan ke watch-module.js */
-            /* const videoContainer = document.getElementById('video-container'); ... */
-
+            /* [DIHAPUS] Listener watermark dipindahkan ke watch-module.js */
+            
             document.body.addEventListener('contextmenu', (e) => {
                 /* e.preventDefault(); */
             });
@@ -570,12 +554,13 @@
                 try {
                     let watchModule;
                     try {
-                        /* [DIUBAH] Mencoba path relatif dulu, lalu domain */
-                        watchModule = await import('./watch-module.js?v=1.1'); /* [BARU] Cache bust */
+                        /* [DIPERBAIKI] Cache bust diperbarui ke v=1.2 */
+                        watchModule = await import('./watch-module.js?v=1.2');
                     } catch (e1) {
                         console.warn("Gagal memuat modul dari ./watch-module.js, mencoba path domain...", e1);
                         try {
-                            watchModule = await import('https://aisnime.site/watch-module.js?v=1.1'); /* [BARU] Cache bust */
+                            /* [DIPERBAIKI] Cache bust diperbarui ke v=1.2 */
+                            watchModule = await import('https://aisnime.site/watch-module.js?v=1.2');
                         } catch (e2) {
                             console.error(`Gagal memuat watch-module.js dari path relatif DAN domain: ${e2.message}`);
                             alert("Gagal memuat pemutar video (Modul tidak ditemukan).");
@@ -606,7 +591,7 @@
                     
                     isWatchModuleLoaded = true;
                 } catch (error) {
-                    console.error(`Gagal memuat watch-module.js: ${error.message}`);
+                    console.error(`Gagal memuat watch-module.js: ${error.message}`); 
                     alert("Gagal memuat pemutar video. Coba refresh halaman.");
                     return;
                 }
@@ -615,7 +600,7 @@
             if (window.openEpisodeList) {
                 window.openEpisodeList(seriesId, seriesData);
             } else {
-                console.error("Fungsi openEpisodeList tidak ditemukan di window.");
+                console.error("Fungsi openEpisodeList tidak ditemukan di window."); 
             }
         }
 
@@ -726,7 +711,7 @@
 
             itemsToLoad.forEach(itemData => {
                 if (!itemData.data.thumbnailUrl || !itemData.data.title) {
-                    console.warn(`MELEWATI item ${itemData.id}, 'thumbnailUrl' atau 'title' hilang.`);
+                    console.warn(`MELEWATI item ${itemData.id}, 'thumbnailUrl' atau 'title' hilang.`); 
                     return; 
                 }
 
@@ -777,7 +762,7 @@
                     localStorage.setItem('aisnimeVisited', 'true');
                 }
             } catch (error) {
-                console.error(`Gagal mencatat kunjungan unik: ${error.message}`);
+                console.error(`Gagal mencatat kunjungan unik: ${error.message}`); 
             }
         }
         
@@ -794,6 +779,7 @@
         }
 
         function setupChat() {
+            /* [DIPERBAIKI] Path diubah ke root agar sesuai dengan database Anda */
             chatCollRef = collection(db, 'chat');
             
             const chatContainer = document.getElementById('chat-container');
@@ -832,7 +818,7 @@
                         });
                         chatInput.value = '';
                     } catch (error) {
-                        console.error(`Gagal mengirim pesan chat: ${error.message}`);
+                        console.error(`Gagal mengirim pesan chat: ${error.message}`); 
                     }
                 }
             });
@@ -866,7 +852,7 @@
                 
                 chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
             }, (error) => {
-                console.error(`Gagal terhubung ke chat: ${error.message}`);
+                console.error(`Gagal terhubung ke chat: ${error.message}`); 
                 chatMessagesEl.innerHTML = '<p class="text-xs text-red-500 text-center">Gagal terhubung ke chat.</p>';
             });
         }
