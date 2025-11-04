@@ -13,7 +13,8 @@
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css"> 
+    <!-- [DIPERBAIKI] Menambahkan ?v=1.1 untuk "cache busting" -->
+    <link rel="stylesheet" href="styles.css?v=1.1"> 
 </head>
 <body class="bg-gray-900 text-white" style="font-family: 'Inter', sans-serif;">
     
@@ -570,11 +571,11 @@
                     let watchModule;
                     try {
                         /* [DIUBAH] Mencoba path relatif dulu, lalu domain */
-                        watchModule = await import('./watch-module.js');
+                        watchModule = await import('./watch-module.js?v=1.1'); /* [BARU] Cache bust */
                     } catch (e1) {
                         console.warn("Gagal memuat modul dari ./watch-module.js, mencoba path domain...", e1);
                         try {
-                            watchModule = await import('https://aisnime.site/watch-module.js');
+                            watchModule = await import('https://aisnime.site/watch-module.js?v=1.1'); /* [BARU] Cache bust */
                         } catch (e2) {
                             console.error(`Gagal memuat watch-module.js dari path relatif DAN domain: ${e2.message}`);
                             alert("Gagal memuat pemutar video (Modul tidak ditemukan).");
