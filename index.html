@@ -17,9 +17,10 @@
 </head>
 <body class="bg-gray-900 text-white" style="font-family: 'Inter', sans-serif;">
     
-    <!-- [BARU] Loading Overlay -->
+    <!-- Loading Overlay -->
     <div id="loading-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-900">
         <img id="loading-favicon" src="https://aisnime.site/loading.ico" alt="Memuat..." class="w-16 h-16 rounded-lg animate-pulse">
+        <p class="text-gray-400 mt-4">Memuat data...</p>
     </div>
 
     <!-- Konten Normal (Awalnya disembunyikan) -->
@@ -60,7 +61,7 @@
                     
                     <!-- Pencarian -->
                     <form id="search-form" class="w-full max-w-xl mx-auto lg:ml-auto lg:mr-0 mt-4 flex items-center space-x-2">
-                        <input type="search" id="search-input" placeholder="Mau nyari judul apa?" class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition">
+                        <input type="search" id="search-input" placeholder="Cari berdasarkan judul atau genre..." class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition">
                     </form>
                 </div>
             </div>
@@ -73,13 +74,13 @@
                     
                     <!-- Filter Genre Desktop -->
                     <div id="genre-filter-desktop" class="hidden lg:block mb-6 pb-4 border-b border-gray-700">
-                        <h3 class="text-xl font-semibold mb-3">Genre</h3>
+                        <h3 class="text-xl font-semibold mb-3">Filter Genre</h3>
                         <div id="genre-list-desktop" class="flex flex-wrap gap-2">
                             <!-- Genre buttons will be loaded here -->
                         </div>
                     </div>
                     
-                    <h2 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-3">ANIME</h2>
+                    <h2 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-3">UPDATE TERBARU</h2>
                     <div id="content-list" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <p id="no-content-message" class="text-gray-500 col-span-full text-center py-8">Memuat konten...</p>
                     </div>
@@ -93,7 +94,7 @@
                     <div class="bg-gray-800 lg:bg-opacity-50 rounded-lg flex flex-col h-full">
                         <!-- Header Chat -->
                         <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0">
-                            <h3 class="font-bold text-white">Chat</h3>
+                            <h3 class="font-bold text-white">Chat Publik</h3>
                             <button id="close-chat-btn" class="text-gray-400 hover:text-white text-2xl lg:hidden">&times;</button>
                         </div>
                         
@@ -162,9 +163,48 @@
             <button id="close-modal-btn" class="absolute -top-3 -right-3 bg-white text-black rounded-full w-8 h-8 flex items-center justify-center font-bold text-xl z-20">&times;</button>
             
             <div class="lg:w-2/3 w-full flex flex-col">
-                <div id="video-container" class="w-full aspect-video bg-black rounded-t-lg lg:rounded-l-lg lg:rounded-tr-none relative">
+                <!-- [DIUBAH] Kontainer video sekarang memiliki class 'group' untuk 'hover' -->
+                <div id="video-container" class="w-full aspect-video bg-black rounded-t-lg lg:rounded-l-lg lg:rounded-tr-none relative group">
                     <img id="video-loading-icon" src="" alt="Memuat..." class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 animate-pulse hidden z-10">
-                    <video id="modal-main-player" class="w-full h-full relative z-0" controls controlslist="nodownload" disablepictureinpicture playsinline autoplay muted></video>
+                    
+                    <!-- [DIUBAH] Kontrol bawaan dihapus, ditambah event listener klik -->
+                    <video id="modal-main-player" class="w-full h-full relative z-0" controlslist="nodownload" disablepictureinpicture playsinline autoplay muted></video>
+                    
+                    <!-- Watermark (Dibuat oleh watch-module.js) -->
+                    
+                    <!-- [BARU] Kontrol Kustom -->
+                    <div id="custom-controls-container" class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-black/70 to-transparent p-4 flex items-center space-x-3 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                        <!-- Tombol Play/Pause -->
+                        <button id="play-pause-btn" class="control-btn p-2 text-white">
+                            <!-- Ikon Play (Default) -->
+                            <svg id="play-icon" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                            </svg>
+                            <!-- Ikon Pause (Disembunyikan) -->
+                            <svg id="pause-icon" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1H8zm5 0a1 1 0 00-1 1v4a1 1 0 001 1h1a1 1 0 001-1V8a1 1 0 00-1-1h-1z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                        
+                        <!-- Waktu Saat Ini / Total Waktu -->
+                        <span id="time-display" class="text-white text-xs font-mono">0:00 / 0:00</span>
+
+                        <!-- Progress Bar -->
+                        <input id="progress-bar" type="range" min="0" max="100" value="0" class="flex-1 h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer range-sm">
+
+                        <!-- Tombol Fullscreen -->
+                        <button id="fullscreen-btn" class="control-btn p-2 text-white">
+                            <!-- Ikon Enter Fullscreen (Default) -->
+                            <svg id="fullscreen-enter-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 1v4m0 0h-4m4 0l-5-5" />
+                            </svg>
+                            <!-- Ikon Exit Fullscreen (Disembunyikan) -->
+                            <svg id="fullscreen-exit-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19v-4m0 0h4M15 15l-5-5M9 5v4m0 0H5M9 9l5 5" />
+                            </svg>
+                        </button>
+                    </div>
+
                 </div>
                 <div class="p-4 lg:hidden">
                     <button id="show-episodes-btn-mobile" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-md">
@@ -213,12 +253,8 @@
         </div>
     </div>
     
-    <!-- [DIHAPUS] Log Progres di Layar -->
-    <!-- <div id="log-container" ... > ... </div> -->
-
-    
     <script type="module">
-        // --- Firebase Config ---
+        /* --- Firebase Config --- */
         const firebaseConfig = {
           apiKey: "AIzaSyBkSf56I0akk5poCZ5t8QI1MNlUvZ8Aiu0",
           authDomain: "aisnime.firebaseapp.com",
@@ -228,7 +264,7 @@
           appId: "1:736632750777:web:8756d28d0ffe2698739168"
         };
         
-        // --- Firebase Imports ---
+        /* --- Firebase Imports --- */
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js"; 
         import { 
@@ -237,12 +273,12 @@
             Timestamp, increment, limit, addDoc
         } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
-        // --- Firebase Init ---
+        /* --- Firebase Init --- */
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
         
-        // --- Collection Refs ---
+        /* --- Collection Refs --- */
         const seriesCollRef = collection(db, 'series'); 
         const settingsCollRef = collection(db, 'settings');
         
@@ -265,18 +301,8 @@
         let allGenres = new Set();
         let activeGenre = 'All';
 
-        // --- [DIHAPUS] Fungsi Log di Layar ---
-        // const logContent = document.getElementById('log-content');
-        // const clearLogBtn = document.getElementById('clear-log-btn');
-        // function logToPage(message, type = 'info') { ... }
-        // if (clearLogBtn) { ... }
-        // --- Akhir Fungsi Log ---
-
-
         async function main() {
             try {
-                // logToPage("Memulai inisialisasi..."); // [LOG]
-                
                 contentListEl = document.getElementById('content-list');
                 mainLogoImg = document.getElementById('main-logo');
                 mainTitleText = document.getElementById('main-title-text');
@@ -287,14 +313,11 @@
                 genreListMobile = document.getElementById('genre-list-mobile');
                 genreListDesktop = document.getElementById('genre-list-desktop');
 
-                // --- Firebase Auth ---
+                /* --- Firebase Auth --- */
                 try {
-                    // logToPage("Mencoba autentikasi anonim..."); // [LOG]
                     await signInAnonymously(auth);
-                    // logToPage("Autentikasi berhasil.", 'success'); // [LOG]
                 } catch (authError) {
-                    // logToPage(`Autentikasi Gagal: ${authError.message}`, 'error'); // [LOG]
-                    console.error(`Autentikasi Gagal: ${authError.message}`); // [DIKEMBALIKAN]
+                    console.error(`Autentikasi Gagal: ${authError.message}`);
                     const loadingMsg = document.getElementById('loading-overlay').querySelector('p');
                     loadingMsg.textContent = "Gagal terhubung ke server autentikasi. Pastikan domain ini telah diizinkan di Firebase Auth.";
                     loadingMsg.classList.add("text-red-500", "p-4");
@@ -306,8 +329,7 @@
                 logPageView(); 
                 setupChat(); 
             } catch(e) { 
-                // logToPage(`Initialization failed: ${e.message}`, 'error'); // [LOG]
-                console.error(`Initialization failed: ${e.message}`); // [DIKEMBALIKAN]
+                console.error(`Initialization failed: ${e.message}`);
                 document.body.innerHTML = `<div class="bg-red-900 text-white p-8 rounded-lg shadow-2xl max-w-2xl mx-auto mt-20"><h1 class="text-3xl font-bold mb-4">Koneksi Gagal!</h1><p>Gagal terhubung ke server.</p></div>`;
             }
         }
@@ -317,14 +339,12 @@
             const loadingFavicon = document.getElementById('loading-favicon');
 
             try {
-                // logToPage(`Mencoba memuat pengaturan dari: ${settingsCollRef.path}`); // [LOG]
-
                 const urlParams = new URLSearchParams(window.location.search);
                 const accessCode = urlParams.get('code');
 
                 const faviconSnap = await getDoc(doc(settingsCollRef, 'favicon'));
                 if (faviconSnap.exists() && faviconSnap.data().url) {
-                    faviconUrl = faviconSnap.data().url;
+                    faviconUrl = faviconSnap.data().url; 
                     document.getElementById('favicon').href = faviconUrl; 
                     loadingFavicon.src = faviconUrl;
                 }
@@ -333,11 +353,8 @@
                 const promises = settingsKeys.map(key => getDoc(doc(settingsCollRef, key)));
                 const [backgroundSnap, mainLogoSnap, maintenanceSnap, headerPostersSnap, censorSnap] = await Promise.all(promises);
                 
-                // logToPage("Pengaturan dasar (logo, bg, dll) berhasil dimuat.", 'success'); // [LOG]
-
                 if (censorSnap.exists() && censorSnap.data().blockedWords) {
                     blockedWordsList = censorSnap.data().blockedWords;
-                    // logToPage(`Memuat ${blockedWordsList.length} kata sensor.`); // [LOG]
                 }
 
                 const maintenanceMode = maintenanceSnap.exists() && maintenanceSnap.data().status === 1;
@@ -358,7 +375,6 @@
                         document.getElementById('maintenance-logo').src = faviconSnap.data().url;
                     }
                     loadingOverlay.classList.add('hidden');
-                    // logToPage("Mode maintenance aktif. Menampilkan halaman maintenance.", 'warn'); // [LOG]
                 } else {
                     maintenanceOverlay.classList.add('hidden');
                     
@@ -366,14 +382,10 @@
                         mainLogoImg.src = mainLogoSnap.data().url;
                         mainLogoImg.classList.remove('hidden');
                         mainTitleText.classList.add('hidden');
-                        // [LOG BARU] Konfirmasi logo dimuat
-                        // logToPage("Logo utama berhasil dimuat dari database.", 'success'); 
                     } else {
                         mainTitleText.textContent = "AISNIME"; 
                         mainTitleText.classList.remove('hidden');
                         mainLogoImg.classList.add('hidden');
-                        // [LOG DIPERBAIKI] Tampilkan status snapshot
-                        // logToPage(`Logo utama tidak ditemukan. Snap exists: ${mainLogoSnap.exists()}`, 'warn'); 
                     }
                     
                     const sliderContainer = document.getElementById('header-poster-slider');
@@ -383,7 +395,6 @@
 
                     if (sliderContainer && headerPostersSnap.exists() && headerPostersSnap.data().urls && headerPostersSnap.data().urls.length > 0) {
                         const posters = headerPostersSnap.data().urls;
-                        // logToPage(`Memuat ${posters.length} poster header.`); // [LOG]
                         sliderContainer.innerHTML = '';
                         dotsContainer.innerHTML = '';
 
@@ -403,7 +414,6 @@
                         startHeaderSlider(posters.length);
                         if (posterWrapper) posterWrapper.classList.remove('hidden');
                     } else if (sliderContainer) {
-                        // logToPage("Tidak ada poster header ditemukan.", 'warn'); // [LOG]
                          if (posterWrapper && posterBg) {
                             posterBg.classList.remove('bg-gray-800', 'shadow-lg');
                             posterBg.classList.add('bg-transparent');
@@ -416,12 +426,10 @@
                     
                     loadingOverlay.classList.add('hidden');
                     mainContent.classList.remove('hidden');
-                    // logToPage("Inisialisasi selesai. Menampilkan konten.", 'success'); // [LOG]
                 }
 
             } catch (error) { 
-                // logToPage(`Gagal memuat pengaturan: ${error.message}`, 'error'); // [LOG]
-                console.error(`Gagal memuat pengaturan: ${error.message}`); // [DIKEMBALIKAN]
+                console.error(`Gagal memuat pengaturan: ${error.message}`);
                 loadingFavicon.src = 'https://placehold.co/64x64/ef4444/FFFFFF?text=Error';
                 loadingFavicon.classList.remove('animate-pulse');
                 document.getElementById('loading-overlay').querySelector('p').textContent = "Gagal memuat pengaturan. Coba refresh.";
@@ -471,10 +479,8 @@
 
         function loadInitialContent() {
             const q = query(seriesCollRef);
-            // logToPage(`Mendengarkan data dari: ${seriesCollRef.path}`); // [LOG]
             
             onSnapshot(q, (snapshot) => {
-                // logToPage(`Data diterima, total dokumen: ${snapshot.size}`, 'success'); // [LOG]
                 allSeriesContent = snapshot.docs.map(doc => ({id: doc.id, data: doc.data()}));
                 
                 allSeriesContent.sort((a, b) => {
@@ -490,8 +496,7 @@
                 setupGenreFilter();
 
             }, (error) => {
-                // logToPage(`Gagal memuat konten dari ${seriesCollRef.path}: ${error.message}`, 'error'); // [LOG]
-                console.error(`Gagal memuat konten dari ${seriesCollRef.path}: ${error.message}`); // [DIKEMBALIKAN]
+                console.error(`Gagal memuat konten dari ${seriesCollRef.path}: ${error.message}`);
                 if (contentListEl) {
                     contentListEl.innerHTML = '<p class="text-red-500 col-span-full text-center py-8">Error memuat konten.</p>';
                 }
@@ -543,8 +548,11 @@
             closeGenreBtn.addEventListener('click', () => toggleGenreSidebar(false));
             genreOverlay.addEventListener('click', () => toggleGenreSidebar(false));
 
+            /* Hapus listener 'play'/'pause'/'ended' dari sini, dipindahkan ke watch-module.js */
+            /* const videoContainer = document.getElementById('video-container'); ... */
+
             document.body.addEventListener('contextmenu', (e) => {
-                // e.preventDefault(); 
+                /* e.preventDefault(); */
             });
         }
         
@@ -556,28 +564,22 @@
         }
 
         async function loadAndShowEpisodeList(seriesId, seriesData) {
-            // logToPage(`Membuka daftar episode untuk: ${seriesData.title}`); // [LOG]
             
             if (!isWatchModuleLoaded) {
-                // logToPage("Modul pemutar (watch-module.js) belum dimuat. Memulai impor..."); // [LOG]
                 try {
                     let watchModule;
                     try {
                         watchModule = await import('https://aisnime.site/watch-module.js');
                     } catch (e1) {
-                        // logToPage("Gagal memuat modul dari domain, mencoba path relatif ./watch-module.js", 'warn'); // [LOG]
-                        console.warn("Gagal memuat modul dari domain, mencoba path relatif ./watch-module.js"); // [DIKEMBALIKAN]
+                        console.warn("Gagal memuat modul dari domain, mencoba path relatif ./watch-module.js");
                         try {
                             watchModule = await import('./watch-module.js');
                         } catch (e2) {
-                            // logToPage(`Gagal memuat watch-module.js dari domain DAN path relatif: ${e2.message}`, 'error'); // [LOG]
-                            console.error(`Gagal memuat watch-module.js dari domain DAN path relatif: ${e2.message}`); // [DIKEMBALIKAN]
+                            console.error(`Gagal memuat watch-module.js dari domain DAN path relatif: ${e2.message}`);
                             alert("Gagal memuat pemutar video (Modul tidak ditemukan).");
                             return;
                         }
                     }
-                    
-                    // logToPage("Modul pemutar berhasil diimpor.", 'success'); // [LOG]
                     
                     watchModule.initWatchModule({
                         db,
@@ -602,19 +604,16 @@
                     
                     isWatchModuleLoaded = true;
                 } catch (error) {
-                    // logToPage(`Gagal memuat watch-module.js: ${error.message}`, 'error'); // [LOG]
-                    console.error(`Gagal memuat watch-module.js: ${error.message}`); // [DIKEMBALIKAN]
+                    console.error(`Gagal memuat watch-module.js: ${error.message}`);
                     alert("Gagal memuat pemutar video. Coba refresh halaman.");
                     return;
                 }
             }
             
             if (window.openEpisodeList) {
-                // logToPage("Menjalankan window.openEpisodeList..."); // [LOG]
                 window.openEpisodeList(seriesId, seriesData);
             } else {
-                // logToPage("Fungsi openEpisodeList tidak ditemukan di window.", 'error'); // [LOG]
-                console.error("Fungsi openEpisodeList tidak ditemukan di window."); // [DIKEMBALIKAN]
+                console.error("Fungsi openEpisodeList tidak ditemukan di window.");
             }
         }
 
@@ -661,13 +660,11 @@
             if (genre === 'All') {
                 isSearching = false;
                 filteredSeriesContent = allSeriesContent;
-                // logToPage("Filter diubah ke: Semua"); // [LOG]
             } else {
                 isSearching = true;
                 filteredSeriesContent = allSeriesContent.filter(item => 
                     item.data.genre && item.data.genre.includes(genre)
                 );
-                // logToPage(`Filter diubah ke: ${genre}`); // [LOG]
             }
             
             genreSidebar.classList.add('-translate-x-full');
@@ -715,7 +712,6 @@
             if (itemsToLoad.length === 0) {
                 if (currentDisplayCount === 0) {
                     contentListEl.innerHTML = '<p class="text-gray-500 col-span-full text-center py-8">Tidak ada konten ditemukan.</p>';
-                    // logToPage("Tidak ada konten ditemukan untuk filter saat ini.", 'warn'); // [LOG]
                 }
                 isLoadingMore = false;
                 return;
@@ -724,15 +720,11 @@
             if (currentDisplayCount === 0) {
                  const msgEl = document.getElementById('no-content-message');
                  if (msgEl) msgEl.remove();
-                 // logToPage(`Merender ${itemsToLoad.length} item...`); // [LOG]
-            } else {
-                 // logToPage(`Merender ${itemsToLoad.length} item berikutnya...`); // [LOG]
             }
 
             itemsToLoad.forEach(itemData => {
                 if (!itemData.data.thumbnailUrl || !itemData.data.title) {
-                    // logToPage(`MELEWATI item ${itemData.id}, 'thumbnailUrl' atau 'title' hilang.`, 'warn'); // [LOG]
-                    console.warn(`MELEWATI item ${itemData.id}, 'thumbnailUrl' atau 'title' hilang.`); // [DIKEMBALIKAN]
+                    console.warn(`MELEWATI item ${itemData.id}, 'thumbnailUrl' atau 'title' hilang.`);
                     return; 
                 }
 
@@ -753,7 +745,7 @@
                             
                             <div class="flex items-center text-[9px] text-gray-400">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
-                                <span>${(itemData.data.episodeCount || 0)}</span>
+                                <span>${(itemData.data.episodeCount || 0)} Eps</span>
                             </div>
                             <div class="flex items-center text-[9px] text-gray-400">
                                 <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
@@ -776,7 +768,6 @@
             try {
                 const hasVisited = localStorage.getItem('aisnimeVisited');
                 if (!hasVisited) {
-                    // logToPage("Pengunjung unik baru terdeteksi, mencatat..."); // [LOG]
                     const statsRef = doc(settingsCollRef, 'analytics');
                     await setDoc(statsRef, {
                         uniqueVisitors: increment(1)
@@ -784,8 +775,7 @@
                     localStorage.setItem('aisnimeVisited', 'true');
                 }
             } catch (error) {
-                // logToPage(`Gagal mencatat kunjungan unik: ${error.message}`, 'error'); // [LOG]
-                console.error(`Gagal mencatat kunjungan unik: ${error.message}`); // [DIKEMBALIKAN]
+                console.error(`Gagal mencatat kunjungan unik: ${error.message}`);
             }
         }
         
@@ -802,9 +792,7 @@
         }
 
         function setupChat() {
-            // [DIPERBAIKI] Path diubah ke root agar sesuai dengan database Anda
             chatCollRef = collection(db, 'chat');
-            // logToPage("Setup chat dimulai..."); // [LOG]
             
             const chatContainer = document.getElementById('chat-container');
             const chatOverlay = document.getElementById('chat-overlay');
@@ -840,11 +828,9 @@
                             userId: currentUserId,
                             createdAt: Timestamp.now()
                         });
-                        // logToPage("Pesan chat terkirim."); // [LOG]
                         chatInput.value = '';
                     } catch (error) {
-                        // logToPage(`Gagal mengirim pesan chat: ${error.message}`, 'error'); // [LOG]
-                        console.error(`Gagal mengirim pesan chat: ${error.message}`); // [DIKEMBALIKAN]
+                        console.error(`Gagal mengirim pesan chat: ${error.message}`);
                     }
                 }
             });
@@ -878,19 +864,14 @@
                 
                 chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
             }, (error) => {
-                // logToPage(`Gagal terhubung ke chat: ${error.message}`, 'error'); // [LOG]
-                console.error(`Gagal terhubung ke chat: ${error.message}`); // [DIKEMBALIKAN]
+                console.error(`Gagal terhubung ke chat: ${error.message}`);
                 chatMessagesEl.innerHTML = '<p class="text-xs text-red-500 text-center">Gagal terhubung ke chat.</p>';
             });
         }
 
-        // Menunggu sehingga DOM sedia sebelum menjalankan 'main'
+        /* Menunggu sehingga DOM sedia sebelum menjalankan 'main' */
         window.addEventListener('DOMContentLoaded', main);
     </script>
 </body>
 </html>
-
-
-
-
 
