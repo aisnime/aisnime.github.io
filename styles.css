@@ -6,7 +6,7 @@ body {
     background-attachment: fixed;
     color: white;
 }
-/* ... (gaya .overlay, .main-content-container, .content-card tetap sama) ... */
+
 .overlay {
     min-height: 100vh;
 }
@@ -32,13 +32,15 @@ body {
     object-fit: cover;
 }
 
-
-/* [DIUBAH] Sembunyikan kontrol kustom bawaan */
+/* [DIHAPUS] Kontrol kustom lama tidak lagi diperlukan */
+/*
 #custom-controls-container {
-    display: block; /* Tampilkan blok kontrol kustom */
+    display: none;
 }
-/* [DIHAPUS] #player-controls tidak lagi digunakan */
-
+#player-controls {
+    display: none;
+}
+*/
 
 #modal-content-description {
     white-space: pre-wrap;
@@ -76,87 +78,78 @@ body {
   }
 }
 
-/* [DIHAPUS] Gaya untuk tombol play kustom overlay tidak diperlukan lagi */
-/* #video-play-button-overlay svg { ... } */
-/* #video-play-button-overlay:hover svg { ... } */
+/* [DIHAPUS] Gaya tombol play kustom lama */
+/*
+#video-play-button-overlay svg {
+    transition: all 0.2s ease;
+}
+#video-play-button-overlay:hover svg {
+    opacity: 1;
+    transform: scale(1.1);
+}
+*/
 
+/* [BARU] Gaya untuk Kontrol Video Kustom (Agar Tailwind bekerja) */
 
-/* --- [BARU] CSS UNTUK KONTROL VIDEO KUSTOM --- */
-
-/* Sembunyikan kontrol video bawaan (termasuk tombol download) */
+/* Sembunyikan kontrol video bawaan */
 #modal-main-player::-webkit-media-controls {
     display: none !important;
 }
-#modal-main-player {
-    /* Pastikan tidak ada UI bawaan yang muncul */
-    controls: none;
+#modal-main-player::-moz-media-controls {
+    display: none !important;
+}
+#modal-main-player::media-controls {
+    display: none !important;
 }
 
-/* Styling Progress Bar */
+/* Gaya untuk Progress Bar (Slider) kustom */
+/* Ini penting agar slider terlihat konsisten di semua browser */
 #progress-bar {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 100%;
-  height: 5px;
-  background: rgba(107, 114, 128, 0.5); /* bg-gray-500 opacity 50 */
-  border-radius: 5px;
-  outline: none;
-  transition: height 0.1s ease;
-}
-#progress-bar:hover {
-    height: 8px; /* Sedikit lebih tebal saat di-hover */
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 6px;
+    background: rgba(107, 114, 128, 0.7); /* bg-gray-500 opacity 70 */
+    border-radius: 5px;
+    outline: none;
+    transition: opacity 0.2s;
 }
 
-/* Thumb (bulatan) untuk WebKit (Chrome, Safari) */
+/* Thumb (bulatan) untuk Chrome/Safari/Edge */
 #progress-bar::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  background: #8B5CF6; /* Latar ungu */
-  border-radius: 50%;
-  cursor: pointer;
-  transform: scale(0); /* Sembunyikan bawaan */
-  transition: transform 0.1s ease;
-}
-#custom-controls-container:hover #progress-bar::-webkit-slider-thumb,
-#progress-bar:active::-webkit-slider-thumb {
-    transform: scale(1); /* Tampilkan saat kontrol di-hover atau aktif */
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #ffffff; /* white */
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
 }
 
 /* Thumb (bulatan) untuk Firefox */
 #progress-bar::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
-  background: #8B5CF6;
-  border-radius: 50%;
-  cursor: pointer;
-  border: none;
-  transform: scale(0);
-  transition: transform 0.1s ease;
-}
-#custom-controls-container:hover #progress-bar::-moz-range-thumb,
-#progress-bar:active::-moz-range-thumb {
-    transform: scale(1);
+    width: 16px;
+    height: 16px;
+    background: #ffffff; /* white */
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
 }
 
-/* [BARU] CSS untuk kontainer video saat fullscreen */
-#video-container:fullscreen {
-    width: 100% !important;
-    height: 100% !important;
-    max-width: none;
+/* Gaya untuk track (latar belakang) progress bar di Firefox */
+#progress-bar::-moz-range-track {
+    width: 100%;
+    height: 6px;
+    background: rgba(107, 114, 128, 0.7);
+    border-radius: 5px;
+    cursor: pointer;
 }
 
-/* [BARU] CSS untuk video saat kontainer fullscreen */
-#video-container:fullscreen #modal-main-player {
-    object-fit: contain; /* Pastikan video pas di layar, tidak terpotong */
-}
-
-/* [BARU] Pastikan watermark dan kontrol ada di atas video saat fullscreen */
-#video-container:fullscreen #video-watermark-module {
-    z-index: 2147483646; /* Di bawah kontrol */
-}
-#video-container:fullscreen #custom-controls-container {
-    z-index: 2147483647; /* Paling atas */
+/* [BARU] Gaya untuk Latar Belakang Progress (Warna ungu) */
+/* Ini akan di-update oleh JavaScript */
+#progress-bar {
+    background: linear-gradient(to right, #8B5CF6 0%, #8B5CF6 0%, rgba(107, 114, 128, 0.7) 0%, rgba(107, 114, 128, 0.7) 100%);
 }
 
