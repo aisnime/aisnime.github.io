@@ -10,7 +10,7 @@ let episodeListModal;
 let currentSeriesId = null;
 let currentItem = null;
 let saveTimeout;
-let watermarkImg; // [BARU] Variabel untuk watermark
+let watermarkImg; // [DIUBAH] Variabel untuk watermark, inisialisasi sebagai null
 
 // 1. Fungsi Inisialisasi
 // Fungsi ini dipanggil oleh index.html untuk 'menyuntik' referensi database
@@ -19,7 +19,7 @@ export function initWatchModule(firebaseRefs) {
     seriesCollRef = firebaseRefs.seriesCollRef;
     settingsCollRef = firebaseRefs.settingsCollRef; // [DIUBAH] Terima settingsCollRef
     auth = firebaseRefs.auth;
-    faviconUrl = firebaseRefs.faviconUrl;
+    faviconUrl = firebaseRefs.faviconUrl; // [DIUBAH] Hanya simpan URL-nya
     
     // Salin semua fungsi firestore
     collection = firebaseRefs.collection;
@@ -42,24 +42,16 @@ export function initWatchModule(firebaseRefs) {
     modalMainPlayer = document.getElementById('modal-main-player');
     episodeListModal = document.getElementById('episode-list-modal');
 
-    // [BARU] Buat dan tambahkan watermark
-    const videoContainer = document.getElementById('video-container');
-    if (videoContainer && faviconUrl) {
-        watermarkImg = document.createElement('img');
-        watermarkImg.id = 'video-watermark-module';
-        watermarkImg.src = faviconUrl;
-        watermarkImg.alt = 'Logo';
-        watermarkImg.className = 'absolute top-4 right-4 w-10 h-10 object-contain opacity-70 z-10 pointer-events-none hidden';
-        videoContainer.appendChild(watermarkImg);
-    }
+    // [DIHAPUS] Pembuatan watermark dipindahkan dari sini
     
     // Pasang listener modal
     setupEventListeners();
-    setupVideoProgressSaving();
+    // [DIPERBAIKI] Hapus pemanggilan ini dari init, akan dipanggil setelah kloning
+    // setupVideoProgressSaving(); 
 }
 
 // 2. Fungsi Utama (dipanggil oleh index.html)
-// Kita pasang di 'window' agar index.html bisa memanggilnya
+// ... (Kode window.openEpisodeList tidak berubah) ...
 window.openEpisodeList = async (seriesId, seriesData) => {
     currentSeriesId = seriesId;
 
@@ -134,9 +126,11 @@ window.openEpisodeList = async (seriesId, seriesData) => {
     });
 }
 
+
 // 3. Fungsi-fungsi Bantuan (Helper Functions)
 
 function setupEventListeners() {
+// ... (Kode setupEventListeners tidak berubah) ...
     closeModalBtn.addEventListener('click', closeVideoModal);
     videoModal.addEventListener('click', (e) => { if (e.target === videoModal) closeVideoModal(); });
     document.getElementById('close-episode-list-btn').addEventListener('click', () => {
@@ -156,6 +150,7 @@ function setupEventListeners() {
 }
 
 function closeVideoModal() {
+// ... (Kode closeVideoModal tidak berubah) ...
     if (watermarkImg) watermarkImg.classList.add('hidden'); // [BARU] Sembunyikan watermark
     videoModal.classList.add('hidden');
     saveWatchProgress();
@@ -174,6 +169,22 @@ async function playVideoInModal(seriesData, episodeData, videoUrl, episodeId) {
             return;
         }
 
+        // --- [LOGIKA DIPINDAHKAN] ---
+        // [DIPERBAIKI] Buat watermark di sini, BUKAN di init
+        // Cek jika watermark belum dibuat DAN faviconUrl (dari init) ada
+        if (!watermarkImg && faviconUrl) {
+            const videoContainer = document.getElementById('video-container');
+            if (videoContainer) {
+                watermarkImg = document.createElement('img');
+                watermarkImg.id = 'video-watermark-module';
+                watermarkImg.src = faviconUrl;
+                watermarkImg.alt = 'Logo';
+                watermarkImg.className = 'absolute top-4 right-4 w-10 h-10 object-contain opacity-70 z-10 pointer-events-none hidden';
+                videoContainer.appendChild(watermarkImg);
+            }
+        }
+        // --- Akhir Logika Watermark ---
+
         const loadingIcon = document.getElementById('video-loading-icon');
         loadingIcon.src = faviconUrl || 'https://placehold.co/64x64/374151/FFF?text=...';
         loadingIcon.classList.remove('hidden', 'animate-pulse');
@@ -183,6 +194,7 @@ async function playVideoInModal(seriesData, episodeData, videoUrl, episodeId) {
         modalMainPlayer.poster = "";
 
         document.getElementById('modal-thumbnail').src = seriesData.thumbnailUrl;
+// ... (Kode sisa tidak berubah) ...
         document.getElementById('modal-content-title').textContent = seriesData.title;
         document.getElementById('modal-content-description').textContent = seriesData.description || 'Tidak ada deskripsi.';
         document.getElementById('modal-content-rating').textContent = (seriesData.rating || 'N/A').replace(' / 10', '');
@@ -232,6 +244,7 @@ async function playVideoInModal(seriesData, episodeData, videoUrl, episodeId) {
 }
 
 function getWatchProgress(episodeId) {
+// ... (Kode getWatchProgress tidak berubah) ...
     try {
         const progressData = localStorage.getItem('aisnimeWatchProgress');
         if (progressData) {
@@ -252,6 +265,7 @@ function getWatchProgress(episodeId) {
 }
 
 function saveWatchProgress() {
+// ... (Kode saveWatchProgress tidak berubah) ...
     if (!currentItem || !currentItem.episodeId || !modalMainPlayer || !modalMainPlayer.duration) return;
     
     const episodeId = currentItem.episodeId;
@@ -283,6 +297,7 @@ function saveWatchProgress() {
 }
 
 function setupVideoProgressSaving() {
+// ... (Kode setupVideoProgressSaving tidak berubah) ...
     // [DIUBAH] Pastikan modalMainPlayer ada sebelum menambah listener
     if (!modalMainPlayer) return;
     
@@ -300,6 +315,7 @@ function setupVideoProgressSaving() {
 }
 
 async function logVideoPlay(seriesId) {
+// ... (Kode logVideoPlay tidak berubah) ...
     try {
         const now = Date.now();
         const oneHour = 60 * 60 * 1000;
@@ -344,5 +360,4 @@ async function logVideoPlay(seriesId) {
          console.error("Gagal mencatat pemutaran video:", error);
     }
 }
-
 
