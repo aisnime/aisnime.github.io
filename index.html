@@ -22,6 +22,7 @@
     <!-- Loading Overlay -->
     <div id="loading-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-900">
         <img id="loading-favicon" src="https://aisnime.site/loading.ico" alt="Memuat..." class="w-16 h-16 rounded-lg animate-pulse">
+        <p class="text-gray-400 mt-4">Memuat data...</p>
     </div>
 
     <!-- Konten Normal (Awalnya disembunyikan) -->
@@ -279,6 +280,7 @@
         let chatUnsubscribe = null; 
         let blockedWordsList = [];
         let faviconUrl = '';
+        let mainLogoUrl = ''; /* [BARU] Variabel untuk logo utama */
         let isWatchModuleLoaded = false;
         let genreSidebar, genreOverlay, openGenreBtn, closeGenreBtn, genreListMobile, genreListDesktop;
         let allGenres = new Set();
@@ -365,6 +367,7 @@
                     
                     if (mainLogoImg && mainLogoSnap.exists() && mainLogoSnap.data().url) {
                         mainLogoImg.src = mainLogoSnap.data().url;
+                        mainLogoUrl = mainLogoSnap.data().url; /* [BARU] Simpan URL logo utama */
                         mainLogoImg.classList.remove('hidden');
                         mainTitleText.classList.add('hidden');
                     } else {
@@ -573,6 +576,7 @@
                         settingsCollRef,
                         auth,
                         faviconUrl,
+                        mainLogoUrl, /* [BARU] Teruskan URL logo utama */
                         collection, 
                         query, 
                         where, 
@@ -861,5 +865,4 @@
     </script>
 </body>
 </html>
-
 
