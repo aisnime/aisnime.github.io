@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- [DIUBAH] Versi cache busting dinaikkan -->
-    <link rel="stylesheet" href="styles.css?v=1.3"> 
+    <link rel="stylesheet" href="styles.css?v=1.4"> 
 </head>
 <body class="bg-gray-900 text-white" style="font-family: 'Inter', sans-serif;">
     
@@ -567,12 +567,12 @@
                     let watchModule;
                     try {
                         /* [DIUBAH] Versi cache busting dinaikkan */
-                        watchModule = await import('https://aisnime.site/watch-module.js?v=1.3');
+                        watchModule = await import('https://aisnime.site/watch-module.js?v=1.4');
                     } catch (e1) {
                         console.warn("Gagal memuat modul dari domain, mencoba path relatif ./watch-module.js"); 
                         try {
                             /* [DIUBAH] Versi cache busting dinaikkan */
-                            watchModule = await import('./watch-module.js?v=1.3');
+                            watchModule = await import('./watch-module.js?v=1.4');
                         } catch (e2) {
                             console.error(`Gagal memuat watch-module.js dari domain DAN path relatif: ${e2.message}`); 
                             alert("Gagal memuat pemutar video (Modul tidak ditemukan).");
