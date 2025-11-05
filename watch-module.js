@@ -176,8 +176,8 @@ function createWatermark() {
     watermarkWrapper = document.createElement('div');
     watermarkWrapper.id = 'video-watermark-wrapper';
     watermarkWrapper.style.position = 'absolute';
-    watermarkWrapper.style.top = '0.5rem'; // [DIUBAH] Diperkecil dari 1rem (8px)
-    watermarkWrapper.style.right = '0.5rem'; // [DIUBAH] Diperkecil dari 1rem (8px)
+    watermarkWrapper.style.top = '0.1rem'; // [DIUBAH] Diperkecil dari 1rem (8px)
+    watermarkWrapper.style.right = '0.1rem'; // [DIUBAH] Diperkecil dari 1rem (8px)
     watermarkWrapper.style.zIndex = '21'; // Di atas video, di bawah kontrol jika overlap
     watermarkWrapper.style.pointerEvents = 'none';
     watermarkWrapper.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // BG hitam transparan
