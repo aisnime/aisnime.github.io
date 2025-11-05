@@ -181,7 +181,7 @@ function createWatermark() {
     watermarkWrapper.style.zIndex = '21'; // Di atas video, di bawah kontrol jika overlap
     watermarkWrapper.style.pointerEvents = 'none';
     watermarkWrapper.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // BG hitam transparan
-    watermarkWrapper.style.padding = '0.25rem'; // Padding kecil
+    watermarkWrapper.style.padding = '0.1rem'; // Padding kecil
     watermarkWrapper.style.borderRadius = '0.25rem'; // Sedikit bulat
     watermarkWrapper.style.display = 'none'; // Sembunyikan awalnya
 
@@ -474,3 +474,4 @@ async function logVideoPlay(seriesId) {
          console.error("Gagal mencatat pemutaran video:", error);
     }
 }
+
