@@ -15,11 +15,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- [DIUBAH] Versi cache busting dinaikkan -->
-    <link rel="stylesheet" href="styles.css?v=1.4"> 
+    <link rel="stylesheet" href="styles.css?v=2.0"> 
 </head>
 <body class="bg-gray-900 text-white" style="font-family: 'Inter', sans-serif;">
     
-    <!-- [BARU] Loading Overlay -->
     <div id="loading-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-900">
         <img id="loading-favicon" src="https://aisnime.site/loading.ico" alt="Memuat..." class="w-16 h-16 rounded-lg animate-pulse">
         <p class="text-gray-400 mt-4">Memuat data...</p>
@@ -89,24 +88,26 @@
                 </main>
 
                 <!-- Kolom Kanan: Chat -->
+                <!-- [DIUBAH] Menambahkan lg:bg-transparent agar background induk tidak terlihat di desktop -->
                 <div id="chat-container" class="fixed top-0 right-0 h-full w-80 bg-gray-800 shadow-xl z-50 transform translate-x-full transition-transform duration-300 
-                                                lg:block lg:relative lg:translate-x-0 lg:z-auto lg:w-full lg:col-span-1 lg:sticky lg:top-8" 
+                                                lg:block lg:relative lg:translate-x-0 lg:z-auto lg:w-full lg:col-span-1 lg:sticky lg:top-8 lg:rounded-lg lg:bg-transparent" 
                      style="max-height: 100vh; lg:max-height: calc(100vh - 10rem);">
                     
-                    <div class="bg-gray-800 lg:bg-opacity-50 rounded-lg flex flex-col h-full">
-                        <!-- Header Chat -->
-                        <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0">
+                    <!-- Wrapper tidak lagi memiliki background atau h-full -->
+                    <div class="rounded-lg flex flex-col">
+                        <!-- [DIUBAH] Header Chat dengan background solid (lg:bg-opacity-50 dihapus) -->
+                        <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0 bg-gray-800 rounded-t-lg">
                             <h3 class="font-bold text-white">Chat Publik</h3>
                             <button id="close-chat-btn" class="text-gray-400 hover:text-white text-2xl lg:hidden">&times;</button>
                         </div>
                         
-                        <!-- Area Pesan -->
-                        <div id="chat-messages" class="flex-grow p-4 space-y-3 overflow-y-auto">
+                        <!-- [DIUBAH] Area Pesan dengan background solid dan tinggi 400px di desktop -->
+                        <div id="chat-messages" class="flex-grow lg:flex-grow-0 p-4 space-y-3 overflow-y-auto lg:h-[400px] bg-gray-800">
                             <p class="text-xs text-gray-500 text-center">Menyambungkan ke chat...</p>
                         </div>
                         
-                        <!-- Input Pesan -->
-                        <div class="p-4 border-t border-gray-700 flex-shrink-0">
+                        <!-- [DIUBAH] Input Pesan dengan background solid (lg:bg-opacity-50 dihapus) -->
+                        <div class="p-4 border-t border-gray-700 flex-shrink-0 bg-gray-800 rounded-b-lg">
                             <form id="chat-form" class="flex space-x-2">
                                 <input type="text" id="chat-input" placeholder="Ketik pesan..." class="flex-1 bg-gray-700 rounded-full py-2 px-4 text-white focus:ring-2 focus:ring-purple-500" autocomplete="off">
                                 <button type="submit" id="chat-send-btn" class="bg-purple-600 hover:bg-purple-700 rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">
@@ -165,16 +166,12 @@
             <button id="close-modal-btn" class="absolute -top-3 -right-3 bg-white text-black rounded-full w-8 h-8 flex items-center justify-center font-bold text-xl z-20">&times;</button>
             
             <div class="lg:w-2/3 w-full flex flex-col">
-                <!-- [DIUBAH] Kontainer video dengan kontrol kustom -->
+                <!-- Kontainer video dengan kontrol kustom -->
                 <div id="video-container" class="w-full aspect-video bg-black rounded-t-lg lg:rounded-l-lg lg:rounded-tr-none relative group">
                     <img id="video-loading-icon" src="" alt="Memuat..." class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 animate-pulse hidden z-10">
                     
-                    <!-- [DIUBAH] Player utama (tanpa kontrol bawaan, 'muted' dihapus) -->
                     <video id="modal-main-player" class="w-full h-full relative z-0" disablepictureinpicture playsinline autoplay></video>
                     
-                    <!-- [DIHAPUS] Watermark dipindahkan ke watch-module.js -->
-                    
-                    <!-- [BARU] Kontrol Kustom -->
                     <div id="custom-controls-container" class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
                         <!-- Progress Bar -->
                         <div class="w-full h-3 flex items-center cursor-pointer">
@@ -276,9 +273,9 @@
         const seriesCollRef = collection(db, 'series'); 
         const settingsCollRef = collection(db, 'settings');
         
-        /* Deklarasi variabel */
+        /* Deklarasi variabel Halaman Utama */
         let contentListEl, mainLogoImg, mainTitleText;
-        let mainLogoUrl = ''; // [BARU] Simpan URL logo utama
+        let mainLogoUrl = ''; 
         let allSeriesContent = [];
         let filteredSeriesContent = []; 
         let isLoadingMore = false;
@@ -296,6 +293,16 @@
         let allGenres = new Set();
         let activeGenre = 'All';
 
+        /* [DIGABUNGKAN] Variabel dari watch-module.js */
+        let videoModal, closeModalBtn, modalMainPlayer, episodeListModal, videoContainer;
+        let controlsContainer, playPauseBtn, playIcon, pauseIcon, progressBar, timeDisplay, fullscreenBtn;
+        let currentSeriesId = null;
+        let currentItem = null;
+        let saveTimeout;
+        let watermarkEl = null;
+        let controlsTimeout; 
+        const customControlListeners = []; 
+        
         /* --- Fungsi Utama --- */
         async function main() {
             try {
@@ -375,15 +382,15 @@
                     maintenanceOverlay.classList.add('hidden');
                     
                     if (mainLogoImg && mainLogoSnap.exists() && mainLogoSnap.data().url) {
-                        mainLogoUrl = mainLogoSnap.data().url; // [BARU] Simpan URL logo utama
-                        mainLogoImg.src = mainLogoUrl; // Gunakan
+                        mainLogoUrl = mainLogoSnap.data().url; 
+                        mainLogoImg.src = mainLogoUrl; 
                         mainLogoImg.classList.remove('hidden');
                         mainTitleText.classList.add('hidden');
                     } else {
                         mainTitleText.textContent = "AISNIME"; 
                         mainTitleText.classList.remove('hidden');
                         mainLogoImg.classList.add('hidden');
-                        console.warn(`Logo utama tidak ditemukan. Snap exists: ${mainLogoSnap.exists()}`); // [DIKEMBALIKAN]
+                        console.warn(`Logo utama tidak ditemukan. Snap exists: ${mainLogoSnap.exists()}`); 
                     }
                     
                     const sliderContainer = document.getElementById('header-poster-slider');
@@ -546,8 +553,6 @@
             closeGenreBtn.addEventListener('click', () => toggleGenreSidebar(false));
             genreOverlay.addEventListener('click', () => toggleGenreSidebar(false));
 
-            /* [DIHAPUS] Listener watermark dihapus dari sini */
-
             document.body.addEventListener('contextmenu', (e) => {
                 // e.preventDefault(); 
             });
@@ -560,56 +565,37 @@
             }
         }
 
+        /* [DIUBAH] Fungsi loadAndShowEpisodeList disederhanakan */
         async function loadAndShowEpisodeList(seriesId, seriesData) {
             
+            /* [BARU] Inisialisasi DOM pemutar video saat pertama kali diklik */
             if (!isWatchModuleLoaded) {
                 try {
-                    let watchModule;
-                    try {
-                        /* [DIUBAH] Versi cache busting dinaikkan */
-                        watchModule = await import('https://aisnime.site/watch-module.js?v=1.4');
-                    } catch (e1) {
-                        console.warn("Gagal memuat modul dari domain, mencoba path relatif ./watch-module.js"); 
-                        try {
-                            /* [DIUBAH] Versi cache busting dinaikkan */
-                            watchModule = await import('./watch-module.js?v=1.4');
-                        } catch (e2) {
-                            console.error(`Gagal memuat watch-module.js dari domain DAN path relatif: ${e2.message}`); 
-                            alert("Gagal memuat pemutar video (Modul tidak ditemukan).");
-                            return;
-                        }
-                    }
+                    videoModal = document.getElementById('video-modal');
+                    videoContainer = document.getElementById('video-container'); 
+                    closeModalBtn = document.getElementById('close-modal-btn');
+                    modalMainPlayer = document.getElementById('modal-main-player');
+                    episodeListModal = document.getElementById('episode-list-modal');
                     
-                    watchModule.initWatchModule({
-                        db,
-                        seriesCollRef,
-                        settingsCollRef,
-                        auth,
-                        faviconUrl,
-                        mainLogoUrl, // [BARU] Teruskan URL logo utama
-                        collection, 
-                        query, 
-                        where, 
-                        orderBy, 
-                        onSnapshot, 
-                        doc, 
-                        getDoc, 
-                        getDocs, 
-                        updateDoc, 
-                        setDoc, 
-                        Timestamp, 
-                        increment, 
-                        limit
-                    });
-                    
+                    controlsContainer = document.getElementById('custom-controls-container');
+                    playPauseBtn = document.getElementById('play-pause-btn');
+                    playIcon = document.getElementById('play-icon');
+                    pauseIcon = document.getElementById('pause-icon');
+                    progressBar = document.getElementById('progress-bar');
+                    timeDisplay = document.getElementById('time-display');
+                    fullscreenBtn = document.getElementById('fullscreen-btn');
+
+                    /* Pasang listener modal (hanya sekali) */
+                    setupModalEventListeners();
                     isWatchModuleLoaded = true;
-                } catch (error) {
-                    console.error(`Gagal memuat watch-module.js: ${error.message}`); 
-                    alert("Gagal memuat pemutar video. Coba refresh halaman.");
+                } catch (e) {
+                    console.error("Gagal menginisialisasi DOM pemutar video:", e);
+                    alert("Terjadi error saat memuat elemen pemutar video.");
                     return;
                 }
             }
             
+            /* [DIUBAH] Langsung panggil window.openEpisodeList (yang sekarang ada di file ini) */
             if (window.openEpisodeList) {
                 window.openEpisodeList(seriesId, seriesData);
             } else {
@@ -620,14 +606,12 @@
         function setupGenreFilter() {
             allGenres = new Set();
             allSeriesContent.forEach(item => {
-                if (!item.data.genre) return; // [BARU] Lewati jika genre tidak ada
+                if (!item.data.genre) return; 
 
                 let genres = [];
                 if (Array.isArray(item.data.genre)) {
-                    // Jika sudah berupa array
                     genres = item.data.genre;
                 } else if (typeof item.data.genre === 'string') {
-                    // [BARU] Jika berupa string, pisahkan dengan koma
                     genres = item.data.genre.split(',').map(g => g.trim()).filter(g => g);
                 }
 
@@ -637,7 +621,6 @@
             genreListMobile.innerHTML = '';
             genreListDesktop.innerHTML = '';
             
-            // [BARU] Tambahkan tombol "All" hanya jika ada genre lain
             createGenreButton('All');
             if (allGenres.size > 0) {
                  Array.from(allGenres).sort().forEach(genre => {
@@ -678,12 +661,10 @@
                 isSearching = true;
                 filteredSeriesContent = allSeriesContent.filter(item => {
                     if (!item.data.genre) return false;
-                    // [BARU] Cek string dan array
                     if (Array.isArray(item.data.genre)) {
                         return item.data.genre.includes(genre);
                     }
                     if (typeof item.data.genre === 'string') {
-                        // Periksa apakah string mengandung genre sebagai kata yang utuh (atau bagian dari daftar koma)
                         return item.data.genre.split(',').map(g => g.trim()).includes(genre);
                     }
                     return false;
@@ -786,7 +767,6 @@
             isLoadingMore = false;
         }
         
-
         async function logPageView() {
             try {
                 const hasVisited = localStorage.getItem('aisnimeVisited');
@@ -801,7 +781,6 @@
                 console.error(`Gagal mencatat kunjungan unik: ${error.message}`); 
             }
         }
-        
         
         function censorMessage(message, blocklist) {
             if (!blocklist || blocklist.length === 0) return message;
@@ -891,6 +870,465 @@
                 chatMessagesEl.innerHTML = '<p class="text-xs text-red-500 text-center">Gagal terhubung ke chat.</p>';
             });
         }
+
+        /* --- [MULAI] KODE YANG DIGABUNGKAN DARI WATCH-MODULE.JS --- */
+
+        /* Fungsi Utama (dipanggil oleh loadAndShowEpisodeList) */
+        window.openEpisodeList = async (seriesId, seriesData) => {
+            currentSeriesId = seriesId;
+
+            document.getElementById('episode-list-title').textContent = seriesData.title;
+            const episodeContainer = document.getElementById('episode-list-container');
+            episodeContainer.innerHTML = '<p class="text-gray-400">Memuat episode...</p>';
+            episodeListModal.classList.remove('hidden');
+
+            /* Gunakan seriesCollRef global */
+            const episodesCollRef = collection(db, seriesCollRef.path, seriesId, 'episodes'); 
+            const q = query(episodesCollRef, orderBy("title", "asc")); 
+
+            onSnapshot(q, (snapshot) => {
+                episodeContainer.innerHTML = '';
+                if (snapshot.empty) {
+                    episodeContainer.innerHTML = '<p class="text-gray-400">Belum ada episode untuk serial ini.</p>';
+                    return;
+                }
+
+                let episodesList = [];
+                snapshot.forEach(doc => {
+                    episodesList.push({ id: doc.id, data: doc.data() });
+                });
+
+                episodesList.forEach(item => {
+                    const episode = item.data;
+                    const episodeId = item.id;
+                    
+                    const progressData = getWatchProgress(episodeId);
+                    const isWatched = progressData.watched;
+                    const watchedIcon = isWatched 
+                        ? `<svg class="w-4 h-4 ml-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`
+                        : '';
+
+                    const episodeEl = document.createElement('button');
+                    episodeEl.className = 'block w-full text-left p-3 bg-gray-700 hover:bg-gray-600 rounded-md transition flex justify-between items-center';
+                    
+                    episodeEl.innerHTML = `
+                        <span>
+                            <span class="text-gray-300">${episode.title || `(Tanpa Judul)`}</span>
+                        </span>
+                        <span class="text-xs text-gray-400 flex items-center">
+                            ${watchedIcon}
+                        </span>
+                    `;
+
+                    const videoUrl = episode.videoFiles ? episode.videoFiles['default'] : null;
+
+                    episodeEl.onclick = () => {
+                        if (videoUrl) {
+                            playVideoInModal(seriesData, episode, videoUrl, episodeId);
+                            episodeListModal.classList.add('hidden');
+                        } else {
+                            console.warn('Video untuk episode ini tidak tersedia.');
+                        }
+                    };
+                    
+                    episodeContainer.appendChild(episodeEl);
+                });
+            }, (error) => { 
+                console.error("Gagal memuat daftar episode: ", error);
+                episodeContainer.innerHTML = '<p class="text-red-500">Gagal memuat daftar episode.</p>';
+            });
+        }
+
+        /* Fungsi-fungsi Bantuan (Helper Functions) */
+
+        function setupModalEventListeners() {
+            closeModalBtn.addEventListener('click', closeVideoModal);
+            videoModal.addEventListener('click', (e) => { if (e.target === videoModal) closeVideoModal(); });
+            document.getElementById('close-episode-list-btn').addEventListener('click', () => {
+                episodeListModal.classList.add('hidden');
+            });
+
+            const openEpisodeListHandler = () => {
+                if (currentSeriesId && currentItem) {
+                    closeVideoModal();
+                    window.openEpisodeList(currentSeriesId, currentItem); 
+                }
+            };
+
+            document.getElementById('show-episodes-btn-mobile').addEventListener('click', openEpisodeListHandler);
+            document.getElementById('show-episodes-btn-desktop').addEventListener('click', openEpisodeListHandler);
+        }
+
+        function closeVideoModal() {
+            videoModal.classList.add('hidden');
+            saveWatchProgress(); 
+            if (saveTimeout) clearTimeout(saveTimeout);
+            modalMainPlayer.pause();
+            modalMainPlayer.src = '';
+            
+            if (watermarkEl) {
+                watermarkEl.remove();
+                watermarkEl = null;
+            }
+            
+            cleanupCustomControls();
+        }
+
+        async function playVideoInModal(seriesData, episodeData, videoUrl, episodeId) {
+            try {
+                currentItem = { ...seriesData, ...episodeData, episodeId: episodeId };
+                
+                if (!videoUrl) {
+                    alert("Gagal memuat video: URL tidak sah.");
+                    return;
+                }
+
+                const loadingIcon = document.getElementById('video-loading-icon');
+                /* Gunakan mainLogoUrl (dari index) atau faviconUrl sebagai fallback */
+                loadingIcon.src = mainLogoUrl || faviconUrl || 'https://placehold.co/64x64/374151/FFF?text=...'; 
+                loadingIcon.classList.remove('hidden', 'animate-pulse');
+                loadingIcon.classList.add('animate-pulse');
+                
+                modalMainPlayer.style.display = 'none'; 
+
+                document.getElementById('modal-thumbnail').src = seriesData.thumbnailUrl;
+                document.getElementById('modal-content-title').textContent = seriesData.title;
+                document.getElementById('modal-content-description').textContent = seriesData.description || 'Tidak ada deskripsi.';
+                document.getElementById('modal-content-rating').textContent = (seriesData.rating || 'N/A').replace(' / 10', '');
+                document.getElementById('modal-content-vote').textContent = (seriesData.scored_by || 0).toLocaleString('id-ID') + ' Vote';
+                document.getElementById('modal-content-episodes').textContent = `${seriesData.episodeCount || 0} Eps`;
+
+                videoModal.classList.remove('hidden');
+                
+                modalMainPlayer.src = videoUrl;
+
+                const progressData = getWatchProgress(episodeId);
+                const progress = progressData.time;
+
+                createWatermark();
+                setupCustomControls(progress);
+                
+                modalMainPlayer.addEventListener('error', (e) => {
+                     console.error("Video player error:", e, modalMainPlayer.error);
+                     loadingIcon.src = 'https://placehold.co/64x64/ef4444/FFFFFF?text=Error';
+                     loadingIcon.classList.remove('animate-pulse');
+                }, { once: true });
+                
+                logVideoPlay(currentSeriesId);
+
+            } catch (error) { console.error("Gagal memuat video:", error); }
+        }
+
+        /* --- Kontrol Video Kustom --- */
+
+        function addManagedListener(element, event, handler, options = false) {
+            if (!element) return;
+            element.addEventListener(event, handler, options);
+            customControlListeners.push({ element, event, handler, options });
+        }
+
+        function cleanupCustomControls() {
+            customControlListeners.forEach(l => {
+                l.element.removeEventListener(l.event, l.handler, l.options);
+            });
+            customControlListeners.length = 0; 
+            
+            if (controlsTimeout) clearTimeout(controlsTimeout);
+        }
+
+        function setupCustomControls(startTime = 0) {
+            const loadingIcon = document.getElementById('video-loading-icon');
+
+            const resetControlsTimer = () => {
+                if (controlsTimeout) clearTimeout(controlsTimeout);
+                controlsContainer.style.opacity = '1';
+                videoContainer.style.cursor = 'default';
+                
+                controlsTimeout = setTimeout(() => {
+                    if (!modalMainPlayer.paused) {
+                        controlsContainer.style.opacity = '0';
+                        videoContainer.style.cursor = 'none'; 
+                    }
+                }, 3000); 
+            };
+
+            addManagedListener(videoContainer, 'mousemove', resetControlsTimer);
+            addManagedListener(videoContainer, 'mouseleave', () => {
+                 if (controlsTimeout) clearTimeout(controlsTimeout);
+                 if (!modalMainPlayer.paused) {
+                     controlsContainer.style.opacity = '0';
+                     videoContainer.style.cursor = 'none';
+                 }
+            });
+
+            /* 1. Listener Video Player */
+            addManagedListener(modalMainPlayer, 'loadedmetadata', () => {
+                progressBar.max = modalMainPlayer.duration;
+                updateTimeDisplay();
+            });
+
+            addManagedListener(modalMainPlayer, 'canplay', () => {
+                loadingIcon.classList.add('hidden');
+                modalMainPlayer.style.display = 'block';
+                
+                if (startTime > 0) {
+                    modalMainPlayer.currentTime = startTime;
+                }
+                modalMainPlayer.play().catch(e => {
+                    console.warn("Autoplay dicegah, tampilkan tombol play manual.", e);
+                    updatePlayPauseIcon(false); 
+                });
+                resetControlsTimer(); 
+            }, { once: true });
+
+            addManagedListener(modalMainPlayer, 'play', () => {
+                updatePlayPauseIcon(true); 
+                resetControlsTimer(); 
+            });
+
+            addManagedListener(modalMainPlayer, 'pause', () => {
+                updatePlayPauseIcon(false); 
+                if (controlsTimeout) clearTimeout(controlsTimeout); 
+                controlsContainer.style.opacity = '1';
+                videoContainer.style.cursor = 'default';
+            });
+            
+            addManagedListener(modalMainPlayer, 'timeupdate', () => {
+                updateProgressBar();
+                updateTimeDisplay();
+            });
+
+            addManagedListener(modalMainPlayer, 'ended', () => {
+                updatePlayPauseIcon(false);
+            });
+
+            /* 2. Listener Tombol Kontrol */
+            addManagedListener(playPauseBtn, 'click', togglePlayPause);
+            addManagedListener(fullscreenBtn, 'click', toggleFullscreen);
+
+            /* 3. Listener Progress Bar */
+            addManagedListener(progressBar, 'input', (e) => {
+                modalMainPlayer.currentTime = e.target.value;
+            });
+
+            /* 4. Listener Klik pada Video */
+            addManagedListener(modalMainPlayer, 'click', () => {
+                if (parseFloat(controlsContainer.style.opacity) > 0) {
+                    togglePlayPause();
+                } else {
+                    resetControlsTimer();
+                }
+            });
+            
+            /* 5. Simpan progres video */
+            setupVideoProgressSaving();
+        }
+
+        function updatePlayPauseIcon(isPlaying) {
+            if (isPlaying) {
+                playIcon.classList.add('hidden');
+                pauseIcon.classList.remove('hidden');
+            } else {
+                playIcon.classList.remove('hidden');
+                pauseIcon.classList.add('hidden');
+            }
+        }
+
+        function formatTime(seconds) {
+            const min = Math.floor(seconds / 60);
+            const sec = Math.floor(seconds % 60);
+            return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+        }
+
+        function updateTimeDisplay() {
+            const current = formatTime(modalMainPlayer.currentTime);
+            const duration = formatTime(modalMainPlayer.duration || 0);
+            timeDisplay.textContent = `${current} / ${duration}`;
+        }
+
+        function updateProgressBar() {
+            progressBar.value = modalMainPlayer.currentTime;
+        }
+
+        function togglePlayPause() {
+            if (modalMainPlayer.paused || modalMainPlayer.ended) {
+                modalMainPlayer.play();
+            } else {
+                modalMainPlayer.pause();
+            }
+        }
+
+        async function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                try {
+                    await videoContainer.requestFullscreen();
+                    if (screen.orientation && typeof screen.orientation.lock === 'function') {
+                        try {
+                            await screen.orientation.lock('landscape');
+                        } catch (err) {
+                            console.warn("Gagal mengunci orientasi:", err.message);
+                        }
+                    }
+                } catch (err) {
+                     console.error(`Error saat request fullscreen: ${err.message}`);
+                }
+            } else {
+                try {
+                    await document.exitFullscreen();
+                    if (screen.orientation && typeof screen.orientation.unlock === 'function') {
+                        screen.orientation.unlock();
+                    }
+                } catch (err) {
+                     console.error(`Error saat keluar fullscreen: ${err.message}`);
+                }
+            }
+        }
+
+
+        /* --- Fungsi Watermark --- */
+        function createWatermark() {
+            if (watermarkEl) {
+                watermarkEl.remove();
+            }
+            
+            if (!mainLogoUrl) return;
+
+            watermarkEl = document.createElement('div');
+            watermarkEl.style.position = 'absolute';
+            watermarkEl.style.top = '0.5rem'; 
+            watermarkEl.style.right = '0.5rem'; 
+            watermarkEl.style.padding = '0.25rem'; 
+            watermarkEl.style.backgroundColor = 'rgba(0, 0, 0, 0.7)'; 
+            watermarkEl.style.borderRadius = '0.25rem'; 
+            watermarkEl.style.zIndex = '21'; 
+            watermarkEl.style.pointerEvents = 'none'; 
+            
+            const img = document.createElement('img');
+            img.src = mainLogoUrl;
+            img.style.height = '1.75rem'; 
+            img.style.width = 'auto';
+            img.style.objectFit = 'contain';
+            img.style.opacity = '0.8';
+            
+            watermarkEl.appendChild(img);
+            videoContainer.appendChild(watermarkEl);
+        }
+
+
+        /* --- Fungsi Simpan Progres --- */
+
+        function getWatchProgress(episodeId) {
+            try {
+                const progressData = localStorage.getItem('aisnimeWatchProgress');
+                if (progressData) {
+                    const episodes = JSON.parse(progressData);
+                    if (episodes && episodes[episodeId]) {
+                        if (typeof episodes[episodeId] === 'object') {
+                            return episodes[episodeId];
+                        } else if (typeof episodes[episodeId] === 'number') {
+                            return { time: episodes[episodeId], watched: false };
+                        }
+                    }
+                }
+                return { time: 0, watched: false };
+            } catch (error) {
+                console.error("Gagal mengambil progres dari localStorage:", error);
+                return { time: 0, watched: false };
+            }
+        }
+
+        function saveWatchProgress() {
+            if (!currentItem || !currentItem.episodeId || !modalMainPlayer) return;
+            
+            const episodeId = currentItem.episodeId;
+            const currentTime = modalMainPlayer.currentTime;
+            const duration = modalMainPlayer.duration;
+            
+            if (currentTime < 10 || isNaN(duration) || duration === 0) return; 
+
+            try {
+                let progressData = localStorage.getItem('aisnimeWatchProgress');
+                let episodes = {};
+                if (progressData) {
+                    episodes = JSON.parse(progressData);
+                }
+
+                let episodeProgress = getWatchProgress(episodeId);
+                episodeProgress.time = currentTime;
+
+                if (currentTime / duration >= 0.95) {
+                    episodeProgress.watched = true;
+                }
+                
+                episodes[episodeId] = episodeProgress;
+                localStorage.setItem('aisnimeWatchProgress', JSON.stringify(episodes));
+            } catch (error) {
+                console.error("Gagal menyimpan progres ke localStorage:", error);
+            }
+        }
+
+        function setupVideoProgressSaving() {
+            if (saveTimeout) clearTimeout(saveTimeout);
+            
+            addManagedListener(modalMainPlayer, 'timeupdate', () => {
+                if (saveTimeout) clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(saveWatchProgress, 5000); 
+            });
+        }
+
+        async function logVideoPlay(seriesId) {
+            try {
+                const now = Date.now();
+                const oneHour = 60 * 60 * 1000;
+                const viewTimestampsKey = 'aisnimeViewTimestamps';
+                
+                let timestamps = {};
+                try {
+                    const storedTimestamps = localStorage.getItem(viewTimestampsKey);
+                    if (storedTimestamps) {
+                        timestamps = JSON.parse(storedTimestamps);
+                    }
+                } catch (e) {
+                    console.error("Gagal memuat timestamps dari localStorage", e);
+                    timestamps = {};
+                }
+
+                const lastViewTime = timestamps[seriesId] || 0;
+
+                if (now - lastViewTime > oneHour) {
+                    console.log(`Mencatat penonton baru untuk serial ${seriesId}.`);
+                    
+                    /* Gunakan seriesCollRef global */
+                    const seriesRef = doc(seriesCollRef, seriesId); 
+                    await updateDoc(seriesRef, {
+                        viewCount: increment(1)
+                    });
+                    
+                    /* Gunakan settingsCollRef global */
+                    const statsRef = doc(settingsCollRef, 'analytics'); 
+                    await setDoc(statsRef, {
+                        totalViews: increment(1)
+                    }, { merge: true });
+
+                    timestamps[seriesId] = now;
+                    localStorage.setItem(viewTimestampsKey, JSON.stringify(timestamps));
+
+                } else {
+                     console.log(`Penonton untuk serial ${seriesId} sudah dihitung dalam 1 jam terakhir. Dilewati.`);
+                }
+
+            } catch (error) {
+                 console.error("Gagal mencatat pemutaran video:", error);
+            }
+        }
+        
+        /* --- [AKHIR] KODE YANG DIGABUNGKAN DARI WATCH-MODULE.JS --- */
+
+        /* [DIHAPUS] Fungsi duplikat */
+        /* function censorMessage(message, blocklist) { ... } */
+        
+        /* [DIHAPUS] Fungsi duplikat */
+        /* function setupChat() { ... } */
 
         /* Menunggu sehingga DOM sedia sebelum menjalankan 'main' */
         window.addEventListener('DOMContentLoaded', main);
