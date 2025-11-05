@@ -176,8 +176,8 @@ function createWatermark() {
     watermarkWrapper = document.createElement('div');
     watermarkWrapper.id = 'video-watermark-wrapper';
     watermarkWrapper.style.position = 'absolute';
-    watermarkWrapper.style.top = '1rem'; // 16px
-    watermarkWrapper.style.right = '1rem'; // 16px
+    watermarkWrapper.style.top = '0.5rem'; // [DIUBAH] Diperkecil dari 1rem (8px)
+    watermarkWrapper.style.right = '0.5rem'; // [DIUBAH] Diperkecil dari 1rem (8px)
     watermarkWrapper.style.zIndex = '21'; // Di atas video, di bawah kontrol jika overlap
     watermarkWrapper.style.pointerEvents = 'none';
     watermarkWrapper.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // BG hitam transparan
@@ -190,7 +190,7 @@ function createWatermark() {
     watermarkImg.id = 'video-watermark-img';
     watermarkImg.src = mainLogoUrl;
     watermarkImg.alt = 'Logo';
-    watermarkImg.style.height = '2.5rem'; // 40px (sama dengan header)
+    watermarkImg.style.height = '1.75rem'; // [DIUBAH] Diperkecil dari 2.5rem (28px)
     watermarkImg.style.width = 'auto';
     watermarkImg.style.objectFit = 'contain';
 
@@ -474,4 +474,3 @@ async function logVideoPlay(seriesId) {
          console.error("Gagal mencatat pemutaran video:", error);
     }
 }
-
