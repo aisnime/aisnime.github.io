@@ -169,8 +169,8 @@
                 <div id="video-container" class="w-full aspect-video bg-black rounded-t-lg lg:rounded-l-lg lg:rounded-tr-none relative group">
                     <img id="video-loading-icon" src="" alt="Memuat..." class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 animate-pulse hidden z-10">
                     
-                    <!-- [DIUBAH] Player utama (tanpa kontrol bawaan) -->
-                    <video id="modal-main-player" class="w-full h-full relative z-0" disablepictureinpicture playsinline autoplay muted></video>
+                    <!-- [DIUBAH] Player utama (tanpa kontrol bawaan, 'muted' dihapus) -->
+                    <video id="modal-main-player" class="w-full h-full relative z-0" disablepictureinpicture playsinline autoplay></video>
                     
                     <!-- [DIHAPUS] Watermark dipindahkan ke watch-module.js -->
                     
@@ -383,6 +383,7 @@
                         mainTitleText.textContent = "AISNIME"; 
                         mainTitleText.classList.remove('hidden');
                         mainLogoImg.classList.add('hidden');
+                        console.warn(`Logo utama tidak ditemukan. Snap exists: ${mainLogoSnap.exists()}`); // [DIKEMBALIKAN]
                     }
                     
                     const sliderContainer = document.getElementById('header-poster-slider');
@@ -619,17 +620,31 @@
         function setupGenreFilter() {
             allGenres = new Set();
             allSeriesContent.forEach(item => {
-                if (item.data.genre && Array.isArray(item.data.genre)) {
-                    item.data.genre.forEach(g => allGenres.add(g.trim()));
+                if (!item.data.genre) return; // [BARU] Lewati jika genre tidak ada
+
+                let genres = [];
+                if (Array.isArray(item.data.genre)) {
+                    // Jika sudah berupa array
+                    genres = item.data.genre;
+                } else if (typeof item.data.genre === 'string') {
+                    // [BARU] Jika berupa string, pisahkan dengan koma
+                    genres = item.data.genre.split(',').map(g => g.trim()).filter(g => g);
                 }
+
+                genres.forEach(g => allGenres.add(g.trim()));
             });
 
             genreListMobile.innerHTML = '';
             genreListDesktop.innerHTML = '';
+            
+            // [BARU] Tambahkan tombol "All" hanya jika ada genre lain
             createGenreButton('All');
-            Array.from(allGenres).sort().forEach(genre => {
-                createGenreButton(genre);
-            });
+            if (allGenres.size > 0) {
+                 Array.from(allGenres).sort().forEach(genre => {
+                    createGenreButton(genre);
+                });
+            }
+            
             updateActiveGenreButtons();
         }
         
@@ -661,9 +676,18 @@
                 filteredSeriesContent = allSeriesContent;
             } else {
                 isSearching = true;
-                filteredSeriesContent = allSeriesContent.filter(item => 
-                    item.data.genre && item.data.genre.includes(genre)
-                );
+                filteredSeriesContent = allSeriesContent.filter(item => {
+                    if (!item.data.genre) return false;
+                    // [BARU] Cek string dan array
+                    if (Array.isArray(item.data.genre)) {
+                        return item.data.genre.includes(genre);
+                    }
+                    if (typeof item.data.genre === 'string') {
+                        // Periksa apakah string mengandung genre sebagai kata yang utuh (atau bagian dari daftar koma)
+                        return item.data.genre.split(',').map(g => g.trim()).includes(genre);
+                    }
+                    return false;
+                });
             }
             
             genreSidebar.classList.add('-translate-x-full');
