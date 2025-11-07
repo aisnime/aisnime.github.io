@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- [DIUBAH] Versi cache busting dinaikkan -->
-    <link rel="stylesheet" href="styles.css?v=2.1"> 
+    <link rel="stylesheet" href="styles.css?v=2.2"> 
 </head>
 <body class="bg-gray-900 text-white" style="font-family: 'Inter', sans-serif;">
     
@@ -61,7 +61,7 @@
                     
                     <!-- Pencarian -->
                     <form id="search-form" class="w-full max-w-xl mx-auto lg:ml-auto lg:mr-0 mt-4 flex items-center space-x-2">
-                        <input type="search" id="search-input" placeholder="Nyari judul apa?" class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition">
+                        <input type="search" id="search-input" placeholder="Cari Judul" class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition">
                     </form>
                 </div>
             </div>
@@ -74,15 +74,22 @@
                     
                     <!-- Filter Genre Desktop -->
                     <div id="genre-filter-desktop" class="hidden lg:block mb-6 pb-4 border-b border-gray-700">
-                        <h3 class="text-xl font-semibold mb-3">Genre</h3>
+                        <h3 class="text-xl font-semibold mb-3">Filter Genre</h3>
                         <div id="genre-list-desktop" class="flex flex-wrap gap-2">
                             <!-- Genre buttons will be loaded here -->
                         </div>
                     </div>
                     
-                    <h2 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-3">ANIME</h2>
-                    <div id="content-list" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <p id="no-content-message" class="text-gray-500 col-span-full text-center py-8">Memuat konten...</p>
+                    <!-- [DIUBAH] Kontainer untuk semua baris konten -->
+                    <div id="content-rows-container" class="space-y-8">
+                        <!-- Baris "Update Terbaru" akan dimuat oleh JS di sini -->
+                        <div id="latest-updates-row">
+                            <h2 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-3">ANIME</h2>
+                            <div id="content-list" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <p id="no-content-message" class="text-gray-500 col-span-full text-center py-8">Memuat konten...</p>
+                            </div>
+                        </div>
+                        <!-- Baris kustom lainnya akan ditambahkan oleh JS di sini -->
                     </div>
                 </main>
 
@@ -171,8 +178,8 @@
                     
                     <video id="modal-main-player" class="w-full h-full relative z-0" disablepictureinpicture playsinline autoplay></video>
                     
-                    <!-- [BARU] Tombol Play/Pause Besar di Tengah -->
-                    <button id="big-play-pause-btn" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 hidden opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <!-- [DIUBAH] Tombol Play/Pause Besar di Tengah (group-hover:opacity-100 dihapus) -->
+                    <button id="big-play-pause-btn" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 hidden opacity-0 transition-opacity duration-300">
                         <!-- Ikon Play Besar -->
                         <svg id="big-play-icon" class="w-16 h-16 text-white opacity-70 hover:opacity-100 transition-opacity" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M4.018 14.381V5.619a.7.7 0 0 1 1.05-.606l8.342 4.381a.7.7 0 0 1 0 1.212l-8.342 4.381a.7.7 0 0 1-1.05-.606Z"></path>
@@ -183,8 +190,8 @@
                         </svg>
                     </button>
 
-                    <!-- Kontrol Kustom -->
-                    <div id="custom-controls-container" class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+                    <!-- [DIUBAH] Kontrol Kustom (group-hover:opacity-100 dihapus) -->
+                    <div id="custom-controls-container" class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent opacity-0 transition-opacity duration-300 z-20">
                         <!-- Progress Bar -->
                         <div class="w-full h-3 flex items-center cursor-pointer">
                              <input type="range" id="progress-bar" class="w-full h-1" value="0" min="0" max="100" step="0.1">
@@ -284,17 +291,18 @@
         /* --- Collection Refs --- */
         const seriesCollRef = collection(db, 'series'); 
         const settingsCollRef = collection(db, 'settings');
+        const contentRowsCollRef = collection(db, 'contentRows'); // [BARU]
         
         /* Deklarasi variabel Halaman Utama */
-        let contentListEl, mainLogoImg, mainTitleText;
+        let contentListEl, mainLogoImg, mainTitleText, contentRowsContainer; // [DIUBAH]
         let mainLogoUrl = ''; 
         let allSeriesContent = [];
         let filteredSeriesContent = []; 
         let isLoadingMore = false;
         let isSearching = false;
         let currentDisplayCount = 0;
-        const MOBILE_LIMIT = 8;
-        const DESKTOP_LIMIT = 20;
+        const MOBILE_LIMIT = 4; // [DIUBAH] Sesuai permintaan
+        const DESKTOP_LIMIT = 10; // [DIUBAH] Sesuai permintaan
         let chatCollRef = null;
         let currentUserId = null;
         let chatUnsubscribe = null; 
@@ -320,6 +328,7 @@
         async function main() {
             try {
                 contentListEl = document.getElementById('content-list');
+                contentRowsContainer = document.getElementById('content-rows-container'); // [BARU]
                 mainLogoImg = document.getElementById('main-logo');
                 mainTitleText = document.getElementById('main-title-text');
                 genreSidebar = document.getElementById('genre-sidebar');
@@ -439,6 +448,7 @@
                     }
                     
                     loadInitialContent();
+                    loadCustomContentRows(); // [BARU]
                     setupSearchListener();
                     setupEventListeners(); 
                     
@@ -509,8 +519,8 @@
                 
                 filteredSeriesContent = allSeriesContent;
                 currentDisplayCount = 0;
-                contentListEl.innerHTML = '';
-                renderMoreContent();
+                contentListEl.innerHTML = ''; // [DIUBAH] Hanya mengosongkan #content-list
+                renderMoreContent(); // [DIUBAH] Hanya merender "Update Terbaru"
                 setupGenreFilter();
 
             }, (error) => {
@@ -519,6 +529,33 @@
                     contentListEl.innerHTML = '<p class="text-red-500 col-span-full text-center py-8">Error memuat konten.</p>';
                 }
             });
+        }
+        
+        // [BARU] Fungsi untuk memuat baris konten kustom
+        async function loadCustomContentRows() {
+            const q = query(contentRowsCollRef, orderBy("order", "asc"));
+            try {
+                const snapshot = await getDocs(q);
+                for (const docSnap of snapshot.docs) {
+                    const rowData = docSnap.data();
+                    const seriesIds = rowData.seriesIds || [];
+                    if (seriesIds.length > 0) {
+                        // Ambil detail untuk setiap serial dalam baris
+                        const seriesPromises = seriesIds.map(id => getDoc(doc(seriesCollRef, id)));
+                        const seriesDocs = await Promise.all(seriesPromises);
+                        
+                        const rowSeriesContent = seriesDocs
+                            .filter(doc => doc.exists())
+                            .map(doc => ({ id: doc.id, data: doc.data() }));
+
+                        if (rowSeriesContent.length > 0) {
+                            renderCustomRow(rowData.title, rowSeriesContent);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error("Gagal memuat baris konten kustom:", error);
+            }
         }
 
         function setupSearchListener() {
@@ -529,20 +566,32 @@
                 searchInput.addEventListener('input', (e) => {
                     const searchTerm = e.target.value.toLowerCase().trim();
                     
+                    // [DIUBAH] Logika pencarian sekarang menyembunyikan/menampilkan baris
+                    const latestUpdatesRow = document.getElementById('latest-updates-row');
+                    const customRows = document.querySelectorAll('.custom-content-row');
+
                     if (searchTerm.length > 0) {
                         isSearching = true;
+                        // Sembunyikan semua baris kustom saat mencari
+                        customRows.forEach(row => row.classList.add('hidden'));
+                        latestUpdatesRow.classList.remove('hidden'); // Selalu cari di "Update Terbaru"
+
                         filteredSeriesContent = allSeriesContent.filter(item => 
                             item.data.title.toLowerCase().includes(searchTerm) ||
                             (item.data.genre && item.data.genre.join(', ').toLowerCase().includes(searchTerm))
                         );
                     } else {
                         isSearching = false;
-                        filterContent(activeGenre); 
+                        // Tampilkan kembali baris kustom
+                        customRows.forEach(row => row.classList.remove('hidden'));
+                        latestUpdatesRow.classList.remove('hidden');
+                        
+                        filterContent(activeGenre); // Terapkan filter genre yang aktif
                         return;
                     }
                     currentDisplayCount = 0;
                     contentListEl.innerHTML = '';
-                    renderMoreContent();
+                    renderMoreContent(); // Render hasil pencarian di "Update Terbaru"
                 });
             }
             
@@ -572,6 +621,7 @@
         }
         
         function handleScroll() {
+            // [DIUBAH] Infinite scroll hanya berlaku jika tidak sedang mencari ATAU filter
             if (isSearching || activeGenre !== 'All' || isLoadingMore) return;
             if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
                 renderMoreContent();
@@ -602,6 +652,7 @@
                     bigPlayPauseBtn = document.getElementById('big-play-pause-btn');
                     bigPlayIcon = document.getElementById('big-play-icon');
                     bigPauseIcon = document.getElementById('big-pause-icon');
+
 
                     /* Pasang listener modal (hanya sekali) */
                     setupModalEventListeners();
@@ -672,11 +723,20 @@
                 searchInput.value = '';
             }
             
+            // [DIUBAH] Sembunyikan baris kustom saat filter aktif
+            const latestUpdatesRow = document.getElementById('latest-updates-row');
+            const customRows = document.querySelectorAll('.custom-content-row');
+            
             if (genre === 'All') {
                 isSearching = false;
                 filteredSeriesContent = allSeriesContent;
+                customRows.forEach(row => row.classList.remove('hidden')); // Tampilkan lagi
+                latestUpdatesRow.classList.remove('hidden');
             } else {
-                isSearching = true;
+                isSearching = true; // Mode filter aktif
+                customRows.forEach(row => row.classList.add('hidden')); // Sembunyikan
+                latestUpdatesRow.classList.remove('hidden'); // Selalu tampilkan update terbaru
+
                 filteredSeriesContent = allSeriesContent.filter(item => {
                     if (!item.data.genre) return false;
                     if (Array.isArray(item.data.genre)) {
@@ -719,13 +779,15 @@
             const dataToRender = (isSearching || activeGenre !== 'All') ? filteredSeriesContent : allSeriesContent;
             
             let itemsToLoad;
+            // [DIUBAH] Jika sedang mencari atau filter, tampilkan SEMUA hasil (bukan per batch)
             if (isSearching || activeGenre !== 'All') {
                 itemsToLoad = dataToRender;
-                 if (currentDisplayCount > 0) {
+                 if (currentDisplayCount > 0) { // Hanya render sekali
                     isLoadingMore = false;
                     return;
                 }
             } else {
+                // Logika infinite scroll normal
                 const limit = window.innerWidth < 768 ? MOBILE_LIMIT : DESKTOP_LIMIT;
                 itemsToLoad = dataToRender.slice(currentDisplayCount, currentDisplayCount + limit);
             }
@@ -745,44 +807,71 @@
             } 
 
             itemsToLoad.forEach(itemData => {
-                if (!itemData.data.thumbnailUrl || !itemData.data.title) {
-                    console.warn(`MELEWATI item ${itemData.id}, 'thumbnailUrl' atau 'title' hilang.`); 
-                    return; 
-                }
-
-                const itemEl = document.createElement('div');
-                itemEl.className = 'content-card bg-gray-800 bg-opacity-50 rounded-lg overflow-hidden shadow-lg transform transition-transform duration-200 hover:-translate-y-1 cursor-pointer';
-                
-                itemEl.innerHTML = `
-                    <div class="relative w-full aspect-[7/9] bg-black">
-                        <img src="${itemData.data.thumbnailUrl}" alt="${itemData.data.title}" class="w-full h-full object-cover" loading="lazy">
-                    </div>
-                    <div class="p-4 space-y-1 text-left">
-                        <h4 class="font-semibold text-white leading-tight truncate text-xs" title="${itemData.data.title}">${itemData.data.title}</h4>
-                        <div class="flex items-center justify-between mt-1"> 
-                            <div class="flex items-center text-[9px] text-yellow-400">
-                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                                <span>${(itemData.data.rating || 'N/A').replace(' / 10', '')}</span>
-                            </div>
-                            
-                            <div class="flex items-center text-[9px] text-gray-400">
-                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
-                                <span>${(itemData.data.episodeCount || 0)}</span>
-                            </div>
-                            <div class="flex items-center text-[9px] text-gray-400">
-                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                                <span>${(itemData.data.viewCount || 0).toLocaleString('id-ID')}</span>
-                            </div>
-                        </div>
-                    </div>`;
-                itemEl.addEventListener('click', () => {
-                    loadAndShowEpisodeList(itemData.id, itemData.data);
-                });
-                contentListEl.appendChild(itemEl);
+                // [DIUBAH] Kirim data ke fungsi renderCard
+                const card = createSeriesCard(itemData);
+                contentListEl.appendChild(card);
             });
 
             currentDisplayCount += itemsToLoad.length;
             isLoadingMore = false;
+        }
+
+        // [BARU] Fungsi untuk merender baris kustom
+        function renderCustomRow(title, seriesContent) {
+            const rowEl = document.createElement('div');
+            rowEl.className = 'custom-content-row'; // Kelas untuk disembunyikan saat filter/cari
+
+            const gridEl = document.createElement('div');
+            gridEl.className = 'grid grid-cols-1 sm:grid-cols-2 gap-6';
+
+            seriesContent.forEach(itemData => {
+                const card = createSeriesCard(itemData);
+                gridEl.appendChild(card);
+            });
+
+            rowEl.innerHTML = `
+                <h2 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-3">${title.toUpperCase()}</h2>
+            `;
+            rowEl.appendChild(gridEl);
+            contentRowsContainer.appendChild(rowEl);
+        }
+        
+        // [BARU] Fungsi terpusat untuk membuat kartu serial
+        function createSeriesCard(itemData) {
+            if (!itemData.data.thumbnailUrl || !itemData.data.title) {
+                console.warn(`MELEWATI item ${itemData.id}, 'thumbnailUrl' atau 'title' hilang.`); 
+                return document.createDocumentFragment(); // Kembalikan elemen kosong
+            }
+
+            const itemEl = document.createElement('div');
+            itemEl.className = 'content-card bg-gray-800 bg-opacity-50 rounded-lg overflow-hidden shadow-lg transform transition-transform duration-200 hover:-translate-y-1 cursor-pointer';
+            
+            itemEl.innerHTML = `
+                <div class="relative w-full aspect-[7/9] bg-black">
+                    <img src="${itemData.data.thumbnailUrl}" alt="${itemData.data.title}" class="w-full h-full object-cover" loading="lazy">
+                </div>
+                <div class="p-4 space-y-1 text-left">
+                    <h4 class="font-semibold text-white leading-tight truncate text-xs" title="${itemData.data.title}">${itemData.data.title}</h4>
+                    <div class="flex items-center justify-between mt-1"> 
+                        <div class="flex items-center text-[9px] text-yellow-400">
+                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <span>${(itemData.data.rating || 'N/A').replace(' / 10', '')}</span>
+                        </div>
+                        
+                        <div class="flex items-center text-[9px] text-gray-400">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                            <span>${(itemData.data.episodeCount || 0)}</span>
+                        </div>
+                        <div class="flex items-center text-[9px] text-gray-400">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            <span>${(itemData.data.viewCount || 0).toLocaleString('id-ID')}</span>
+                        </div>
+                    </div>
+                </div>`;
+            itemEl.addEventListener('click', () => {
+                loadAndShowEpisodeList(itemData.id, itemData.data);
+            });
+            return itemEl;
         }
         
         async function logPageView() {
@@ -1356,15 +1445,8 @@
         
         /* --- [AKHIR] KODE YANG DIGABUNGKAN DARI WATCH-MODULE.JS --- */
 
-        /* [DIHAPUS] Fungsi duplikat */
-        /* function censorMessage(message, blocklist) { ... } */
-        
-        /* [DIHAPUS] Fungsi duplikat */
-        /* function setupChat() { ... } */
-
         /* Menunggu sehingga DOM sedia sebelum menjalankan 'main' */
         window.addEventListener('DOMContentLoaded', main);
     </script>
 </body>
 </html>
-
