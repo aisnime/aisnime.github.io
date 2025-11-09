@@ -75,15 +75,8 @@ body {
 @media (min-width: 680px) { /* sm */
   /* [DIUBAH] Kembali ke 3 kolom */
   #content-list, .custom-row-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    /* [DIHAPUS] justify-content: flex-start; */
-  }
-}
-
-/* [BARU] Aturan media query untuk 4 dan 5 kolom */
-@media (min-width: 1080px) { /* md */
-  #content-list, .custom-row-grid {
     grid-template-columns: repeat(5, minmax(0, 1fr));
+    /* [DIHAPUS] justify-content: flex-start; */
   }
 }
 
@@ -106,6 +99,7 @@ body {
 #genre-list-mobile {
     scrollbar-width: none;  /* Firefox */
 }
+
 
 
 
