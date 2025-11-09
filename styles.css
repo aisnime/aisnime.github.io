@@ -53,7 +53,31 @@ body {
 }
 
 /* [DIHAPUS] Aturan grid yang bentrok */
-/* ... (aturan grid yang dihapus) ... */
+/*
+#content-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+.custom-content-row .grid {
+     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+@media (min-width: 640px) { 
+  #content-list, .custom-content-row .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (min-width: 768px) { 
+  #content-list, .custom-content-row .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) { 
+  #content-list, .custom-content-row .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)); 
+  }
+}
+*/
 
 
 /* [DIUBAH] Mengganti grid dengan flexbox wrap */
