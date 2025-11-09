@@ -1,0 +1,82 @@
+/* Gaya umum tetap sama */
+body {
+    font-family: 'Inter', sans-serif;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: white;
+}
+
+.overlay {
+    min-height: 100vh;
+}
+
+.main-content-container {
+    background-color: rgba(0, 0, 0, 0.75);
+    border-radius: 0.75rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+}
+
+.content-card {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.content-card:hover {
+    transform: translateY(-4px);
+}
+
+.content-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* [DIHAPUS] Kontrol kustom lama tidak lagi diperlukan */
+
+#modal-content-description {
+    white-space: pre-wrap;
+    overflow-y: auto;
+    flex-grow: 1;
+    max-height: 120px; 
+}
+
+@media (min-width: 1024px) { /* lg (desktop) */
+  #modal-content-description {
+     max-height: 200px;
+  }
+}
+
+/* [DIUBAH] Mengurangi grid-cols-5 menjadi 4 di 'lg' */
+#content-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+/* [BARU] Grid untuk baris kustom memiliki gaya yang sama */
+.custom-content-row .grid {
+     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+@media (min-width: 640px) { /* sm */
+  #content-list, .custom-content-row .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) { /* md */
+  #content-list, .custom-content-row .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) { /* lg */
+  #content-list, .custom-content-row .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)); /* [DIUBAH] Menjadi 3 kolom agar pas di tengah */
+  }
+}
+
+/* [DIHAPUS] Notifikasi Share */
+
+/* --- [DIHAPUS] Semua Gaya untuk Kontrol Video Kustom --- */
