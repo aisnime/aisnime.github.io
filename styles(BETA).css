@@ -81,17 +81,12 @@ body {
 }
 
 /* [BARU] Aturan media query untuk 4 dan 5 kolom */
-@media (min-width: 768px) { /* md */
+@media (min-width: 480px) { /* md */
   #content-list, .custom-row-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 }
 
-@media (min-width: 768px) { /* lg */
-  #content-list, .custom-row-grid {
-    grid-template-columns: repeat(5, minmax(0, 1fr)); /* 5 Kolom */
-  }
-}
 
 
 /* [BARU] Sembunyikan scrollbar untuk Webkit (Chrome, Safari) */
@@ -111,6 +106,7 @@ body {
 #genre-list-mobile {
     scrollbar-width: none;  /* Firefox */
 }
+
 
 
 
