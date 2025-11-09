@@ -20,9 +20,9 @@ body {
 .content-card {
     cursor: pointer;
     transition: transform 0.3s ease;
-    /* [DIUBAH] Menambahkan !important untuk memaksa ukuran */
-    width: 60px !important;
-    height: 20px !important;
+    /* [DIUBAH] Ukuran diubah sesuai permintaan */
+    width: 20px !important;
+    height: 60px !important;
     display: flex;
     flex-direction: column;
 }
