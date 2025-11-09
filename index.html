@@ -15,78 +15,88 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- [DIUBAH] Versi cache busting dinaikkan -->
-    <link rel="stylesheet" href="styles.css?v=2.12"> 
+    <link rel="stylesheet" href="styles.css?v=2.15"> 
 </head>
-<body class="bg-gray-900 text-white" style="font-family: 'Inter', sans-serif;">
+<!-- [DIUBAH] Menambahkan h-screen dan overflow-hidden ke body di desktop -->
+<body class="bg-gray-900 text-white lg:h-screen lg:overflow-hidden" style="font-family: 'Inter', sans-serif;">
     
     <div id="loading-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-900">
         <img id="loading-favicon" src="https://aisnime.site/loading.ico" alt="Memuat..." class="w-16 h-16 rounded-lg animate-pulse">
+        <p class="text-gray-400 mt-4">Memuat data...</p>
     </div>
 
-    <!-- Konten Normal (Awalnya disembunyikan) -->
-    <div id="main-content" class="overlay hidden">
+    <!-- [DIUBAH] Konten utama sekarang menjadi flex-col di desktop -->
+    <div id="main-content" class="overlay hidden lg:h-full lg:flex lg:flex-col">
         <!-- [DIHAPUS] Notifikasi Link Disalin -->
 
-        <div class="container mx-auto p-4 lg:p-8">
+        <!-- [DIUBAH] Kontainer utama sekarang memiliki min-h-0 untuk flexbox desktop -->
+        <div class="container mx-auto lg:flex-1 lg:grid lg:grid-cols-5 lg:gap-8 lg:min-h-0">
             
-            <!-- Kolom Atas (Header) -->
-            <div class="lg:grid lg:grid-cols-3 lg:gap-8 lg:items-center mb-8">
-                
-                <!-- Kolom Kiri: Poster Landscape -->
-                <div id="header-poster-wrapper" class="hidden lg:block lg:col-span-1">
-                    <div id="poster-bg" class="aspect-video w-full bg-gray-800 rounded-lg overflow-hidden shadow-lg relative">
-                        <div id="header-poster-slider" class="relative w-full h-full">
-                            <!-- Poster akan dimasukkan oleh JS di sini -->
-                        </div>
-                        <div id="slider-dots" class="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-2">
-                            <!-- Titik akan dimasukkan oleh JS -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Kolom Kanan: Logo dan Pencarian -->
-                <div class="lg:col-span-2"> 
-                    <header class="text-center lg:text-right mb-4 lg:mb-0 relative">
-                        <!-- Tombol Buka Filter Genre Mobile -->
-                        <button id="open-genre-btn" class="absolute top-0 left-0 p-2 text-white bg-gray-700 bg-opacity-50 rounded-full lg:hidden">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
-                        </button>
-
-                        <img id="main-logo" src="" alt="Logo Aplikasi" class="w-auto h-10 mx-auto lg:ml-auto lg:mx-0 mb-4 hidden">
-                        <h1 id="main-title-text" class="text-5xl lg:text-4xl font-extrabold text-white drop-shadow-lg"></h1>
-                        
-                        <!-- Tombol Buka Chat Mobile -->
-                        <button id="open-chat-btn" class="absolute top-0 right-0 p-2 text-white bg-gray-700 bg-opacity-50 rounded-full lg:hidden">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 21l1.949-3.828a9.863 9.863 0 01-1.042-4.172C3.907 7.582 7.94 4 12 4c4.97 0 9 3.582 9 8z"></path></svg>
-                        </button>
-                    </header>
-                    
-                    <!-- Pencarian -->
-                    <form id="search-form" class="w-full max-w-xl mx-auto lg:ml-auto lg:mr-0 mt-4 flex items-center space-x-2">
-                        <input type="search" id="search-input" placeholder="Cari berdasarkan judul atau genre..." class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition">
-                    </form>
-                </div>
+            <!-- [DIUBAH] Header Atas (HANYA MOBILE) -->
+            <div class="lg:hidden relative p-4 h-16 flex items-center justify-between">
+                <!-- Tombol Buka Filter Genre Mobile -->
+                <button id="open-genre-btn" class="p-2 text-white bg-gray-700 bg-opacity-50 rounded-full">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
+                </button>
+                <!-- Tombol Buka Chat Mobile -->
+                <button id="open-chat-btn" class="p-2 text-white bg-gray-700 bg-opacity-50 rounded-full">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 21l1.949-3.828a9.863 9.863 0 01-1.042-4.172C3.907 7.582 7.94 4 12 4c4.97 0 9 3.582 9 8z"></path></svg>
+                </button>
             </div>
-
-            <!-- Wrapper untuk layout desktop Grid (Konten + Chat) -->
-            <div class="relative lg:grid lg:grid-cols-3 lg:gap-8">
+            
+            <!-- [DIUBAH] Wrapper untuk layout desktop (dihapus grid-cols-4) -->
+            <div class="relative lg:grid lg:grid-cols-5 lg:gap-8 lg:h-full lg:py-8">
                 
-                <!-- Kolom Kiri: Konten -->
-                <main class="main-content-container p-6 lg:col-span-2">
+                <!-- [KOLOM 1] Sidebar Kiri Desktop (Sticky) -->
+                <aside id="desktop-sidebar" class="hidden lg:block lg:col-span-1" style="max-height: 100vh;">
+                    <div class="bg-gray-800 bg-opacity-70 rounded-lg p-4 flex flex-col space-y-6 h-full overflow-y-auto">
+                        
+                        <!-- Kontainer Navigasi Dinamis -->
+                        <div id="dynamic-nav-links" class="space-y-2">
+                            <!-- Link dari admin akan dimuat di sini -->
+                            <p class="text-sm text-gray-400">Memuat navigasi...</p>
+                        </div>
+
+                        <!-- Kontainer Filter Genre (Dipindahkan) -->
+                        <div id="genre-filter-desktop" class="pt-4 border-t border-gray-700">
+                            <h3 class="text-xl font-semibold mb-3 pb-2 border-b border-gray-700">Filter Genre</h3>
+                            <div id="genre-list-desktop" class="flex flex-wrap gap-2">
+                                <!-- Genre buttons will be loaded here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Kontainer Laporan (Dipindahkan & mt-auto) -->
+                        <div id="report-button-desktop-container" class="mt-auto pt-4 border-t border-gray-700">
+                             <button id="open-report-btn-desktop" class="w-full flex items-center justify-center text-sm text-gray-400 hover:text-white hover:bg-gray-700 p-2 rounded-lg transition-colors">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2zm0 0h18"></path></svg>
+                                <span>Laporkan Masalah</span>
+                            </button>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- [KOLOM 2] Konten Tengah (Scrollable) -->
+                <main class="main-content-container p-6 lg:col-span-3 lg:overflow-y-auto" style="max-height: 100vh;">
                     
-                    <!-- Filter Genre Desktop -->
-                    <div id="genre-filter-desktop" class="hidden lg:block mb-6 pb-4 border-b border-gray-700">
-                        <h3 class="text-xl font-semibold mb-3">Genre</h3>
-                        <div id="genre-list-desktop" class="flex flex-wrap gap-2">
-                            <!-- Genre buttons will be loaded here -->
+                    <!-- [DIPINDAHKAN] Poster Header -->
+                    <div id="header-poster-wrapper" class="hidden lg:block mb-8">
+                        <div id="poster-bg" class="aspect-video w-full bg-gray-800 rounded-lg overflow-hidden shadow-lg relative">
+                            <div id="header-poster-slider" class="relative w-full h-full">
+                                <!-- Poster akan dimasukkan oleh JS di sini -->
+                            </div>
+                            <div id="slider-dots" class="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-2">
+                                <!-- Titik akan dimasukkan oleh JS -->
+                            </div>
                         </div>
                     </div>
                     
-                    <!-- [DIUBAH] Kontainer untuk semua baris konten -->
+                    <!-- [DIHAPUS] Filter Genre Desktop dipindahkan ke sidebar -->
+                    
+                    <!-- Kontainer untuk semua baris konten -->
                     <div id="content-rows-container" class="space-y-8">
                         <!-- Baris "Update Terbaru" akan dimuat oleh JS di sini -->
                         <div id="latest-updates-row">
-                            <h2 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-3">ANIME</h2>
+                            <h2 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-3">UPDATE TERBARU</h2>
                             <div id="content-list" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <p id="no-content-message" class="text-gray-500 col-span-full text-center py-8">Memuat konten...</p>
                             </div>
@@ -95,38 +105,50 @@
                     </div>
                 </main>
 
-                <!-- Kolom Kanan: Chat -->
-                <!-- [DIUBAH] Menambahkan lg:bg-transparent agar background induk tidak terlihat di desktop -->
-                <div id="chat-container" class="fixed top-0 right-0 h-full w-80 bg-gray-800 shadow-xl z-50 transform translate-x-full transition-transform duration-300 
-                                                lg:block lg:relative lg:translate-x-0 lg:z-auto lg:w-full lg:col-span-1 lg:sticky lg:top-8 lg:rounded-lg lg:bg-transparent" 
-                     style="max-height: 100vh; lg:max-height: calc(100vh - 10rem);">
+                <!-- [KOLOM 3] Sidebar Kanan (Sticky) -->
+                <aside id="chat-container" class="fixed top-0 right-0 h-full w-80 bg-gray-800 shadow-xl z-50 transform translate-x-full transition-transform duration-300 
+                                                lg:block lg:relative lg:translate-x-0 lg:z-auto lg:w-full lg:col-span-1" 
+                     style="max-height: 100vh;">
                     
-                    <!-- [DIUBAH] Wrapper sekarang memiliki h-full agar flex-grow berfungsi -->
-                    <div class="rounded-lg flex flex-col h-full">
-                        <!-- [DIUBAH] Header Chat dengan background solid (lg:bg-opacity-50 dihapus) -->
-                        <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0 bg-gray-800 rounded-t-lg">
-                            <h3 class="font-bold text-white">Chat</h3>
-                            <button id="close-chat-btn" class="text-gray-400 hover:text-white text-2xl lg:hidden">&times;</button>
-                        </div>
-                        
-                        <!-- [DIUBAH] Area Pesan sekarang menggunakan flex-grow dan tidak memiliki tinggi tetap (lg:h-[400px] dihapus) -->
-                        <div id="chat-messages" class="flex-grow p-4 space-y-3 overflow-y-auto bg-gray-800">
-                            <p class="text-xs text-gray-500 text-center">Menyambungkan ke chat...</p>
-                        </div>
-                        
-                        <!-- [DIUBAH] Input Pesan dengan background solid dan rounded-b-lg -->
-                        <div class="p-4 border-t border-gray-700 flex-shrink-0 bg-gray-800 rounded-b-lg">
-                            <form id="chat-form" class="flex space-x-2">
-                                <input type="text" id="chat-input" placeholder="Ketik pesan..." class="flex-1 bg-gray-700 rounded-full py-2 px-4 text-white focus:ring-2 focus:ring-purple-500" autocomplete="off">
-                                <button type="submit" id="chat-send-btn" class="bg-purple-600 hover:bg-purple-700 rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">
-                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 16.5V3.5a1 1 0 00.894-1.053l-1.48 8.88A1 1 0 0010.894 2.553z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
-                                </button>
+                    <!-- Wrapper untuk Logo, Search, dan Chat -->
+                    <div class="flex flex-col h-full">
+                    
+                        <!-- [DIPINDAHKAN] Logo & Search Desktop -->
+                        <div class="hidden lg:block p-4">
+                            <header class="text-center lg:text-right mb-4 lg:mb-0 relative">
+                                <img id="main-logo" src="" alt="Logo Aplikasi" class="w-auto h-10 mx-auto lg:ml-auto lg:mx-0 mb-4 hidden">
+                                <h1 id="main-title-text" class="text-5xl lg:text-4xl font-extrabold text-white drop-shadow-lg"></h1>
+                            </header>
+                            <form id="search-form" class="w-full max-w-xl mx-auto lg:ml-auto lg:mr-0 mt-4 mb-8">
+                                <input type="search" id="search-input" placeholder="Cari berdasarkan judul atau genre..." class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition">
                             </form>
                         </div>
-
-                        <!-- [DIHAPUS] Tombol Laporan dipindahkan dari sini -->
+                        
+                        <!-- Chat Wrapper -->
+                        <div class="rounded-lg flex flex-col flex-1 min-h-0"> <!-- [DIUBAH] flex-1 dan min-h-0 ditambahkan -->
+                            <!-- Header Chat -->
+                            <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0 bg-gray-800 rounded-t-lg">
+                                <h3 class="font-bold text-white">Chat Publik</h3>
+                                <button id="close-chat-btn" class="text-gray-400 hover:text-white text-2xl lg:hidden">&times;</button>
+                            </div>
+                            
+                            <!-- Area Pesan (flex-grow) -->
+                            <div id="chat-messages" class="flex-grow p-4 space-y-3 overflow-y-auto bg-gray-800">
+                                <p class="text-xs text-gray-500 text-center">Menyambungkan ke chat...</p>
+                            </div>
+                            
+                            <!-- Input Pesan (flex-shrink-0) -->
+                            <div class="p-4 border-t border-gray-700 flex-shrink-0 bg-gray-800 rounded-b-lg">
+                                <form id="chat-form" class="flex space-x-2">
+                                    <input type="text" id="chat-input" placeholder="Ketik pesan..." class="flex-1 bg-gray-700 rounded-full py-2 px-4 text-white focus:ring-2 focus:ring-purple-500" autocomplete="off">
+                                    <button type="submit" id="chat-send-btn" class="bg-purple-600 hover:bg-purple-700 rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 16.5V3.5a1 1 0 00.894-1.053l-1.48 8.88A1 1 0 0010.894 2.553z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </aside>
             </div>
         </div>
     </div>
@@ -138,7 +160,7 @@
     <div id="genre-sidebar" class="fixed top-0 left-0 h-full w-72 bg-gray-800 shadow-xl z-50 transform -translate-x-full transition-transform duration-300 flex flex-col">
         <!-- Header -->
         <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0">
-            <h3 class="font-bold text-white">Genre</h3>
+            <h3 class="font-bold text-white">Filter Genre</h3>
             <button id="close-genre-btn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
         </div>
         <!-- Daftar Genre -->
@@ -292,7 +314,8 @@
         const seriesCollRef = collection(db, 'series'); 
         const settingsCollRef = collection(db, 'settings');
         const contentRowsCollRef = collection(db, 'contentRows'); 
-        const reportsCollRef = collection(db, 'reports'); // [BARU]
+        const reportsCollRef = collection(db, 'reports');
+        const navLinksCollRef = collection(db, 'navigationLinks'); // [BARU]
         
         /* Deklarasi variabel Halaman Utama */
         let contentListEl, mainLogoImg, mainTitleText, contentRowsContainer; 
@@ -350,8 +373,9 @@
                 await loadSettings();
                 logPageView(); 
                 setupChat(); 
-                setupReportModal(); // [BARU]
-                handleDeepLink(); // [DIKEMBALIKAN]
+                setupReportModal();
+                handleDeepLink();
+                loadDynamicNavLinks(); // [BARU]
             } catch(e) { 
                 console.error(`Initialization failed: ${e.message}`); 
                 document.body.innerHTML = `<div class="bg-red-900 text-white p-8 rounded-lg shadow-2xl max-w-2xl mx-auto mt-20"><h1 class="text-3xl font-bold mb-4">Koneksi Gagal!</h1><p>Gagal terhubung ke server.</p></div>`;
@@ -550,6 +574,35 @@
                 console.error("Gagal memuat baris konten kustom:", error);
             }
         }
+        
+        /* [BARU] Fungsi untuk memuat navigasi kustom */
+        async function loadDynamicNavLinks() {
+            const container = document.getElementById('dynamic-nav-links');
+            if (!container) return;
+            
+            container.innerHTML = ''; // Kosongkan
+            const q = query(navLinksCollRef, orderBy("order", "asc"));
+            try {
+                const snapshot = await getDocs(q);
+                if (snapshot.empty) {
+                    container.innerHTML = '<p class="text-sm text-gray-400">Tidak ada link navigasi.</p>';
+                    return;
+                }
+                snapshot.forEach(docSnap => {
+                    const linkData = docSnap.data();
+                    const linkEl = document.createElement('a');
+                    linkEl.href = linkData.url;
+                    linkEl.textContent = linkData.title;
+                    linkEl.target = "_blank"; // Selalu buka di tab baru
+                    linkEl.rel = "noopener noreferrer";
+                    linkEl.className = "block p-2 rounded-lg text-white font-semibold hover:bg-gray-700 transition-colors";
+                    container.appendChild(linkEl);
+                });
+            } catch (error) {
+                console.error("Gagal memuat link navigasi:", error);
+                container.innerHTML = '<p class="text-sm text-red-400">Gagal memuat navigasi.</p>';
+            }
+        }
 
         // [BARU] Fungsi untuk merender baris kustom
         function renderCustomRow(title, seriesContent) {
@@ -595,7 +648,7 @@
                         
                         <div class="flex items-center text-[9px] text-gray-400">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
-                            <span>${(itemData.data.episodeCount || 0)}</span>
+                            <span>${(itemData.data.episodeCount || 0)} Eps</span>
                         </div>
                         <div class="flex items-center text-[9px] text-gray-400">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
@@ -613,8 +666,9 @@
             const searchInput = document.getElementById('search-input');
             const searchForm = document.getElementById('search-form');
             
-            if (searchInput) {
-                searchInput.addEventListener('input', (e) => {
+            /* [DIUBAH] Menggunakan delegasi event untuk menangani form mobile dan desktop */
+            document.body.addEventListener('input', (e) => {
+                if (e.target.id === 'search-input') { // Targetkan ID input
                     const searchTerm = e.target.value.toLowerCase().trim();
                     
                     // [DIUBAH] Logika pencarian sekarang menyembunyikan/menampilkan baris
@@ -643,10 +697,15 @@
                     currentDisplayCount = 0;
                     contentListEl.innerHTML = '';
                     renderMoreContent(); // Render hasil pencarian di "Update Terbaru"
-                });
-            }
+                }
+            });
             
-            if (searchForm) searchForm.addEventListener('submit', (e) => e.preventDefault());
+            // Mencegah form submit (berlaku untuk kedua form)
+            document.body.addEventListener('submit', (e) => {
+                 if (e.target.id === 'search-form') {
+                     e.preventDefault();
+                 }
+            });
         }
 
         function setupEventListeners(){
@@ -674,8 +733,13 @@
         function handleScroll() {
             // [DIUBAH] Infinite scroll hanya berlaku jika tidak sedang mencari ATAU filter
             if (isSearching || activeGenre !== 'All' || isLoadingMore) return;
-            if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
-                renderMoreContent();
+            
+            // [DIUBAH] Target scroll sekarang adalah 'main' bukan 'window'
+            const mainContentEl = document.querySelector('main.main-content-container');
+            if (!mainContentEl) return;
+            
+            if (mainContentEl.scrollHeight - mainContentEl.scrollTop - mainContentEl.clientHeight < 500) {
+                 renderMoreContent();
             }
         }
 
@@ -1034,7 +1098,8 @@
         
         /* [BARU] Fungsi Modal Laporan */
         function setupReportModal() {
-            const openReportBtn = document.getElementById('open-report-btn');
+            const openReportBtn = document.getElementById('open-report-btn'); // Tombol mobile
+            const openReportBtnDesktop = document.getElementById('open-report-btn-desktop'); // [BARU] Tombol desktop
             const reportModal = document.getElementById('report-modal');
             const closeReportBtn = document.getElementById('close-report-btn');
             const reportForm = document.getElementById('report-form');
@@ -1045,6 +1110,13 @@
             openReportBtn.addEventListener('click', () => {
                 reportModal.classList.remove('hidden');
             });
+            
+            /* [BARU] Listener untuk tombol desktop */
+            if (openReportBtnDesktop) {
+                openReportBtnDesktop.addEventListener('click', () => {
+                    reportModal.classList.remove('hidden');
+                });
+            }
             
             closeReportBtn.addEventListener('click', () => {
                 reportModal.classList.add('hidden');
@@ -1425,4 +1497,3 @@
     </script>
 </body>
 </html>
-
