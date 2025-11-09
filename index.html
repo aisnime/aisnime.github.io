@@ -15,16 +15,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- [DIUBAH] Versi cache busting dinaikkan -->
-    <link rel="stylesheet" href="styles.css?v=2.6"> 
+    <link rel="stylesheet" href="styles.css?v=2.8"> 
 </head>
 <body class="bg-gray-900 text-white" style="font-family: 'Inter', sans-serif;">
     
     <div id="loading-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-900">
         <img id="loading-favicon" src="https://aisnime.site/loading.ico" alt="Memuat..." class="w-16 h-16 rounded-lg animate-pulse">
+        
     </div>
 
     <!-- Konten Normal (Awalnya disembunyikan) -->
     <div id="main-content" class="overlay hidden">
+        <!-- [DIHAPUS] Notifikasi Share dihapus karena tombolnya hilang -->
+        <!-- <div id="share-notification" ...>...</div> -->
+
         <div class="container mx-auto p-4 lg:p-8">
             
             <!-- Kolom Atas (Header) -->
@@ -74,7 +78,7 @@
                     
                     <!-- Filter Genre Desktop -->
                     <div id="genre-filter-desktop" class="hidden lg:block mb-6 pb-4 border-b border-gray-700">
-                        <h3 class="text-xl font-semibold mb-3">Genre</h3>
+                        <h3 class="text-xl font-semibold mb-3">Filter Genre</h3>
                         <div id="genre-list-desktop" class="flex flex-wrap gap-2">
                             <!-- Genre buttons will be loaded here -->
                         </div>
@@ -84,7 +88,7 @@
                     <div id="content-rows-container" class="space-y-8">
                         <!-- Baris "Update Terbaru" akan dimuat oleh JS di sini -->
                         <div id="latest-updates-row">
-                            <h2 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-3">ANIME</h2>
+                            <h2 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-3">UPDATE TERBARU</h2>
                             <div id="content-list" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <p id="no-content-message" class="text-gray-500 col-span-full text-center py-8">Memuat konten...</p>
                             </div>
@@ -103,7 +107,7 @@
                     <div class="rounded-lg flex flex-col">
                         <!-- [DIUBAH] Header Chat dengan background solid (lg:bg-opacity-50 dihapus) -->
                         <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0 bg-gray-800 rounded-t-lg">
-                            <h3 class="font-bold text-white">Chat</h3>
+                            <h3 class="font-bold text-white">Chatk</h3>
                             <button id="close-chat-btn" class="text-gray-400 hover:text-white text-2xl lg:hidden">&times;</button>
                         </div>
                         
@@ -134,7 +138,7 @@
     <div id="genre-sidebar" class="fixed top-0 left-0 h-full w-72 bg-gray-800 shadow-xl z-50 transform -translate-x-full transition-transform duration-300 flex flex-col">
         <!-- Header -->
         <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0">
-            <h3 class="font-bold text-white">Filter Genre</h3>
+            <h3 class="font-bold text-white">Genre</h3>
             <button id="close-genre-btn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
         </div>
         <!-- Daftar Genre -->
@@ -161,7 +165,7 @@
                 <button id="close-episode-list-btn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
             </div>
             <div id="episode-list-container" class="p-4 space-y-3 overflow-y-auto">
-                <!-- Daftar episode akan dimuat oleh watch-module.js -->
+                <!-- Daftar episode akan dimuat oleh JS -->
             </div>
         </div>
     </div>
@@ -172,48 +176,16 @@
             <button id="close-modal-btn" class="absolute -top-3 -right-3 bg-white text-black rounded-full w-8 h-8 flex items-center justify-center font-bold text-xl z-20">&times;</button>
             
             <div class="lg:w-2/3 w-full flex flex-col">
-                <!-- Kontainer video dengan kontrol kustom -->
+                <!-- [DIUBAH] Kontainer video kembali ke versi sederhana -->
                 <div id="video-container" class="w-full aspect-video bg-black rounded-t-lg lg:rounded-l-lg lg:rounded-tr-none relative group">
                     <img id="video-loading-icon" src="" alt="Memuat..." class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 animate-pulse hidden z-10">
                     
-                    <video id="modal-main-player" class="w-full h-full relative z-0" disablepictureinpicture playsinline autoplay></video>
+                    <!-- [DIKEMBALIKAN] Player utama dengan controls (bawaan) -->
+                    <video id="modal-main-player" class="w-full h-full relative z-0" controls controlslist="nodownload" disablepictureinpicture playsinline autoplay></video>
                     
-                    <!-- [DIUBAH] Tombol Play/Pause Besar di Tengah (group-hover:opacity-100 dihapus) -->
-                    <button id="big-play-pause-btn" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 hidden opacity-0 transition-opacity duration-300">
-                        <!-- Ikon Play Besar -->
-                        <svg id="big-play-icon" class="w-16 h-16 text-white opacity-70 hover:opacity-100 transition-opacity" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M4.018 14.381V5.619a.7.7 0 0 1 1.05-.606l8.342 4.381a.7.7 0 0 1 0 1.212l-8.342 4.381a.7.7 0 0 1-1.05-.606Z"></path>
-                        </svg>
-                        <!-- Ikon Pause Besar (Awalnya disembunyikan) -->
-                        <svg id="big-pause-icon" class="w-16 h-16 text-white opacity-70 hover:opacity-100 transition-opacity hidden" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M5.75 4.75a.75.75 0 0 0-.75.75v9.5c0 .414.336.75.75.75h1.5a.75.75 0 0 0 .75-.75V5.5a.75.75 0 0 0-.75-.75h-1.5Zm7 0a.75.75 0 0 0-.75.75v9.5c0 .414.336.75.75.75h1.5a.75.75 0 0 0 .75-.75V5.5a.75.75 0 0 0-.75-.75h-1.5Z"></path>
-                        </svg>
-                    </button>
-
-                    <!-- [DIUBAH] Kontrol Kustom (group-hover:opacity-100 dihapus) -->
-                    <div id="custom-controls-container" class="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/70 to-transparent opacity-0 transition-opacity duration-300 z-20">
-                        <!-- Progress Bar -->
-                        <div class="w-full h-3 flex items-center cursor-pointer">
-                             <input type="range" id="progress-bar" class="w-full h-1" value="0" min="0" max="100" step="0.1">
-                        </div>
-                        
-                        <!-- Baris Tombol -->
-                        <div class="flex items-center justify-between text-white mt-2">
-                            <div class="flex items-center space-x-4">
-                                <!-- Tombol Play/Pause -->
-                                <button id="play-pause-btn" class="text-white">
-                                    <svg id="play-icon" class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M4.018 14.381V5.619a.7.7 0 0 1 1.05-.606l8.342 4.381a.7.7 0 0 1 0 1.212l-8.342 4.381a.7.7 0 0 1-1.05-.606Z"></path></svg>
-                                    <svg id="pause-icon" class="w-6 h-6 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M5.75 4.75a.75.75 0 0 0-.75.75v9.5c0 .414.336.75.75.75h1.5a.75.75 0 0 0 .75-.75V5.5a.75.75 0 0 0-.75-.75h-1.5Zm7 0a.75.75 0 0 0-.75.75v9.5c0 .414.336.75.75.75h1.5a.75.75 0 0 0 .75-.75V5.5a.75.75 0 0 0-.75-.75h-1.5Z"></path></svg>
-                                </button>
-                                <!-- Waktu -->
-                                <span id="time-display" class="text-xs font-medium">00:00 / 00:00</span>
-                            </div>
-                            <!-- Tombol Fullscreen -->
-                            <button id="fullscreen-btn" class="text-white">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m0 0v4m0-4l-5 5M4 16v4m0 0h4m0 0l5-5m11 5h-4m0 0v-4m0 4l-5-5"></path></svg>
-                            </button>
-                        </div>
-                    </div>
+                    <!-- [DIHAPUS] Tombol Play/Pause Besar di Tengah -->
+                    
+                    <!-- [DIHAPUS] Kontrol Kustom Bawah -->
                 </div>
                 <div class="p-4 lg:hidden">
                     <button id="show-episodes-btn-mobile" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-md">
@@ -291,18 +263,18 @@
         /* --- Collection Refs --- */
         const seriesCollRef = collection(db, 'series'); 
         const settingsCollRef = collection(db, 'settings');
-        const contentRowsCollRef = collection(db, 'contentRows'); // [BARU]
+        const contentRowsCollRef = collection(db, 'contentRows'); 
         
         /* Deklarasi variabel Halaman Utama */
-        let contentListEl, mainLogoImg, mainTitleText, contentRowsContainer; // [DIUBAH]
+        let contentListEl, mainLogoImg, mainTitleText, contentRowsContainer; 
         let mainLogoUrl = ''; 
         let allSeriesContent = [];
         let filteredSeriesContent = []; 
         let isLoadingMore = false;
         let isSearching = false;
         let currentDisplayCount = 0;
-        const MOBILE_LIMIT = 4; // [DIUBAH] Sesuai permintaan
-        const DESKTOP_LIMIT = 10; // [DIUBAH] Sesuai permintaan
+        const MOBILE_LIMIT = 4; 
+        const DESKTOP_LIMIT = 10; 
         let chatCollRef = null;
         let currentUserId = null;
         let chatUnsubscribe = null; 
@@ -313,23 +285,19 @@
         let allGenres = new Set();
         let activeGenre = 'All';
 
-        /* [DIGABUNGKAN] Variabel dari watch-module.js */
+        /* [DIUBAH] Variabel pemutar video disederhanakan */
         let videoModal, closeModalBtn, modalMainPlayer, episodeListModal, videoContainer;
-        let controlsContainer, playPauseBtn, playIcon, pauseIcon, progressBar, timeDisplay, fullscreenBtn;
-        let bigPlayPauseBtn, bigPlayIcon, bigPauseIcon; // [BARU] Tombol Play/Pause Besar
         let currentSeriesId = null;
         let currentItem = null;
         let saveTimeout;
         let watermarkEl = null;
-        let controlsTimeout; 
-        const customControlListeners = []; 
-        let lastInputType = 'mouse'; // [BARU] Flag untuk mendeteksi input terakhir
+            /* [DIHAPUS] Variabel kontrol kustom (controlsTimeout, customControlListeners, dll.) */
         
         /* --- Fungsi Utama --- */
         async function main() {
             try {
                 contentListEl = document.getElementById('content-list');
-                contentRowsContainer = document.getElementById('content-rows-container'); // [BARU]
+                contentRowsContainer = document.getElementById('content-rows-container'); 
                 mainLogoImg = document.getElementById('main-logo');
                 mainTitleText = document.getElementById('main-title-text');
                 genreSidebar = document.getElementById('genre-sidebar');
@@ -354,6 +322,7 @@
                 await loadSettings();
                 logPageView(); 
                 setupChat(); 
+                handleDeepLink(); // [DIKEMBALIKAN] Periksa URL untuk link share
             } catch(e) { 
                 console.error(`Initialization failed: ${e.message}`); 
                 document.body.innerHTML = `<div class="bg-red-900 text-white p-8 rounded-lg shadow-2xl max-w-2xl mx-auto mt-20"><h1 class="text-3xl font-bold mb-4">Koneksi Gagal!</h1><p>Gagal terhubung ke server.</p></div>`;
@@ -449,7 +418,7 @@
                     }
                     
                     loadInitialContent();
-                    loadCustomContentRows(); // [BARU]
+                    loadCustomContentRows(); 
                     setupSearchListener();
                     setupEventListeners(); 
                     
@@ -505,24 +474,18 @@
             });
         }
 
-
+        /* [DIUBAH] Fungsi ini sekarang HANYA memuat "Update Terbaru" */
         function loadInitialContent() {
-            const q = query(seriesCollRef);
+            const q = query(seriesCollRef, orderBy("updatedAt", "desc"), limit(DESKTOP_LIMIT * 2)); // Ambil 2 batch awal
             
             onSnapshot(q, (snapshot) => {
                 allSeriesContent = snapshot.docs.map(doc => ({id: doc.id, data: doc.data()}));
                 
-                allSeriesContent.sort((a, b) => {
-                    const timeA = (a.data.updatedAt || a.data.createdAt || { toMillis: () => 0 }).toMillis();
-                    const timeB = (b.data.updatedAt || b.data.createdAt || { toMillis: () => 0 }).toMillis();
-                    return timeB - timeA;
-                });
-                
                 filteredSeriesContent = allSeriesContent;
                 currentDisplayCount = 0;
                 contentListEl.innerHTML = ''; // [DIUBAH] Hanya mengosongkan #content-list
-                renderMoreContent(); // [DIUBAH] Hanya merender "Update Terbaru"
-                setupGenreFilter();
+                renderMoreContent(); // Render "Update Terbaru"
+                setupGenreFilter(); // Setup filter berdasarkan "Update Terbaru"
 
             }, (error) => {
                 console.error(`Gagal memuat konten dari ${seriesCollRef.path}: ${error.message}`); 
@@ -559,6 +522,64 @@
             }
         }
 
+        // [BARU] Fungsi untuk merender baris kustom
+        function renderCustomRow(title, seriesContent) {
+            const rowEl = document.createElement('div');
+            rowEl.className = 'custom-content-row'; // Kelas untuk disembunyikan saat filter/cari
+
+            const gridEl = document.createElement('div');
+            gridEl.className = 'grid grid-cols-1 sm:grid-cols-2 gap-6';
+
+            seriesContent.forEach(itemData => {
+                const card = createSeriesCard(itemData);
+                gridEl.appendChild(card);
+            });
+
+            rowEl.innerHTML = `
+                <h2 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-3">${title.toUpperCase()}</h2>
+            `;
+            rowEl.appendChild(gridEl);
+            contentRowsContainer.appendChild(rowEl);
+        }
+        
+        // [BARU] Fungsi terpusat untuk membuat kartu serial
+        function createSeriesCard(itemData) {
+            if (!itemData.data.thumbnailUrl || !itemData.data.title) {
+                console.warn(`MELEWATI item ${itemData.id}, 'thumbnailUrl' atau 'title' hilang.`); 
+                return document.createDocumentFragment(); // Kembalikan elemen kosong
+            }
+
+            const itemEl = document.createElement('div');
+            itemEl.className = 'content-card bg-gray-800 bg-opacity-50 rounded-lg overflow-hidden shadow-lg transform transition-transform duration-200 hover:-translate-y-1 cursor-pointer';
+            
+            itemEl.innerHTML = `
+                <div class="relative w-full aspect-[7/9] bg-black">
+                    <img src="${itemData.data.thumbnailUrl}" alt="${itemData.data.title}" class="w-full h-full object-cover" loading="lazy">
+                </div>
+                <div class="p-4 space-y-1 text-left">
+                    <h4 class="font-semibold text-white leading-tight truncate text-xs" title="${itemData.data.title}">${itemData.data.title}</h4>
+                    <div class="flex items-center justify-between mt-1"> 
+                        <div class="flex items-center text-[9px] text-yellow-400">
+                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <span>${(itemData.data.rating || 'N/A').replace(' / 10', '')}</span>
+                        </div>
+                        
+                        <div class="flex items-center text-[9px] text-gray-400">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                            <span>${(itemData.data.episodeCount || 0)}</span>
+                        </div>
+                        <div class="flex items-center text-[9px] text-gray-400">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            <span>${(itemData.data.viewCount || 0).toLocaleString('id-ID')}</span>
+                        </div>
+                    </div>
+                </div>`;
+            itemEl.addEventListener('click', () => {
+                loadAndShowEpisodeList(itemData.id, itemData.data);
+            });
+            return itemEl;
+        }
+
         function setupSearchListener() {
             const searchInput = document.getElementById('search-input');
             const searchForm = document.getElementById('search-form');
@@ -579,7 +600,7 @@
 
                         filteredSeriesContent = allSeriesContent.filter(item => 
                             item.data.title.toLowerCase().includes(searchTerm) ||
-                            (item.data.genre && item.data.genre.join(', ').toLowerCase().includes(searchTerm))
+                            (item.data.genre && (Array.isArray(item.data.genre) ? item.data.genre.join(', ') : item.data.genre).toLowerCase().includes(searchTerm))
                         );
                     } else {
                         isSearching = false;
@@ -632,7 +653,7 @@
         /* [DIUBAH] Fungsi loadAndShowEpisodeList disederhanakan */
         async function loadAndShowEpisodeList(seriesId, seriesData) {
             
-            /* [BARU] Inisialisasi DOM pemutar video saat pertama kali diklik */
+            /* [DIUBAH] Hanya perlu memastikan DOM modal diinisialisasi */
             if (!isWatchModuleLoaded) {
                 try {
                     videoModal = document.getElementById('video-modal');
@@ -641,19 +662,7 @@
                     modalMainPlayer = document.getElementById('modal-main-player');
                     episodeListModal = document.getElementById('episode-list-modal');
                     
-                    controlsContainer = document.getElementById('custom-controls-container');
-                    playPauseBtn = document.getElementById('play-pause-btn');
-                    playIcon = document.getElementById('play-icon');
-                    pauseIcon = document.getElementById('pause-icon');
-                    progressBar = document.getElementById('progress-bar');
-                    timeDisplay = document.getElementById('time-display');
-                    fullscreenBtn = document.getElementById('fullscreen-btn');
-
-                    /* [BARU] Inisialisasi tombol play/pause besar */
-                    bigPlayPauseBtn = document.getElementById('big-play-pause-btn');
-                    bigPlayIcon = document.getElementById('big-play-icon');
-                    bigPauseIcon = document.getElementById('big-pause-icon');
-
+                    /* [DIHAPUS] Inisialisasi kontrol kustom */
 
                     /* Pasang listener modal (hanya sekali) */
                     setupModalEventListeners();
@@ -672,6 +681,78 @@
                 console.error("Fungsi openEpisodeList tidak ditemukan di window."); 
             }
         }
+        
+        // [BARU] Fungsi untuk menangani URL share (deep linking)
+        async function handleDeepLink() {
+            const params = new URLSearchParams(window.location.search);
+            const seriesId = params.get('series');
+            const episodeId = params.get('episode');
+
+            if (seriesId && episodeId) {
+                console.log(`Deep link terdeteksi: Series ${seriesId}, Episode ${episodeId}`);
+                
+                try {
+                    // 1. Pastikan modul pemutar video siap
+                    await ensurePlayerModuleIsLoaded();
+                    
+                    // 2. Ambil data serial dan episode
+                    const seriesDocRef = doc(seriesCollRef, seriesId);
+                    const episodeDocRef = doc(collection(db, seriesCollRef.path, seriesId, 'episodes'), episodeId);
+                    
+                    const [seriesSnap, episodeSnap] = await Promise.all([
+                        getDoc(seriesDocRef),
+                        getDoc(episodeDocRef)
+                    ]);
+
+                    if (!seriesSnap.exists() || !episodeSnap.exists()) {
+                        console.error("Gagal deep link: Serial atau episode tidak ditemukan.");
+                        return;
+                    }
+
+                    const seriesData = seriesSnap.data();
+                    const episodeData = episodeSnap.data();
+                    const videoUrl = episodeData.videoFiles ? episodeData.videoFiles['default'] : null;
+
+                    if (videoUrl) {
+                        // 3. Langsung panggil pemutar video
+                        playVideoInModal(seriesData, episodeData, videoUrl, episodeId);
+                    } else {
+                        console.error("Gagal deep link: URL video tidak ditemukan.");
+                    }
+                    
+                    // 4. Bersihkan URL agar tidak memutar lagi saat di-refresh
+                    history.replaceState(null, '', window.location.pathname);
+
+                } catch (error) {
+                    console.error("Error saat menangani deep link:", error);
+                }
+            }
+        }
+
+        // [DIUBAH] Fungsi terpisah untuk memastikan pemutar dimuat
+        async function ensurePlayerModuleIsLoaded() {
+            if (isWatchModuleLoaded) return; // Sudah dimuat, lewati
+            
+            try {
+                // Inisialisasi DOM pemutar video
+                videoModal = document.getElementById('video-modal');
+                videoContainer = document.getElementById('video-container'); 
+                closeModalBtn = document.getElementById('close-modal-btn');
+                modalMainPlayer = document.getElementById('modal-main-player');
+                episodeListModal = document.getElementById('episode-list-modal');
+                
+                /* [DIHAPUS] Inisialisasi kontrol kustom */
+
+                // Pasang listener modal (hanya sekali)
+                setupModalEventListeners();
+                isWatchModuleLoaded = true;
+                
+            } catch (e) {
+                console.error("Gagal menginisialisasi DOM pemutar video:", e);
+                alert("Terjadi error saat memuat elemen pemutar video.");
+            }
+        }
+
 
         function setupGenreFilter() {
             allGenres = new Set();
@@ -815,64 +896,6 @@
 
             currentDisplayCount += itemsToLoad.length;
             isLoadingMore = false;
-        }
-
-        // [BARU] Fungsi untuk merender baris kustom
-        function renderCustomRow(title, seriesContent) {
-            const rowEl = document.createElement('div');
-            rowEl.className = 'custom-content-row'; // Kelas untuk disembunyikan saat filter/cari
-
-            const gridEl = document.createElement('div');
-            gridEl.className = 'grid grid-cols-1 sm:grid-cols-2 gap-6';
-
-            seriesContent.forEach(itemData => {
-                const card = createSeriesCard(itemData);
-                gridEl.appendChild(card);
-            });
-
-            rowEl.innerHTML = `
-                <h2 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-3">${title.toUpperCase()}</h2>
-            `;
-            rowEl.appendChild(gridEl);
-            contentRowsContainer.appendChild(rowEl);
-        }
-        
-        // [BARU] Fungsi terpusat untuk membuat kartu serial
-        function createSeriesCard(itemData) {
-            if (!itemData.data.thumbnailUrl || !itemData.data.title) {
-                console.warn(`MELEWATI item ${itemData.id}, 'thumbnailUrl' atau 'title' hilang.`); 
-                return document.createDocumentFragment(); // Kembalikan elemen kosong
-            }
-
-            const itemEl = document.createElement('div');
-            itemEl.className = 'content-card bg-gray-800 bg-opacity-50 rounded-lg overflow-hidden shadow-lg transform transition-transform duration-200 hover:-translate-y-1 cursor-pointer';
-            
-            itemEl.innerHTML = `
-                <div class="relative w-full aspect-[7/9] bg-black">
-                    <img src="${itemData.data.thumbnailUrl}" alt="${itemData.data.title}" class="w-full h-full object-cover" loading="lazy">
-                </div>
-                <div class="p-4 space-y-1 text-left">
-                    <h4 class="font-semibold text-white leading-tight truncate text-xs" title="${itemData.data.title}">${itemData.data.title}</h4>
-                    <div class="flex items-center justify-between mt-1"> 
-                        <div class="flex items-center text-[9px] text-yellow-400">
-                            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                            <span>${(itemData.data.rating || 'N/A').replace(' / 10', '')}</span>
-                        </div>
-                        
-                        <div class="flex items-center text-[9px] text-gray-400">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
-                            <span>${(itemData.data.episodeCount || 0)}</span>
-                        </div>
-                        <div class="flex items-center text-[9px] text-gray-400">
-                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                            <span>${(itemData.data.viewCount || 0).toLocaleString('id-ID')}</span>
-                        </div>
-                    </div>
-                </div>`;
-            itemEl.addEventListener('click', () => {
-                loadAndShowEpisodeList(itemData.id, itemData.data);
-            });
-            return itemEl;
         }
         
         async function logPageView() {
@@ -1075,11 +1098,17 @@
             modalMainPlayer.src = '';
             
             if (watermarkEl) {
-                watermarkEl.remove();
+                watermarkEl.remove(); // [DIKEMBALIKAN] Hapus watermark saat modal ditutup
                 watermarkEl = null;
             }
             
-            cleanupCustomControls();
+            /* [DIHAPUS] cleanupCustomControls(); */
+            
+            /* [BARU] Hapus listener timeupdate secara manual */
+            if (modalMainPlayer._timeUpdateListener) {
+                modalMainPlayer.removeEventListener('timeupdate', modalMainPlayer._timeUpdateListener);
+                modalMainPlayer._timeUpdateListener = null;
+            }
         }
 
         async function playVideoInModal(seriesData, episodeData, videoUrl, episodeId) {
@@ -1113,9 +1142,24 @@
                 const progressData = getWatchProgress(episodeId);
                 const progress = progressData.time;
 
-                createWatermark();
-                setupCustomControls(progress);
+                createWatermark(); // [DIKEMBALIKAN] Panggil fungsi watermark
+                /* [DIHAPUS] setupCustomControls(progress); */
                 
+                /* [BARU] Listener yang dipindahkan dari setupCustomControls */
+                modalMainPlayer.addEventListener('canplay', () => {
+                    loadingIcon.classList.add('hidden');
+                    modalMainPlayer.style.display = 'block';
+                    if (progress > 0) {
+                        modalMainPlayer.currentTime = progress;
+                    }
+                    modalMainPlayer.play().catch(e => {
+                        console.warn("Autoplay dicegah, mulai dalam keadaan dijeda.", e);
+                    });
+                }, { once: true });
+                
+                /* [BARU] Listener untuk menyimpan progres */
+                setupVideoProgressSaving();
+
                 modalMainPlayer.addEventListener('error', (e) => {
                      console.error("Video player error:", e, modalMainPlayer.error);
                      loadingIcon.src = 'https://placehold.co/64x64/ef4444/FFFFFF?text=Error';
@@ -1127,254 +1171,20 @@
             } catch (error) { console.error("Gagal memuat video:", error); }
         }
 
-        /* --- Kontrol Video Kustom --- */
-
-        function addManagedListener(element, event, handler, options = false) {
-            if (!element) return;
-            element.addEventListener(event, handler, options);
-            customControlListeners.push({ element, event, handler, options });
-        }
-
-        function cleanupCustomControls() {
-            customControlListeners.forEach(l => {
-                l.element.removeEventListener(l.event, l.handler, l.options);
-            });
-            customControlListeners.length = 0; 
-            
-            if (controlsTimeout) clearTimeout(controlsTimeout);
-        }
-
-        function setupCustomControls(startTime = 0) {
-            const loadingIcon = document.getElementById('video-loading-icon');
-
-            /* [DIUBAH] Logika auto-hide yang disempurnakan */
-            
-            // Fungsi untuk menyembunyikan kontrol
-            const hideControls = () => {
-                if (!modalMainPlayer.paused) {
-                    controlsContainer.style.opacity = '0';
-                    videoContainer.style.cursor = 'none';
-                    if (bigPlayPauseBtn) bigPlayPauseBtn.classList.add('hidden');
-                }
-            };
-
-            // [DIUBAH] Fungsi untuk menampilkan kontrol (sekarang cerdas)
-            const showControls = () => {
-                if (controlsTimeout) clearTimeout(controlsTimeout);
-                
-                controlsContainer.style.opacity = '1';
-                videoContainer.style.cursor = 'default';
-                
-                if (modalMainPlayer.paused && bigPlayPauseBtn) { 
-                     bigPlayPauseBtn.classList.remove('hidden');
-                }
-                
-                // [DIUBAH] Hanya mulai timer auto-hide jika input terakhir adalah 'mouse'
-                if (lastInputType === 'mouse') {
-                    controlsTimeout = setTimeout(hideControls, 2000); 
-                }
-            };
-            
-            // --- Memasang Event Listener ---
-
-            // 1. Gerakan mouse: Set flag & tampilkan kontrol (dengan timer)
-            addManagedListener(videoContainer, 'mousemove', () => {
-                lastInputType = 'mouse';
-                showControls();
-            });
-            
-            // 2. Mouse keluar dari video: Sembunyikan (hanya jika tidak fullscreen)
-            addManagedListener(videoContainer, 'mouseleave', () => {
-                if (!document.fullscreenElement) {
-                    hideControls();
-                }
-            });
-
-            // 3. Mouse di atas KONTROL BAWAH: Batalkan timer agar tetap terlihat.
-            addManagedListener(controlsContainer, 'mousemove', (e) => {
-                e.stopPropagation(); 
-                if (controlsTimeout) clearTimeout(controlsTimeout);
-            });
-            
-            // 4. Mouse keluar dari KONTROL BAWAH: Mulai timer lagi.
-            addManagedListener(controlsContainer, 'mouseleave', (e) => {
-                e.stopPropagation();
-                showControls(); // Mulai timer lagi saat mouse kembali ke video
-            });
-
-            // 5. Mouse di atas TOMBOL PLAY TENGAH: Batalkan timer.
-             addManagedListener(bigPlayPauseBtn, 'mousemove', (e) => {
-                e.stopPropagation(); 
-                if (controlsTimeout) clearTimeout(controlsTimeout); 
-            });
-
-            // 6. Mouse keluar dari TOMBOL PLAY TENGAH: Mulai timer lagi.
-            addManagedListener(bigPlayPauseBtn, 'mouseleave', (e) => {
-                e.stopPropagation();
-                showControls();
-            });
-
-            // 7. [DIUBAH] Layar Sentuh: Set flag & TOGLE (bukan timer)
-            addManagedListener(videoContainer, 'touchstart', (e) => {
-                lastInputType = 'touch'; // Set flag
-                
-                // Jika sentuhan ada di kontrol, jangan lakukan apa-apa
-                if (e.target.closest('#custom-controls-container') || e.target.closest('#big-play-pause-btn')) {
-                    return;
-                }
-                
-                // Jika sentuhan ada di video (bukan kontrol), lakukan TOGLE
-                const isVisible = parseFloat(controlsContainer.style.opacity) > 0;
-                if (isVisible) {
-                    // Sembunyikan (tanpa timer)
-                    controlsContainer.style.opacity = '0';
-                    videoContainer.style.cursor = 'none';
-                    if (bigPlayPauseBtn) bigPlayPauseBtn.classList.add('hidden');
-                } else {
-                    // Tampilkan (tanpa timer)
-                    showControls(); 
-                }
-            }, { passive: true });
-            
-            /* [DIHAPUS] Listener touchmove dihapus agar tidak memicu toggle berulang kali */
-
-            /* --- Listener Video Player --- */
-            addManagedListener(modalMainPlayer, 'loadedmetadata', () => {
-                progressBar.max = modalMainPlayer.duration;
-                updateTimeDisplay();
-            });
-
-            addManagedListener(modalMainPlayer, 'canplay', () => {
-                loadingIcon.classList.add('hidden');
-                modalMainPlayer.style.display = 'block';
-                
-                if (startTime > 0) {
-                    modalMainPlayer.currentTime = startTime;
-                }
-                modalMainPlayer.play().catch(e => {
-                    console.warn("Autoplay dicegah, tampilkan tombol play manual.", e);
-                    updatePlayPauseIcon(false); 
-                });
-                showControls(); // [DIUBAH] Panggil fungsi baru
-            }, { once: true });
-
-            addManagedListener(modalMainPlayer, 'play', () => {
-                updatePlayPauseIcon(true); 
-                showControls(); // [DIUBAH] Panggil fungsi baru
-            });
-
-            addManagedListener(modalMainPlayer, 'pause', () => {
-                updatePlayPauseIcon(false); 
-                if (controlsTimeout) clearTimeout(controlsTimeout); 
-                controlsContainer.style.opacity = '1';
-                videoContainer.style.cursor = 'default';
-                if (bigPlayPauseBtn) bigPlayPauseBtn.classList.remove('hidden'); // [BARU] Tampilkan tombol besar
-            });
-            
-            addManagedListener(modalMainPlayer, 'timeupdate', () => {
-                updateProgressBar();
-                updateTimeDisplay();
-            });
-
-            addManagedListener(modalMainPlayer, 'ended', () => {
-                updatePlayPauseIcon(false);
-            });
-
-            /* 2. Listener Tombol Kontrol */
-            addManagedListener(playPauseBtn, 'click', togglePlayPause);
-            addManagedListener(fullscreenBtn, 'click', toggleFullscreen);
-            
-            /* [BARU] Listener untuk tombol play/pause besar */
-            addManagedListener(bigPlayPauseBtn, 'click', togglePlayPause);
-
-            /* 3. Listener Progress Bar */
-            addManagedListener(progressBar, 'input', (e) => {
-                modalMainPlayer.currentTime = e.target.value;
-            });
-
-            /* 4. [DIUBAH] Listener Klik pada Video (Hanya untuk mouse) */
-            addManagedListener(modalMainPlayer, 'click', () => {
-                // Hanya jalankan jika input terakhir adalah 'mouse'
-                // (Tap layar sentuh sudah ditangani oleh 'touchstart')
-                if (lastInputType === 'mouse') {
-                    if (parseFloat(controlsContainer.style.opacity) > 0) {
-                        togglePlayPause();
-                    } else {
-                        showControls(); // Akan tampil dengan timer, karena flag 'mouse'
-                    }
-                }
-            });
-            
-            /* 5. Simpan progres video */
-            setupVideoProgressSaving();
-        }
-
-        function updatePlayPauseIcon(isPlaying) {
-            if (isPlaying) {
-                playIcon.classList.add('hidden');
-                pauseIcon.classList.remove('hidden');
-                if (bigPlayIcon) bigPlayIcon.classList.add('hidden'); // [BARU]
-                if (bigPauseIcon) bigPauseIcon.classList.remove('hidden'); // [BARU]
-            } else {
-                playIcon.classList.remove('hidden');
-                pauseIcon.classList.add('hidden');
-                if (bigPlayIcon) bigPlayIcon.classList.remove('hidden'); // [BARU]
-                if (bigPauseIcon) bigPauseIcon.classList.add('hidden'); // [BARU]
-            }
-        }
-
-        function formatTime(seconds) {
-            const min = Math.floor(seconds / 60);
-            const sec = Math.floor(seconds % 60);
-            return `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
-        }
-
-        function updateTimeDisplay() {
-            const current = formatTime(modalMainPlayer.currentTime);
-            const duration = formatTime(modalMainPlayer.duration || 0);
-            timeDisplay.textContent = `${current} / ${duration}`;
-        }
-
-        function updateProgressBar() {
-            progressBar.value = modalMainPlayer.currentTime;
-        }
-
-        function togglePlayPause() {
-            if (modalMainPlayer.paused || modalMainPlayer.ended) {
-                modalMainPlayer.play();
-            } else {
-                modalMainPlayer.pause();
-            }
-        }
-
-        async function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                try {
-                    await videoContainer.requestFullscreen();
-                    if (screen.orientation && typeof screen.orientation.lock === 'function') {
-                        try {
-                            await screen.orientation.lock('landscape');
-                        } catch (err) {
-                            console.warn("Gagal mengunci orientasi:", err.message);
-                        }
-                    }
-                } catch (err) {
-                     console.error(`Error saat request fullscreen: ${err.message}`);
-                }
-            } else {
-                try {
-                    await document.exitFullscreen();
-                    if (screen.orientation && typeof screen.orientation.unlock === 'function') {
-                        screen.orientation.unlock();
-                    }
-                } catch (err) {
-                     console.error(`Error saat keluar fullscreen: ${err.message}`);
-                }
-            }
-        }
+        /* --- [DIHAPUS] Semua Fungsi Kontrol Kustom --- */
+        /* function addManagedListener(...) {} */
+        /* function cleanupCustomControls(...) {} */
+        /* function setupCustomControls(...) {} */
+        /* function updatePlayPauseIcon(...) {} */
+        /* function formatTime(...) {} */
+        /* function updateTimeDisplay(...) {} */
+        /* function updateProgressBar(...) {} */
+        /* function togglePlayPause(...) {} */
+        /* function toggleFullscreen(...) {} */
+        /* function copyToClipboard(...) {} */
 
 
-        /* --- Fungsi Watermark --- */
+        /* --- [DIKEMBALIKAN] Fungsi Watermark (Dengan Perbaikan) --- */
         function createWatermark() {
             if (watermarkEl) {
                 watermarkEl.remove();
@@ -1390,6 +1200,8 @@
             watermarkEl.style.backgroundColor = 'rgba(0, 0, 0, 0.7)'; 
             watermarkEl.style.borderRadius = '0.25rem'; 
             watermarkEl.style.zIndex = '21'; 
+            
+            /* [PERBAIKAN KUNCI] Ini membuat watermark "tembus" terhadap klik mouse */
             watermarkEl.style.pointerEvents = 'none'; 
             
             const img = document.createElement('img');
@@ -1456,13 +1268,24 @@
             }
         }
 
+        /* [DIUBAH] Fungsi Progress Saving disederhanakan */
         function setupVideoProgressSaving() {
             if (saveTimeout) clearTimeout(saveTimeout);
             
-            addManagedListener(modalMainPlayer, 'timeupdate', () => {
+            // Buat listener baru
+            const timeUpdateListener = () => {
                 if (saveTimeout) clearTimeout(saveTimeout);
                 saveTimeout = setTimeout(saveWatchProgress, 5000); 
-            });
+            };
+            
+            // Hapus listener lama jika ada
+            if (modalMainPlayer._timeUpdateListener) {
+                 modalMainPlayer.removeEventListener('timeupdate', modalMainPlayer._timeUpdateListener);
+            }
+            
+            // Tambahkan listener baru dan simpan referensinya
+            modalMainPlayer.addEventListener('timeupdate', timeUpdateListener);
+            modalMainPlayer._timeUpdateListener = timeUpdateListener;
         }
 
         async function logVideoPlay(seriesId) {
@@ -1513,7 +1336,16 @@
         
         /* --- [AKHIR] KODE YANG DIGABUNGKAN DARI WATCH-MODULE.JS --- */
 
-        /* Menunggu sehingga DOM sedia sebelum menjalankan 'main' */
+        /* [DIHAPUS] Fungsi duplikat */
+        /* function censorMessage(message, blocklist) { ... } */
+        
+        /* --- [MULAI] FUNGSI CHAT (HANYA SATU KALI) --- */
+        
+
+        /* [DIHAPUS] Fungsi setupChat() duplikat telah dihapus dari sini */
+        /* --- [AKHIR] FUNGSI CHAT --- */
+
+        /* Menunggu sehingga DOM sedia menjalankan 'main' */
         window.addEventListener('DOMContentLoaded', main);
     </script>
 </body>
