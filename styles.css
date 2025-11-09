@@ -21,8 +21,8 @@ body {
     cursor: pointer;
     transition: transform 0.3s ease;
     /* [DIUBAH] Menambahkan !important untuk memaksa ukuran */
-    width: 100px !important;
-    height: 300px !important;
+    width: 60px !important;
+    height: 20px !important;
     display: flex;
     flex-direction: column;
 }
