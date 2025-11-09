@@ -87,7 +87,7 @@ body {
   }
 }
 
-@media (min-width: 480px) { /* lg */
+@media (min-width: 768px) { /* lg */
   #content-list, .custom-row-grid {
     grid-template-columns: repeat(5, minmax(0, 1fr)); /* 5 Kolom */
   }
