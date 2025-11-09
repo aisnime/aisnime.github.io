@@ -20,11 +20,11 @@ body {
 .content-card {
     cursor: pointer;
     transition: transform 0.3s ease;
-    /* [DIUBAH] Menambahkan !important untuk memaksa ukuran */
-    width: 100px !important;
-    height: 300px !important;
-    display: flex;
-    flex-direction: column;
+    /* [DIHAPUS] Ukuran piksel tetap dihapus */
+    /* width: 100px !important; */
+    /* height: 300px !important; */
+    display: grid;
+    /* flex-direction: column; */
 }
 
 .content-card:hover {
@@ -53,33 +53,45 @@ body {
 }
 
 /* [DIHAPUS] Aturan grid yang bentrok */
-/* ... (aturan grid yang dihapus) ... */
+/* ... (komentar aturan grid dihapus) ... */
 
 
-/* [DIUBAH] Mengganti grid dengan flexbox wrap */
+/* [DIUBAH] Mengganti flexbox kembali ke grid */
 #content-list {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.5rem; /* 24px, sama dengan gap-6 */
-    justify-content: center; /* Pusatkan kartu */
+    /* [DIHAPUS] justify-content: center; */
 }
 
 /* [DIUBAH] Grid untuk baris kustom memiliki gaya yang sama */
 .custom-row-grid {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1.5rem; /* 24px, sama dengan gap-6 */
-    justify-content: center; /* Pusatkan kartu */
+    /* [DIHAPUS] justify-content: center; */
 }
 
 @media (min-width: 640px) { /* sm */
-  /* [DIUBAH] Memperbaiki typo .custom-content-row .grid */
+  /* [DIUBAH] Kembali ke 3 kolom */
   #content-list, .custom-row-grid {
-    justify-content: flex-start; /* Ratakan kiri di layar besar */
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    /* [DIHAPUS] justify-content: flex-start; */
   }
 }
 
-/* [DIHAPUS] Aturan media query @media (min-width: 768px) dan 1024px yang lama dihapus */
+/* [BARU] Aturan media query untuk 4 dan 5 kolom */
+@media (min-width: 768px) { /* md */
+  #content-list, .custom-row-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 480px) { /* lg */
+  #content-list, .custom-row-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr)); /* 5 Kolom */
+  }
+}
 
 
 /* [BARU] Sembunyikan scrollbar untuk Webkit (Chrome, Safari) */
@@ -99,3 +111,5 @@ body {
 #genre-list-mobile {
     scrollbar-width: none;  /* Firefox */
 }
+
+
