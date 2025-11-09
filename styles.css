@@ -32,15 +32,13 @@ body {
     object-fit: cover;
 }
 
-/* [DIHAPUS] Kontrol kustom lama tidak lagi diperlukan */
-/*
+/* Mengalih keluar kawalan kustom */
 #custom-controls-container {
     display: none;
 }
 #player-controls {
     display: none;
 }
-*/
 
 #modal-content-description {
     white-space: pre-wrap;
@@ -78,8 +76,7 @@ body {
   }
 }
 
-/* [DIHAPUS] Gaya tombol play kustom lama */
-/*
+/* Gaya untuk Tombol Play Kustom */
 #video-play-button-overlay svg {
     transition: all 0.2s ease;
 }
@@ -87,130 +84,4 @@ body {
     opacity: 1;
     transform: scale(1.1);
 }
-*/
-
-/* [BARU] Gaya untuk Kontrol Video Kustom (Agar Tailwind bekerja) */
-
-/* Sembunyikan kontrol video bawaan */
-#modal-main-player::-webkit-media-controls {
-    display: none !important;
-}
-#modal-main-player::-moz-media-controls {
-    display: none !important;
-}
-#modal-main-player::media-controls {
-    display: none !important;
-}
-
-/* Gaya untuk Progress Bar (Slider) kustom */
-/* Ini penting agar slider terlihat konsisten di semua browser */
-#progress-bar {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 100%;
-    height: 6px;
-    background: rgba(107, 114, 128, 0.7); /* bg-gray-500 opacity 70 */
-    border-radius: 5px;
-    outline: none;
-    transition: opacity 0.2s;
-}
-
-/* Thumb (bulatan) untuk Chrome/Safari/Edge */
-#progress-bar::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 16px;
-    height: 16px;
-    background: #ffffff; /* white */
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
-}
-
-/* Thumb (bulatan) untuk Firefox */
-#progress-bar::-moz-range-thumb {
-    width: 16px;
-    height: 16px;
-    background: #ffffff; /* white */
-    border-radius: 50%;
-    cursor: pointer;
-    border: none;
-    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
-}
-
-/* Gaya untuk track (latar belakang) progress bar di Firefox */
-#progress-bar::-moz-range-track {
-    width: 100%;
-    height: 6px;
-    background: rgba(107, 114, 128, 0.7);
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-/* [BARU] Gaya untuk Latar Belakang Progress (Warna ungu) */
-/* Ini akan di-update oleh JavaScript */
-#progress-bar {
-    background: linear-gradient(to right, #8B5CF6 0%, #8B5CF6 0%, rgba(107, 114, 128, 0.7) 0%, rgba(107, 114, 128, 0.7) 100%);
-    
-    /* [BARU] Menambahkan flex: 1 untuk memastikan progress bar mengisi ruang */
-    flex: 1;
-}
-
-/* [BARU] Aturan tata letak yang diterjemahkan dari Tailwind */
-
-/* Ini menggantikan class 'group' pada #video-container */
-#video-container {
-    position: relative;
-}
-
-/* Ini menggantikan class 'hidden' (penting untuk ikon play/pause) */
-.hidden {
-    display: none !important; /* [DITAMBAH] !important */
-}
-
-/* Ini menata kontainer kontrol utama */
-#custom-controls-container {
-    position: absolute !important; /* [DITAMBAH] !important */
-    bottom: 0 !important; /* [DITAMBAH] !important */
-    left: 0 !important; /* [DITAMBAH] !important */
-    right: 0 !important; /* [DITAMBAH] !important */
-    z-index: 20 !important; /* [DITAMBAH] !important */
-    
-    height: 4rem; 
-    
-    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
-    
-    padding: 1rem;
-    display: flex !important; /* [DITAMBAH] !important */
-    align-items: center !important; /* [DITAMBAH] !important */
-    gap: 0.75rem;
-
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-/* Ini menggantikan 'group-hover:opacity-100' */
-#video-container:hover #custom-controls-container {
-    opacity: 1 !important; /* [DITAMBAH] !important */
-}
-
-/* Menata tombol (play/pause, fullscreen) */
-.control-btn {
-    padding: 0.5rem; /* (p-2) */
-    color: white;
-}
-
-/* Menata ikon di dalam tombol */
-.control-btn svg {
-    width: 1.5rem; /* (w-6) */
-    height: 1.5rem; /* (h-6) */
-}
-
-/* Menata tampilan waktu */
-#time-display {
-    color: white;
-    font-size: 0.75rem; /* (text-xs) */
-    font-family: monospace; /* (font-mono) */
-}
-
 
