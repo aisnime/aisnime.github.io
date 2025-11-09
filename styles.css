@@ -72,7 +72,7 @@ body {
     /* [DIHAPUS] justify-content: center; */
 }
 
-@media (min-width: 640px) { /* sm */
+@media (min-width: 400px) { /* sm */
   /* [DIUBAH] Kembali ke 3 kolom */
   #content-list, .custom-row-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -90,3 +90,4 @@ body {
 @media (min-width: 1024px) { /* lg */
   #content-list, .custom-row-grid {
     grid-template-columns: repeat(5, minmax(0, 1fr)); /*
+
