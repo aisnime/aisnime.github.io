@@ -21,9 +21,9 @@ body {
     cursor: pointer;
     transition: transform 0.3s ease;
     /* [DIHAPUS] Ukuran piksel tetap dihapus */
-    /* width: 100px !important; */
-    /* height: 300px !important; */
-    display: grid;
+    /* width: 20px !important; */
+    /* height: 60px !important; */
+    /* display: flex; */
     /* flex-direction: column; */
 }
 
@@ -72,38 +72,21 @@ body {
     /* [DIHAPUS] justify-content: center; */
 }
 
-@media (min-width: 680px) { /* sm */
+@media (min-width: 640px) { /* sm */
   /* [DIUBAH] Kembali ke 3 kolom */
   #content-list, .custom-row-grid {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     /* [DIHAPUS] justify-content: flex-start; */
   }
 }
 
-
-
-/* [BARU] Sembunyikan scrollbar untuk Webkit (Chrome, Safari) */
-#content-rows-container::-webkit-scrollbar,
-#chat-messages::-webkit-scrollbar,
-#desktop-sidebar .overflow-y-auto::-webkit-scrollbar,
-#genre-flyout-panel::-webkit-scrollbar,
-#genre-list-mobile::-webkit-scrollbar {
-    display: none;
+/* [BARU] Aturan media query untuk 4 dan 5 kolom */
+@media (min-width: 768px) { /* md */
+  #content-list, .custom-row-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
-/* [BARU] Sembunyikan scrollbar untuk Firefox */
-#content-rows-container,
-#chat-messages,
-#desktop-sidebar .overflow-y-auto,
-#genre-flyout-panel,
-#genre-list-mobile {
-    scrollbar-width: none;  /* Firefox */
-}
-
-
-
-
-
-
-
-
+@media (min-width: 1024px) { /* lg */
+  #content-list, .custom-row-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr)); /*
