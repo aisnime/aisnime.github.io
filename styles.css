@@ -21,8 +21,8 @@ body {
     cursor: pointer;
     transition: transform 0.3s ease;
     /* [DIUBAH] Ukuran diubah sesuai permintaan */
-    width: 20px !important;
-    height: 60px !important;
+    width: 100px !important;
+    height: 150px !important;
     display: flex;
     flex-direction: column;
 }
@@ -123,3 +123,4 @@ body {
 #genre-list-mobile {
     scrollbar-width: none;  /* Firefox */
 }
+
