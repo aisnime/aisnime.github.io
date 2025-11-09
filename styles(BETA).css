@@ -20,6 +20,11 @@ body {
 .content-card {
     cursor: pointer;
     transition: transform 0.3s ease;
+    /* [DIUBAH] Menambahkan !important untuk memaksa ukuran */
+    width: 100px !important;
+    height: 300px !important;
+    display: flex;
+    flex-direction: column;
 }
 
 .content-card:hover {
@@ -47,39 +52,34 @@ body {
   }
 }
 
-/* [DIUBAH] Mengurangi grid-cols-5 menjadi 4 di 'lg' */
+/* [DIHAPUS] Aturan grid yang bentrok */
+/* ... (aturan grid yang dihapus) ... */
+
+
+/* [DIUBAH] Mengganti grid dengan flexbox wrap */
 #content-list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem; /* 24px, sama dengan gap-6 */
+    justify-content: center; /* Pusatkan kartu */
 }
 
-/* [BARU] Grid untuk baris kustom memiliki gaya yang sama */
-.custom-content-row .grid {
-     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
+/* [DIUBAH] Grid untuk baris kustom memiliki gaya yang sama */
+.custom-row-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem; /* 24px, sama dengan gap-6 */
+    justify-content: center; /* Pusatkan kartu */
 }
 
 @media (min-width: 640px) { /* sm */
-  #content-list, .custom-content-row .grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* [DIUBAH] Memperbaiki typo .custom-content-row .grid */
+  #content-list, .custom-row-grid {
+    justify-content: flex-start; /* Ratakan kiri di layar besar */
   }
 }
 
-@media (min-width: 768px) { /* md */
-  #content-list, .custom-content-row .grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-
-@media (min-width: 1024px) { /* lg */
-  #content-list, .custom-content-row .grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr)); /* [DIUBAH] Menjadi 3 kolom agar pas di tengah */
-  }
-}
-
-/* [DIHAPUS] Notifikasi Share */
-
-/* [DIHAPUS] Semua Gaya untuk Kontrol Video Kustom */
+/* [DIHAPUS] Aturan media query @media (min-width: 768px) dan 1024px yang lama dihapus */
 
 
 /* [BARU] Sembunyikan scrollbar untuk Webkit (Chrome, Safari) */
