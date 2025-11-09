@@ -73,7 +73,7 @@ body {
 
 @media (min-width: 1024px) { /* lg */
   #content-list, .custom-content-row .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr)); /* [DIUBAH] Menjadi 2 kolom di konten tengah */
+    grid-template-columns: repeat(3, minmax(0, 1fr)); /* [DIUBAH] Menjadi 3 kolom agar pas di tengah */
   }
 }
 
