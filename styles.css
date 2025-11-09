@@ -22,8 +22,8 @@ body {
     transition: transform 0.3s ease;
     /* [DIHAPUS] Ukuran piksel tetap dihapus */
     /* width: 100px !important; */
-    /* height: 1500px !important; */
-    /* display: flex; */
+    /* height: 300px !important; */
+    display: grid;
     /* flex-direction: column; */
 }
 
