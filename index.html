@@ -21,7 +21,6 @@
     
     <div id="loading-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-900">
         <img id="loading-favicon" src="https://aisnime.site/loading.ico" alt="Memuat..." class="w-16 h-16 rounded-lg animate-pulse">
-        <p class="text-gray-400 mt-4">Memuat data...</p>
     </div>
 
     <!-- Konten Normal (Awalnya disembunyikan) -->
@@ -77,7 +76,7 @@
                     
                     <!-- Filter Genre Desktop -->
                     <div id="genre-filter-desktop" class="hidden lg:block mb-6 pb-4 border-b border-gray-700">
-                        <h3 class="text-xl font-semibold mb-3">Filter Genre</h3>
+                        <h3 class="text-xl font-semibold mb-3">Genre</h3>
                         <div id="genre-list-desktop" class="flex flex-wrap gap-2">
                             <!-- Genre buttons will be loaded here -->
                         </div>
@@ -87,7 +86,7 @@
                     <div id="content-rows-container" class="space-y-8">
                         <!-- Baris "Update Terbaru" akan dimuat oleh JS di sini -->
                         <div id="latest-updates-row">
-                            <h2 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-3">UPDATE TERBARU</h2>
+                            <h2 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-3">ANIME</h2>
                             <div id="content-list" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <p id="no-content-message" class="text-gray-500 col-span-full text-center py-8">Memuat konten...</p>
                             </div>
@@ -106,7 +105,7 @@
                     <div class="rounded-lg flex flex-col h-full">
                         <!-- [DIUBAH] Header Chat dengan background solid (lg:bg-opacity-50 dihapus) -->
                         <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0 bg-gray-800 rounded-t-lg">
-                            <h3 class="font-bold text-white">Chat Publik</h3>
+                            <h3 class="font-bold text-white">Chat</h3>
                             <button id="close-chat-btn" class="text-gray-400 hover:text-white text-2xl lg:hidden">&times;</button>
                         </div>
                         
@@ -139,7 +138,7 @@
     <div id="genre-sidebar" class="fixed top-0 left-0 h-full w-72 bg-gray-800 shadow-xl z-50 transform -translate-x-full transition-transform duration-300 flex flex-col">
         <!-- Header -->
         <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0">
-            <h3 class="font-bold text-white">Filter Genre</h3>
+            <h3 class="font-bold text-white">Genre</h3>
             <button id="close-genre-btn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
         </div>
         <!-- Daftar Genre -->
@@ -596,7 +595,7 @@
                         
                         <div class="flex items-center text-[9px] text-gray-400">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
-                            <span>${(itemData.data.episodeCount || 0)} Eps</span>
+                            <span>${(itemData.data.episodeCount || 0)}</span>
                         </div>
                         <div class="flex items-center text-[9px] text-gray-400">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
@@ -1426,3 +1425,4 @@
     </script>
 </body>
 </html>
+
