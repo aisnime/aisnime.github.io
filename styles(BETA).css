@@ -79,4 +79,23 @@ body {
 
 /* [DIHAPUS] Notifikasi Share */
 
-/* --- [DIHAPUS] Semua Gaya untuk Kontrol Video Kustom --- */
+/* [DIHAPUS] Semua Gaya untuk Kontrol Video Kustom */
+
+
+/* [BARU] Sembunyikan scrollbar untuk Webkit (Chrome, Safari) */
+#content-rows-container::-webkit-scrollbar,
+#chat-messages::-webkit-scrollbar,
+#desktop-sidebar .overflow-y-auto::-webkit-scrollbar,
+#genre-flyout-panel::-webkit-scrollbar,
+#genre-list-mobile::-webkit-scrollbar {
+    display: none;
+}
+
+/* [BARU] Sembunyikan scrollbar untuk Firefox */
+#content-rows-container,
+#chat-messages,
+#desktop-sidebar .overflow-y-auto,
+#genre-flyout-panel,
+#genre-list-mobile {
+    scrollbar-width: none;  /* Firefox */
+}
