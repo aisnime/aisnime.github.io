@@ -32,13 +32,7 @@ body {
     object-fit: cover;
 }
 
-/* Mengalih keluar kawalan kustom */
-#custom-controls-container {
-    display: none;
-}
-#player-controls {
-    display: none;
-}
+/* [DIHAPUS] Kontrol kustom lama tidak lagi diperlukan */
 
 #modal-content-description {
     white-space: pre-wrap;
@@ -53,35 +47,36 @@ body {
   }
 }
 
+/* [DIUBAH] Mengurangi grid-cols-5 menjadi 4 di 'lg' */
 #content-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 1rem;
 }
 
+/* [BARU] Grid untuk baris kustom memiliki gaya yang sama */
+.custom-content-row .grid {
+     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+}
+
 @media (min-width: 640px) { /* sm */
-  #content-list {
+  #content-list, .custom-content-row .grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
 @media (min-width: 768px) { /* md */
-  #content-list {
+  #content-list, .custom-content-row .grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
 @media (min-width: 1024px) { /* lg */
-  #content-list {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+  #content-list, .custom-content-row .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* [DIUBAH] Menjadi 2 kolom di konten tengah */
   }
 }
 
-/* Gaya untuk Tombol Play Kustom */
-#video-play-button-overlay svg {
-    transition: all 0.2s ease;
-}
-#video-play-button-overlay:hover svg {
-    opacity: 1;
-    transform: scale(1.1);
-}
+/* [DIHAPUS] Notifikasi Share */
 
+/* --- [DIHAPUS] Semua Gaya untuk Kontrol Video Kustom --- */
