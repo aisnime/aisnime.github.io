@@ -15,13 +15,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- [DIUBAH] Versi cache busting dinaikkan -->
-    <link rel="stylesheet" href="styles.css?v=2.11"> 
+    <link rel="stylesheet" href="styles.css?v=2.12"> 
 </head>
 <body class="bg-gray-900 text-white" style="font-family: 'Inter', sans-serif;">
     
     <div id="loading-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-900">
         <img id="loading-favicon" src="https://aisnime.site/loading.ico" alt="Memuat..." class="w-16 h-16 rounded-lg animate-pulse">
-        
+        <p class="text-gray-400 mt-4">Memuat data...</p>
     </div>
 
     <!-- Konten Normal (Awalnya disembunyikan) -->
@@ -64,7 +64,7 @@
                     
                     <!-- Pencarian -->
                     <form id="search-form" class="w-full max-w-xl mx-auto lg:ml-auto lg:mr-0 mt-4 flex items-center space-x-2">
-                        <input type="search" id="search-input" placeholder="Cari judul" class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition">
+                        <input type="search" id="search-input" placeholder="Cari berdasarkan judul atau genre..." class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition">
                     </form>
                 </div>
             </div>
@@ -77,7 +77,7 @@
                     
                     <!-- Filter Genre Desktop -->
                     <div id="genre-filter-desktop" class="hidden lg:block mb-6 pb-4 border-b border-gray-700">
-                        <h3 class="text-xl font-semibold mb-3">Genre</h3>
+                        <h3 class="text-xl font-semibold mb-3">Filter Genre</h3>
                         <div id="genre-list-desktop" class="flex flex-wrap gap-2">
                             <!-- Genre buttons will be loaded here -->
                         </div>
@@ -106,7 +106,7 @@
                     <div class="rounded-lg flex flex-col h-full">
                         <!-- [DIUBAH] Header Chat dengan background solid (lg:bg-opacity-50 dihapus) -->
                         <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0 bg-gray-800 rounded-t-lg">
-                            <h3 class="font-bold text-white">Chat</h3>
+                            <h3 class="font-bold text-white">Chat Publik</h3>
                             <button id="close-chat-btn" class="text-gray-400 hover:text-white text-2xl lg:hidden">&times;</button>
                         </div>
                         
@@ -139,7 +139,7 @@
     <div id="genre-sidebar" class="fixed top-0 left-0 h-full w-72 bg-gray-800 shadow-xl z-50 transform -translate-x-full transition-transform duration-300 flex flex-col">
         <!-- Header -->
         <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0">
-            <h3 class="font-bold text-white">Genre</h3>
+            <h3 class="font-bold text-white">Filter Genre</h3>
             <button id="close-genre-btn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
         </div>
         <!-- Daftar Genre -->
@@ -352,7 +352,7 @@
                 logPageView(); 
                 setupChat(); 
                 setupReportModal(); // [BARU]
-                /* [DIHAPUS] handleDeepLink(); */
+                handleDeepLink(); // [DIKEMBALIKAN]
             } catch(e) { 
                 console.error(`Initialization failed: ${e.message}`); 
                 document.body.innerHTML = `<div class="bg-red-900 text-white p-8 rounded-lg shadow-2xl max-w-2xl mx-auto mt-20"><h1 class="text-3xl font-bold mb-4">Koneksi Gagal!</h1><p>Gagal terhubung ke server.</p></div>`;
@@ -596,7 +596,7 @@
                         
                         <div class="flex items-center text-[9px] text-gray-400">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
-                            <span>${(itemData.data.episodeCount || 0)}</span>
+                            <span>${(itemData.data.episodeCount || 0)} Eps</span>
                         </div>
                         <div class="flex items-center text-[9px] text-gray-400">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
@@ -712,7 +712,52 @@
             }
         }
         
-        /* [DIHAPUS] Fungsi handleDeepLink() */
+        /* [BARU] Fungsi untuk menangani URL share (deep linking) */
+        async function handleDeepLink() {
+            const params = new URLSearchParams(window.location.search);
+            const seriesId = params.get('series');
+            const episodeId = params.get('episode');
+
+            if (seriesId && episodeId) {
+                console.log(`Deep link terdeteksi: Series ${seriesId}, Episode ${episodeId}`);
+                
+                try {
+                    // 1. Pastikan modul pemutar video siap
+                    await ensurePlayerModuleIsLoaded();
+                    
+                    // 2. Ambil data serial dan episode
+                    const seriesDocRef = doc(seriesCollRef, seriesId);
+                    const episodeDocRef = doc(collection(db, seriesCollRef.path, seriesId, 'episodes'), episodeId);
+                    
+                    const [seriesSnap, episodeSnap] = await Promise.all([
+                        getDoc(seriesDocRef),
+                        getDoc(episodeDocRef)
+                    ]);
+
+                    if (!seriesSnap.exists() || !episodeSnap.exists()) {
+                        console.error("Gagal deep link: Serial atau episode tidak ditemukan.");
+                        return;
+                    }
+
+                    const seriesData = seriesSnap.data();
+                    const episodeData = episodeSnap.data();
+                    const videoUrl = episodeData.videoFiles ? episodeData.videoFiles['default'] : null;
+
+                    if (videoUrl) {
+                        // 3. Langsung panggil pemutar video
+                        playVideoInModal(seriesData, episodeData, videoUrl, episodeId);
+                    } else {
+                        console.error("Gagal deep link: URL video tidak ditemukan.");
+                    }
+                    
+                    // 4. Bersihkan URL agar tidak memutar lagi saat di-refresh
+                    history.replaceState(null, '', window.location.pathname);
+
+                } catch (error) {
+                    console.error("Error saat menangani deep link:", error);
+                }
+            }
+        }
 
         // [DIUBAH] Fungsi terpisah untuk memastikan pemutar dimuat
         async function ensurePlayerModuleIsLoaded() {
