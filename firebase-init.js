@@ -1,6 +1,5 @@
-// Impor fungsi-fungsi inti
+// Impor fungsi-fungsi inti dari Firebase CDN
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-// [DIPERBAIKI] Menggunakan path CDN untuk analytics
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-analytics.js";
 import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { 
@@ -21,10 +20,10 @@ import {
     limit as firestoreLimit,
     arrayUnion as firestoreArrayUnion,
     arrayRemove as firestoreArrayRemove,
-    addDoc as firestoreAddDoc // [DIPERBAIKI] Pastikan addDoc diekspor
+    addDoc as firestoreAddDoc
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-// Konfigurasi
+// Konfigurasi Firebase Anda
 const firebaseConfig = {
   apiKey: "AIzaSyBkSf56I0akk5poCZ5t8QI1MNlUvZ8Aiu0",
   authDomain: "aisnime.firebaseapp.com",
@@ -32,24 +31,30 @@ const firebaseConfig = {
   storageBucket: "aisnime.firebasestorage.app",
   messagingSenderId: "736632750777",
   appId: "1:736632750777:web:8756d28d0ffe2698739168",
-  measurementId: "G-1WF1269W5W"
+  measurementId: "G-1WF1269W5W" // [DITAMBAHKAN] ID Pengukuran untuk Analytics
 };
 
-// Inisialisasi
+// Inisialisasi Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
-const analytics = getAnalytics(app);
+const analytics = getAnalytics(app); // Inisialisasi Analytics
 
-// [DIPERBAIKI] Menambahkan appId untuk path koleksi yang benar
+// [PENTING] Logika App ID untuk Firestore
+// Ini penting agar aplikasi Anda dapat mengakses data di Firestore
 const appId = typeof __app_id !== 'undefined' ? __app_id : 'aisnime';
 
-// Referensi Koleksi
-// [DIPERBAIKI] Menggunakan path koleksi yang benar
+// Referensi Koleksi (Menggunakan path Firestore yang benar)
 const seriesCollRef = firestoreCollection(db, 'artifacts', appId, 'public', 'data', 'series');
 const settingsCollRef = firestoreCollection(db, 'artifacts', appId, 'public', 'data', 'settings');
+const contentRowsCollRef = firestoreCollection(db, 'artifacts', appId, 'public', 'data', 'contentRows');
+const reportsCollRef = firestoreCollection(db, 'artifacts', appId, 'public', 'data', 'reports');
+const navLinksCollRef = firestoreCollection(db, 'artifacts', appId, 'public', 'data', 'navigationLinks');
+const chatCollRef = firestoreCollection(db, 'artifacts', appId, 'public', 'data', 'chat');
+
 
 // Ekspor fungsi-fungsi dengan nama yang disingkat (alias)
+// Ini agar kita bisa menggunakannya di file lain
 const collection = firestoreCollection;
 const query = firestoreQuery;
 const where = firestoreWhere;
@@ -66,15 +71,20 @@ const increment = firestoreIncrement;
 const limit = firestoreLimit;
 const arrayUnion = firestoreArrayUnion;
 const arrayRemove = firestoreArrayRemove;
-const addDoc = firestoreAddDoc; // [DIPERBAIKI]
+const addDoc = firestoreAddDoc;
 
-// Ekspor semua
+// Ekspor semua variabel dan fungsi yang diperlukan
 export { 
     db, 
     auth, 
-    analytics, // [DITAMBAHKAN] Ekspor analytics
+    analytics,
+    signInAnonymously,
     seriesCollRef, 
     settingsCollRef,
+    contentRowsCollRef,
+    reportsCollRef,
+    navLinksCollRef,
+    chatCollRef,
     collection, 
     query, 
     where, 
@@ -91,6 +101,5 @@ export {
     limit,
     arrayUnion,
     arrayRemove,
-    addDoc // [DIPERBAIKI]
+    addDoc
 };
-
