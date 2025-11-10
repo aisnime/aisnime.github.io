@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- [DIUBAH] Versi cache busting dinaikkan -->
-    <link rel="stylesheet" href="styles.css?v=2.15"> 
+    <link rel="stylesheet" href="styles.css?v=2.57"> 
 </head>
 <!-- [DIUBAH] Menambahkan h-screen dan overflow-hidden ke body di desktop -->
 <body class="bg-gray-900 text-white lg:h-screen lg:overflow-hidden" style="font-family: 'Inter', sans-serif;">
@@ -29,8 +29,8 @@
     <div id="main-content" class="overlay hidden lg:h-full lg:flex lg:flex-col">
         <!-- [DIHAPUS] Notifikasi Link Disalin -->
 
-        <!-- [DIUBAH] Kontainer utama sekarang memiliki min-h-0 untuk flexbox desktop -->
-        <div class="container mx-auto lg:flex-1 lg:grid lg:grid-cols-5 lg:gap-8 lg:min-h-0">
+        <!-- [DIUBAH] Kontainer utama sekarang adalah flex, bukan grid. Padding di sini. -->
+        <div class="container mx-auto lg:flex-1 lg:flex lg:flex-row lg:gap-8 lg:min-h-0 lg:py-8">
             
             <!-- [DIUBAH] Header Atas (HANYA MOBILE) -->
             <div class="lg:hidden relative p-4 h-16 flex items-center justify-between">
@@ -44,112 +44,133 @@
                 </button>
             </div>
             
-            <!-- [DIUBAH] Wrapper untuk layout desktop (dihapus grid-cols-4) -->
-            <div class="relative lg:grid lg:grid-cols-5 lg:gap-8 lg:h-full lg:py-8">
+            <!-- [DIHAPUS] Wrapper grid kedua yang berlebihan telah dihapus -->
                 
-                <!-- [KOLOM 1] Sidebar Kiri Desktop (Sticky) -->
-                <aside id="desktop-sidebar" class="hidden lg:block lg:col-span-1" style="max-height: 100vh;">
-                    <div class="bg-gray-800 bg-opacity-70 rounded-lg p-4 flex flex-col space-y-6 h-full overflow-y-auto">
-                        
-                        <!-- Kontainer Navigasi Dinamis -->
+            <!-- [KOLOM 1] Sidebar Kiri Desktop (Sticky & Expanding) -->
+            <!-- [DIUBAH] Menggunakan w-20, sticky, max-height, dan z-20 -->
+            <aside id="desktop-sidebar" class="hidden lg:block lg:w-20 lg:flex-shrink-0 lg:sticky lg:top-8 z-20" style="max-height: calc(100vh - 4rem);">
+                <!-- [DIUBAH] 'overflow-y-auto' DIHAPUS untuk memperbaiki bug fly-out -->
+                <div class="bg-gray-800 bg-opacity-70 rounded-lg p-4 flex flex-col h-full overflow-x-visible">
+                    
+                    <!-- [DIUBAH] Wrapper untuk konten atas sidebar -->
+                    <div class="space-y-6">
+                        <!-- Kontainer Navigasi Dinamis (Sekarang 'relative group') -->
                         <div id="dynamic-nav-links" class="space-y-2">
-                            <!-- Link dari admin akan dimuat di sini -->
+                            <!-- Link dari admin akan dimuat oleh JS di sini -->
                             <p class="text-sm text-gray-400">Memuat navigasi...</p>
                         </div>
 
-                        <!-- Kontainer Filter Genre (Dipindahkan) -->
-                        <div id="genre-filter-desktop" class="pt-4 border-t border-gray-700">
-                            <h3 class="text-xl font-semibold mb-3 pb-2 border-b border-gray-700">Filter Genre</h3>
-                            <div id="genre-list-desktop" class="flex flex-wrap gap-2">
-                                <!-- Genre buttons will be loaded here -->
+                        <!-- [DIUBAH] Kontainer Filter Genre (Dengan Tooltip Fly-out) -->
+                        <div id="genre-filter-desktop" class="pt-4 border-t border-gray-700 relative group">
+                            <!-- [DIUBAH] Judul dihapus dari sini, hanya ikon sebagai trigger -->
+                            <div class="cursor-pointer flex justify-center items-center p-2 rounded-lg hover:bg-gray-700">
+                                <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
                             </div>
+                            
+                            <!-- [DIUBAH] Panel Fly-out (z-50, w-max, dan "jembatan" padding) -->
+                            <div id="genre-flyout-panel" 
+                                 class="hidden group-hover:block absolute left-0 top-0 z-50 pt-2"
+                                 style="padding-left: 5rem;"> <!-- 5rem = w-20, ini adalah "jembatan" transparan -->
+                                
+                                <!-- Konten panel yang terlihat -->
+                                <div class="w-max p-4 bg-gray-700 rounded-lg shadow-xl" style="max-height: 400px; overflow-y: auto;">
+                                    <!-- [BARU] Judul di dalam panel -->
+                                    <h3 class="text-white text-lg font-semibold mb-2">Filter Genre</h3>
+                                    <!-- [DIUBAH] flex-col dan space-y-1 untuk daftar vertikal -->
+                                    <div id="genre-list-desktop" class="flex flex-col space-y-1">
+                                        <!-- Genre buttons will be loaded here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- [BARU] Spacer untuk mendorong tombol laporan ke bawah -->
+                    <div class="flex-grow"></div>
+
+                    <!-- [DIUBAH] Kontainer Laporan (mt-auto DIHAPUS, sekarang didorong oleh spacer) -->
+                    <div id="report-button-desktop-container" class="pt-4 border-t border-gray-700">
+                         <!-- [DIUBAH] Tombol sekarang menjadi 'relative group' untuk tooltipnya sendiri -->
+                         <button id="open-report-btn-desktop" class="relative group w-full flex items-center justify-center text-sm text-gray-400 hover:text-white hover:bg-gray-700 p-2 rounded-lg transition-colors">
+                            <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2zm0 0h18"></path></svg>
+                            <!-- [BARU] Tooltip -->
+                            <span class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-1 bg-gray-900 shadow-lg rounded-md text-sm text-white hidden lg:group-hover:block whitespace-nowrap z-20">
+                                Laporkan Masalah
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- [KOLOM 2] Konten Tengah (Scrollable) -->
+            <!-- [DIUBAH] 'main-content-container', 'p-6', 'lg:overflow-y-auto' dipindahkan ke <main> -->
+            <main class="main-content-container p-6 lg:flex-1 lg:flex lg:flex-col lg:min-w-0 relative z-10 lg:overflow-y-auto" style="max-height: calc(100vh - 4rem);">
+                
+                <!-- [DIHAPUS] Poster Header telah dihapus -->
+                
+                <!-- [DIHAPUS] Filter Genre Desktop dipindahkan ke sidebar -->
+                
+                <!-- [DIUBAH] Kontainer sekarang hanya wrapper biasa -->
+                <div id="content-rows-container" class="space-y-8">
+                    <!-- Baris "Update Terbaru" akan dimuat oleh JS di sini -->
+                    <div id="latest-updates-row">
+                        <!-- [DIUBAH] border-b dan pb-3 dihapus -->
+                        <h2 class="text-3xl font-bold mb-6">UPDATE TERBARU</h2>
+                        <!-- [DIUBAH] Kelas grid Tailwind (sm:grid-cols-2 dll) DIHAPUS -->
+                        <div id="content-list">
+                            <p id="no-content-message" class="text-gray-500 col-span-full text-center py-8">Memuat konten...</p>
+                        </div>
+                    </div>
+                    <!-- Baris kustom lainnya akan ditambahkan oleh JS di sini -->
+                </div>
+            </main>
+
+            <!-- [KOLOM 3] Sidebar Kanan (Sticky) -->
+            <!-- [DIUBAH] Menggunakan lg:w-80, lg:bg-transparent, dan z-20 -->
+            <aside id="info-chat-sidebar" class="fixed top-0 right-0 h-full w-80 bg-gray-800 shadow-xl z-50 transform translate-x-full transition-transform duration-300 
+                                            lg:block lg:relative lg:translate-x-0 lg:z-auto lg:w-80 lg:flex-shrink-0 lg:sticky lg:top-8 lg:bg-transparent z-20" 
+                 style="max-height: calc(100vh - 4rem);">
+                
+                <!-- Wrapper untuk Logo, Search, dan Chat -->
+                <div class="flex flex-col h-full">
+                
+                    <!-- [DIPINDAHKAN] Logo & Search Desktop (Tanpa Background) -->
+                    <div class="hidden lg:block p-4 flex-shrink-0">
+                        <header class="text-center lg:text-right mb-4 lg:mb-0 relative">
+                            <img id="main-logo" src="" alt="Logo Aplikasi" class="w-auto h-10 mx-auto lg:ml-auto lg:mx-0 mb-4 hidden">
+                            <h1 id="main-title-text" class="text-5xl lg:text-4xl font-extrabold text-white drop-shadow-lg"></h1>
+                        </header>
+                        <form id="search-form" class="w-full max-w-xl mx-auto lg:ml-auto lg:mr-0 mt-4 mb-8">
+                            <!-- [DIUBAH] border, border-gray-600, dan bg-opacity-50 dihapus -->
+                            <input type="search" id="search-input" placeholder="Cari berdasarkan judul atau genre..." class="w-full bg-gray-700 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition">
+                        </form>
+                    </div>
+                    
+                    <!-- [DIUBAH] Chat Wrapper (Sekarang bisa scroll) -->
+                    <div id="chat-container" class="rounded-lg flex flex-col flex-1 min-h-0"> 
+                        <!-- Header Chat -->
+                        <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0 bg-gray-800 rounded-t-lg">
+                            <h3 class="font-bold text-white">Chat Publik</h3>
+                            <button id="close-chat-btn" class="text-gray-400 hover:text-white text-2xl lg:hidden">&times;</button>
                         </div>
                         
-                        <!-- Kontainer Laporan (Dipindahkan & mt-auto) -->
-                        <div id="report-button-desktop-container" class="mt-auto pt-4 border-t border-gray-700">
-                             <button id="open-report-btn-desktop" class="w-full flex items-center justify-center text-sm text-gray-400 hover:text-white hover:bg-gray-700 p-2 rounded-lg transition-colors">
-                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2zm0 0h18"></path></svg>
-                                <span>Laporkan Masalah</span>
-                            </button>
+                        <!-- [DIUBAH] Area Pesan (flex-grow dan bg-gray-800) -->
+                        <div id="chat-messages" class="flex-grow p-4 space-y-3 overflow-y-auto bg-gray-800">
+                            <p class="text-xs text-gray-500 text-center">Menyambungkan ke chat...</p>
                         </div>
-                    </div>
-                </aside>
-
-                <!-- [KOLOM 2] Konten Tengah (Scrollable) -->
-                <main class="main-content-container p-6 lg:col-span-3 lg:overflow-y-auto" style="max-height: 100vh;">
-                    
-                    <!-- [DIPINDAHKAN] Poster Header -->
-                    <div id="header-poster-wrapper" class="hidden lg:block mb-8">
-                        <div id="poster-bg" class="aspect-video w-full bg-gray-800 rounded-lg overflow-hidden shadow-lg relative">
-                            <div id="header-poster-slider" class="relative w-full h-full">
-                                <!-- Poster akan dimasukkan oleh JS di sini -->
-                            </div>
-                            <div id="slider-dots" class="absolute bottom-2 left-1/2 -translate-x-1/2 flex space-x-2">
-                                <!-- Titik akan dimasukkan oleh JS -->
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- [DIHAPUS] Filter Genre Desktop dipindahkan ke sidebar -->
-                    
-                    <!-- Kontainer untuk semua baris konten -->
-                    <div id="content-rows-container" class="space-y-8">
-                        <!-- Baris "Update Terbaru" akan dimuat oleh JS di sini -->
-                        <div id="latest-updates-row">
-                            <h2 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-3">UPDATE TERBARU</h2>
-                            <div id="content-list" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                <p id="no-content-message" class="text-gray-500 col-span-full text-center py-8">Memuat konten...</p>
-                            </div>
-                        </div>
-                        <!-- Baris kustom lainnya akan ditambahkan oleh JS di sini -->
-                    </div>
-                </main>
-
-                <!-- [KOLOM 3] Sidebar Kanan (Sticky) -->
-                <aside id="chat-container" class="fixed top-0 right-0 h-full w-80 bg-gray-800 shadow-xl z-50 transform translate-x-full transition-transform duration-300 
-                                                lg:block lg:relative lg:translate-x-0 lg:z-auto lg:w-full lg:col-span-1" 
-                     style="max-height: 100vh;">
-                    
-                    <!-- Wrapper untuk Logo, Search, dan Chat -->
-                    <div class="flex flex-col h-full">
-                    
-                        <!-- [DIPINDAHKAN] Logo & Search Desktop -->
-                        <div class="hidden lg:block p-4">
-                            <header class="text-center lg:text-right mb-4 lg:mb-0 relative">
-                                <img id="main-logo" src="" alt="Logo Aplikasi" class="w-auto h-10 mx-auto lg:ml-auto lg:mx-0 mb-4 hidden">
-                                <h1 id="main-title-text" class="text-5xl lg:text-4xl font-extrabold text-white drop-shadow-lg"></h1>
-                            </header>
-                            <form id="search-form" class="w-full max-w-xl mx-auto lg:ml-auto lg:mr-0 mt-4 mb-8">
-                                <input type="search" id="search-input" placeholder="Cari berdasarkan judul atau genre..." class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition">
+                        
+                        <!-- [DIUBAH] Input Pesan (flex-shrink-0 dan bg-gray-800) -->
+                        <div class="p-4 border-t border-gray-700 flex-shrink-0 bg-gray-800 rounded-b-lg">
+                            <form id="chat-form" class="flex space-x-2">
+                                <input type="text" id="chat-input" placeholder="Ketik pesan..." class="flex-1 bg-gray-700 rounded-full py-2 px-4 text-white focus:ring-2 focus:ring-purple-500" autocomplete="off">
+                                <button type="submit" id="chat-send-btn" class="bg-purple-600 hover:bg-purple-700 rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">
+                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 16.5V3.5a1 1 0 00.894-1.053l-1.48 8.88A1 1 0 0010.894 2.553z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
+                                </button>
                             </form>
                         </div>
-                        
-                        <!-- Chat Wrapper -->
-                        <div class="rounded-lg flex flex-col flex-1 min-h-0"> <!-- [DIUBAH] flex-1 dan min-h-0 ditambahkan -->
-                            <!-- Header Chat -->
-                            <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0 bg-gray-800 rounded-t-lg">
-                                <h3 class="font-bold text-white">Chat Publik</h3>
-                                <button id="close-chat-btn" class="text-gray-400 hover:text-white text-2xl lg:hidden">&times;</button>
-                            </div>
-                            
-                            <!-- Area Pesan (flex-grow) -->
-                            <div id="chat-messages" class="flex-grow p-4 space-y-3 overflow-y-auto bg-gray-800">
-                                <p class="text-xs text-gray-500 text-center">Menyambungkan ke chat...</p>
-                            </div>
-                            
-                            <!-- Input Pesan (flex-shrink-0) -->
-                            <div class="p-4 border-t border-gray-700 flex-shrink-0 bg-gray-800 rounded-b-lg">
-                                <form id="chat-form" class="flex space-x-2">
-                                    <input type="text" id="chat-input" placeholder="Ketik pesan..." class="flex-1 bg-gray-700 rounded-full py-2 px-4 text-white focus:ring-2 focus:ring-purple-500" autocomplete="off">
-                                    <button type="submit" id="chat-send-btn" class="bg-purple-600 hover:bg-purple-700 rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">
-                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 16.5V3.5a1 1 0 00.894-1.053l-1.48 8.88A1 1 0 0010.894 2.553z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
                     </div>
-                </aside>
-            </div>
+                </div>
+            </aside>
         </div>
     </div>
 
@@ -171,7 +192,7 @@
         <!-- [BARU] Tombol Laporan dipindahkan ke sini -->
         <div class="p-4 border-t border-gray-700 flex-shrink-0">
             <button id="open-report-btn" class="w-full flex items-center justify-center text-sm text-gray-400 hover:text-white hover:bg-gray-700 p-2 rounded-lg transition-colors">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2zm0 0h18"></path></svg>
+                <svg class="w-5 h-5" mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2zm0 0h18"></path></svg>
                 <span>Laporkan Masalah</span>
             </button>
         </div>
@@ -187,79 +208,75 @@
         <p class="text-gray-300 mt-2 max-w-md">Mohon Maaf, Kami sedang melakukan beberapa pembaruan</p>
     </div>
 
-    <!-- MODAL DAFTAR EPISODE -->
-    <div id="episode-list-modal" class="hidden fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 z-40">
-        <div class="bg-gray-800 rounded-lg shadow-2xl w-full max-w-2xl max-h-[80vh] flex flex-col">
-            <div class="p-4 border-b border-gray-700 flex justify-between items-center">
-                <h3 id="episode-list-title" class="text-2xl font-bold">Daftar Episode</h3>
-                <button id="close-episode-list-btn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
-            </div>
-            <div id="episode-list-container" class="p-4 space-y-3 overflow-y-auto">
-                <!-- Daftar episode akan dimuat oleh JS -->
-            </div>
-        </div>
-    </div>
+    <!-- [DIHAPUS] MODAL DAFTAR EPISODE (LAMA) -->
 
-    <!-- MODAL VIDEO -->
+    <!-- [DIUBAH] MODAL VIDEO (SEKARANG MENJADI MODAL UTAMA) -->
+    <!-- [DIUBAH] Mengembalikan items-center justify-center dan p-4 -->
     <div id="video-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center p-4 hidden z-50">
-       <div class="bg-gray-900 rounded-lg shadow-2xl w-full max-w-6xl relative group flex flex-col lg:flex-row">
+       <!-- [DIUBAH] Mengembalikan max-w-6xl, menghapus h-full -->
+       <div class="bg-gray-900 rounded-lg shadow-2xl w-full max-w-6xl relative group flex flex-col">
+            <!-- [DIUBAH] Tombol close dikembalikan ke posisi luar -->
             <button id="close-modal-btn" class="absolute -top-3 -right-3 bg-white text-black rounded-full w-8 h-8 flex items-center justify-center font-bold text-xl z-20">&times;</button>
             
-            <div class="lg:w-2/3 w-full flex flex-col">
-                <!-- [DIUBAH] Kontainer video (polos) -->
-                <div id="video-container" class="w-full aspect-video bg-black rounded-t-lg lg:rounded-l-lg lg:rounded-tr-none relative group">
-                    <img id="video-loading-icon" src="" alt="Memuat..." class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 animate-pulse hidden z-10">
-                    
-                    <!-- [DIUBAH] Player utama DIKEMBALIKAN ke kontrol bawaan -->
-                    <video id="modal-main-player" class="w-full h-full relative z-0" controls controlslist="nodownload" disablepictureinpicture playsinline autoplay></video>
-                    
-                    <!-- [DIHAPUS] Tombol Play/Pause Besar di Tengah -->
-                    
-                    <!-- [DIHAPUS] Kontrol Kustom Bawah -->
+            <!-- [DIUBAH] Baris Atas (lg:flex-1 dan lg:min-h-0 DIHAPUS, grid diubah ke 5 kolom) -->
+            <div class="p-6 lg:grid lg:grid-cols-5 lg:gap-6">
+                
+                <!-- [BARU] Kolom 1: Thumbnail -->
+                <!-- [DIUBAH] col-span-2 diubah menjadi col-span-1, h-full dihapus -->
+                <div class="hidden lg:flex lg:col-span-1">
+                    <img id="modal-thumbnail" src="" alt="Thumbnail Serial" class="w-full h-auto object-cover rounded-md border-2 border-gray-700">
                 </div>
-                <div class="p-4 lg:hidden">
-                    <button id="show-episodes-btn-mobile" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-md">
-                        Lihat Daftar Episode
-                    </button>
+
+                <!-- [DIUBAH] Kolom 2: Video Player (col-span-3) -->
+                <div class="lg:col-span-3">
+                    <div id="video-container" class="w-full aspect-video bg-black rounded-lg relative group">
+                        <img id="video-loading-icon" src="" alt="Memuat..." class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 animate-pulse hidden z-10">
+                        <video id="modal-main-player" class="w-full h-full relative z-0" controls controlslist="nodownload" disablepictureinpicture playsinline autoplay></video>
+                    </div>
+                </div>
+
+                <!-- [BARU] Kolom 3: Daftar Episode -->
+                <!-- [DIUBAH] col-span-1 (dari 5), h-64 di mobile, h-96 di desktop, h-full dihapus -->
+                <div class="lg:col-span-1 bg-gray-800 rounded-lg p-2 h-72 lg:h-96 overflow-y-auto mt-4 lg:mt-0 flex flex-col">
+                    <div id="modal-episode-list-container" class="flex-1 overflow-y-auto">
+                        <p class="text-xs text-gray-400 text-center">Memuat episode...</p>
+                    </div>
                 </div>
             </div>
 
-            <div id="modal-content-info" class="p-6 lg:w-1/3 w-full bg-gray-900 rounded-b-lg lg:rounded-r-lg lg:rounded-bl-none flex flex-col">
-                <div class="flex space-x-4 mb-4">
-                    <img id="modal-thumbnail" src="" alt="Thumbnail Serial" class="w-24 h-36 object-cover rounded-md flex-shrink-0 border-2 border-gray-700">
-                    <div class="flex flex-col justify-start">
-                        <h3 id="modal-content-title" class="text-2xl font-bold text-white mb-2">Memuat judul...</h3>
-                        <div class="flex flex-col items-start text-sm text-gray-400 gap-y-2">
-                            <div class="flex flex-row flex-wrap items-center gap-x-4 gap-y-1">
-                                <!-- Rating -->
-                                <div class="flex items-center space-x-1 text-yellow-400 font-semibold">
-                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                                    <span id="modal-content-rating">N/A</span>
-                                </div>
-                                <!-- Vote -->
-                                <div class="flex items-center space-x-1">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-                                    <span id="modal-content-vote">N/A</span>
-                                </div>
-                                <!-- Total Episode -->
-                                <div class="flex items-center space-x-1">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
-                                    <span id="modal-content-episodes">...</span>
-                                </div>
-                            </div>
-                            <!-- Ikon MAL -->
-                            <div>
-                                <span class="p-1 bg-blue-800 text-white text-xs font-bold rounded">MAL</span>
-                            </div>
+            <!-- [BARU] Baris Bawah (Info Konten) -->
+            <!-- [DIUBAH] Dibuat flex-shrink-0 agar tidak mengecil, dan overflow-y-auto untuk mobile -->
+            <div id="modal-content-info" class="p-6 pt-0 lg:pt-6 border-t border-gray-700 flex-shrink-0 overflow-y-auto">
+                <h3 id="modal-content-title" class="text-2xl font-bold text-white mb-2">Memuat judul...</h3>
+                <div class="flex flex-col items-start text-sm text-gray-400 gap-y-2">
+                    <div class="flex flex-row flex-wrap items-center gap-x-4 gap-y-1">
+                        <!-- Rating -->
+                        <div class="flex items-center space-x-1 text-yellow-400 font-semibold">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <span id="modal-content-rating">N/A</span>
+                        </div>
+                        <!-- Vote -->
+                        <div class="flex items-center space-x-1">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                            <span id="modal-content-vote">N/A</span>
+                        </div>
+                        <!-- Total Episode -->
+                        <div class="flex items-center space-x-1">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+                            <span id="modal-content-episodes">...</span>
                         </div>
                     </div>
+                    <!-- Ikon MAL -->
+                    <div>
+                        <span class="p-1 bg-blue-800 text-white text-xs font-bold rounded">MAL</span>
+                    </div>
                 </div>
-                <p id="modal-content-description" class="text-gray-400 text-sm whitespace-pre-wrap flex-grow">Tidak ada deskripsi.</p>
-                <div class="mt-auto pt-4 hidden lg:block">
-                    <button id="show-episodes-btn-desktop" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-md">
-                        Lihat Daftar Episode
-                    </button>
+                <!-- [DIUBAH] Deskripsi sekarang dibungkus div dengan scroll -->
+                <div id="modal-description-wrapper" class="h-24 overflow-y-auto mt-4">
+                    <p id="modal-content-description" class="text-gray-400 text-sm whitespace-pre-wrap">Tidak ada deskripsi.</p>
                 </div>
+                
+                <!-- [DIHAPUS] Tombol "Lihat Daftar Episode" tidak diperlukan lagi -->
             </div>
         </div>
     </div>
@@ -337,12 +354,12 @@
         let allGenres = new Set();
         let activeGenre = 'All';
 
-        /* [DIHAPUS] Variabel pemutar video kustom */
-        let videoModal, closeModalBtn, modalMainPlayer, episodeListModal, videoContainer;
+        /* [DIUBAH] Variabel pemutar video kustom dihapus, modal episode dihapus */
+        let videoModal, closeModalBtn, modalMainPlayer, videoContainer;
         let currentSeriesId = null;
         let currentItem = null;
         let saveTimeout;
-        let watermarkEl = null; // [DIKEMBALIKAN] Untuk logo bawaan
+        let watermarkEl = null; 
         
         /* --- Fungsi Utama --- */
         async function main() {
@@ -397,9 +414,11 @@
                     loadingFavicon.src = faviconUrl;
                 }
                 
-                const settingsKeys = ['background', 'mainLogo', 'maintenanceMode', 'headerPosters', 'censorship'];
+                /* [DIUBAH] 'headerPosters' dihapus */
+                const settingsKeys = ['background', 'mainLogo', 'maintenanceMode', 'censorship'];
                 const promises = settingsKeys.map(key => getDoc(doc(settingsCollRef, key)));
-                const [backgroundSnap, mainLogoSnap, maintenanceSnap, headerPostersSnap, censorSnap] = await Promise.all(promises);
+                /* [DIUBAH] headerPostersSnap dihapus */
+                const [backgroundSnap, mainLogoSnap, maintenanceSnap, censorSnap] = await Promise.all(promises);
                 
                 if (censorSnap.exists() && censorSnap.data().blockedWords) {
                     blockedWordsList = censorSnap.data().blockedWords;
@@ -438,37 +457,7 @@
                         console.warn(`Logo utama tidak ditemukan. Snap exists: ${mainLogoSnap.exists()}`); 
                     }
                     
-                    const sliderContainer = document.getElementById('header-poster-slider');
-                    const dotsContainer = document.getElementById('slider-dots');
-                    const posterWrapper = document.getElementById('header-poster-wrapper');
-                    const posterBg = document.getElementById('poster-bg');
-
-                    if (sliderContainer && headerPostersSnap.exists() && headerPostersSnap.data().urls && headerPostersSnap.data().urls.length > 0) {
-                        const posters = headerPostersSnap.data().urls;
-                        sliderContainer.innerHTML = '';
-                        dotsContainer.innerHTML = '';
-
-                        posters.forEach((url, index) => {
-                            const img = document.createElement('img');
-                            img.src = url;
-                            img.alt = `Header Poster ${index + 1}`;
-                            img.className = `header-poster-img absolute w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${index === 0 ? 'opacity-100' : 'opacity-0'}`;
-                            sliderContainer.appendChild(img);
-                            
-                            const dot = document.createElement('div');
-                            dot.className = `slider-dot w-2 h-2 rounded-full cursor-pointer ${index === 0 ? 'bg-white' : 'bg-gray-500'}`;
-                            dot.dataset.index = index;
-                            dotsContainer.appendChild(dot);
-                        });
-                        
-                        startHeaderSlider(posters.length);
-                        if (posterWrapper) posterWrapper.classList.remove('hidden');
-                    } else if (sliderContainer) {
-                         if (posterWrapper && posterBg) {
-                            posterBg.classList.remove('bg-gray-800', 'shadow-lg');
-                            posterBg.classList.add('bg-transparent');
-                         }
-                    }
+                    /* [DIHAPUS] Semua logika slider poster header telah dihapus */
                     
                     loadInitialContent();
                     loadCustomContentRows(); 
@@ -487,45 +476,8 @@
             }
         }
         
-        let currentSlideIndex = 0;
-        let slideInterval;
-        function startHeaderSlider(totalSlides) {
-            if (totalSlides <= 1) return; 
-            
-            const images = document.querySelectorAll('.header-poster-img');
-            const dots = document.querySelectorAll('.slider-dot');
-
-            const showSlide = (index) => {
-                images.forEach((img, i) => {
-                    img.classList.toggle('opacity-100', i === index);
-                    img.classList.toggle('opacity-0', i !== index);
-                });
-                dots.forEach((dot, i) => {
-                    dot.classList.toggle('bg-white', i === index);
-                    dot.classList.toggle('bg-gray-500', i !== index);
-                });
-                currentSlideIndex = index;
-            };
-
-            if (slideInterval) clearInterval(slideInterval);
-            
-            slideInterval = setInterval(() => {
-                let nextIndex = (currentSlideIndex + 1) % totalSlides;
-                showSlide(nextIndex);
-            }, 5000);
-
-            dots.forEach(dot => {
-                dot.addEventListener('click', (e) => {
-                    const index = parseInt(e.target.dataset.index, 10);
-                    showSlide(index);
-                    clearInterval(slideInterval);
-                    slideInterval = setInterval(() => {
-                        let nextIndex = (currentSlideIndex + 1) % totalSlides;
-                        showSlide(nextIndex);
-                    }, 5000);
-                });
-            });
-        }
+        /* [DIHAPUS] Fungsi startHeaderSlider() telah dihapus */
+        
 
         /* [DIUBAH] Fungsi ini sekarang HANYA memuat "Update Terbaru" */
         function loadInitialContent() {
@@ -584,18 +536,33 @@
             const q = query(navLinksCollRef, orderBy("order", "asc"));
             try {
                 const snapshot = await getDocs(q);
+                
+                const genreFilter = document.getElementById('genre-filter-desktop');
                 if (snapshot.empty) {
-                    container.innerHTML = '<p class="text-sm text-gray-400">Tidak ada link navigasi.</p>';
+                    // [DIUBAH] Sembunyikan kontainer dan border-top di elemen berikutnya
+                    container.style.display = 'none';
+                    if(genreFilter) genreFilter.classList.remove('pt-4', 'border-t');
                     return;
                 }
+                
+                // [DIUBAH] Pastikan border-top terlihat jika ada link
+                if(genreFilter) genreFilter.classList.add('pt-4', 'border-t');
+                
                 snapshot.forEach(docSnap => {
                     const linkData = docSnap.data();
                     const linkEl = document.createElement('a');
                     linkEl.href = linkData.url;
-                    linkEl.textContent = linkData.title;
                     linkEl.target = "_blank"; // Selalu buka di tab baru
                     linkEl.rel = "noopener noreferrer";
-                    linkEl.className = "block p-2 rounded-lg text-white font-semibold hover:bg-gray-700 transition-colors";
+                    linkEl.className = "relative group block p-2 rounded-lg text-white font-semibold hover:bg-gray-700 transition-colors flex justify-center"; // [DIUBAH]
+                    
+                    // [DIUBAH] Ikon dan Tooltip
+                    linkEl.innerHTML = `
+                        <svg class="w-6 h-6 flex-shrink-0 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899l4-4a4 4 0 10-5.656-5.656l-1.102 1.101"></path></svg>
+                        <span class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-1 bg-gray-900 shadow-lg rounded-md text-sm text-white hidden lg:group-hover:block whitespace-nowrap z-50">
+                            ${linkData.title}
+                        </span>
+                    `;
                     container.appendChild(linkEl);
                 });
             } catch (error) {
@@ -610,18 +577,19 @@
             rowEl.className = 'custom-content-row'; // Kelas untuk disembunyikan saat filter/cari
 
             const gridEl = document.createElement('div');
-            gridEl.className = 'grid grid-cols-1 sm:grid-cols-2 gap-6';
+            gridEl.className = 'grid grid-cols-1 sm:grid-cols-2 gap-6'; // [DIKEMBALIKAN] Menggunakan grid
 
             seriesContent.forEach(itemData => {
                 const card = createSeriesCard(itemData);
                 gridEl.appendChild(card);
             });
 
-            rowEl.innerHTML = `
-                <h2 class="text-3xl font-bold mb-6 border-b border-gray-700 pb-3">${title.toUpperCase()}</h2>
-            `;
-            rowEl.appendChild(gridEl);
-            contentRowsContainer.appendChild(rowEl);
+            if (seriesContent.length > 0) { // [DIUBAH] Pengecekan
+                 /* [DIUBAH] border-b dan pb-3 dihapus */
+                 rowEl.innerHTML = `<h2 class="text-3xl font-bold mb-6">${title.toUpperCase()}</h2>`;
+                 rowEl.appendChild(gridEl);
+                 contentRowsContainer.appendChild(rowEl);
+            }
         }
         
         // [BARU] Fungsi terpusat untuk membuat kartu serial
@@ -632,8 +600,10 @@
             }
 
             const itemEl = document.createElement('div');
+            // [DIKEMBALIKAN] Kelas flex-col dihapus, rasio aspek dikembalikan
             itemEl.className = 'content-card bg-gray-800 bg-opacity-50 rounded-lg overflow-hidden shadow-lg transform transition-transform duration-200 hover:-translate-y-1 cursor-pointer';
             
+            // [DIKEMBALIKAN] Struktur asli kartu dengan rasio aspek 7:9
             itemEl.innerHTML = `
                 <div class="relative w-full aspect-[7/9] bg-black">
                     <img src="${itemData.data.thumbnailUrl}" alt="${itemData.data.title}" class="w-full h-full object-cover" loading="lazy">
@@ -656,11 +626,15 @@
                         </div>
                     </div>
                 </div>`;
+            
+            // [DIUBAH] Event listener sekarang memanggil 'loadAndShowEpisodeList'
             itemEl.addEventListener('click', () => {
                 loadAndShowEpisodeList(itemData.id, itemData.data);
             });
             return itemEl;
         }
+
+        /* [DIHAPUS] Fungsi playLatestEpisode() */
 
         function setupSearchListener() {
             const searchInput = document.getElementById('search-input');
@@ -709,6 +683,12 @@
         }
 
         function setupEventListeners(){
+            // [DIUBAH] Target scroll sekarang adalah 'content-rows-container' di desktop
+            const mainContentEl = document.getElementById('content-rows-container');
+            if (mainContentEl) {
+                mainContentEl.addEventListener('scroll', handleScroll);
+            }
+            // Fallback untuk mobile
             window.addEventListener('scroll', handleScroll);
             
             const toggleGenreSidebar = (open) => {
@@ -730,52 +710,41 @@
             });
         }
         
-        function handleScroll() {
+        function handleScroll(e) {
             // [DIUBAH] Infinite scroll hanya berlaku jika tidak sedang mencari ATAU filter
             if (isSearching || activeGenre !== 'All' || isLoadingMore) return;
             
-            // [DIUBAH] Target scroll sekarang adalah 'main' bukan 'window'
-            const mainContentEl = document.querySelector('main.main-content-container');
-            if (!mainContentEl) return;
+            // [DIUBAH] Cek target event (window or the container)
+            const target = e.target.id === 'content-rows-container' ? e.target : document.documentElement;
             
-            if (mainContentEl.scrollHeight - mainContentEl.scrollTop - mainContentEl.clientHeight < 500) {
+            if (target.scrollHeight - target.scrollTop - target.clientHeight < 500) {
                  renderMoreContent();
             }
         }
 
-        /* [DIUBAH] Fungsi loadAndShowEpisodeList disederhanakan */
+        /* [DIUBAH] Fungsi ini sekarang membuka modal video baru */
         async function loadAndShowEpisodeList(seriesId, seriesData) {
             
-            /* [BARU] Inisialisasi DOM pemutar video saat pertama kali diklik */
-            if (!isWatchModuleLoaded) {
-                try {
-                    videoModal = document.getElementById('video-modal');
-                    videoContainer = document.getElementById('video-container'); 
-                    closeModalBtn = document.getElementById('close-modal-btn');
-                    modalMainPlayer = document.getElementById('modal-main-player');
-                    episodeListModal = document.getElementById('episode-list-modal');
-                    
-                    /* [DIHAPUS] Inisialisasi DOM Kontrol Kustom */
-
-                    /* Pasang listener modal (hanya sekali) */
-                    setupModalEventListeners();
-                    isWatchModuleLoaded = true;
-                } catch (e) {
-                    console.error("Gagal menginisialisasi DOM pemutar video:", e);
-                    alert("Terjadi error saat memuat elemen pemutar video.");
-                    return;
-                }
-            }
+            await ensurePlayerModuleIsLoaded(); // Pastikan pemutar siap
             
-            /* [DIUBAH] Langsung panggil window.openEpisodeList (yang sekarang ada di file ini) */
-            if (window.openEpisodeList) {
-                window.openEpisodeList(seriesId, seriesData);
-            } else {
-                console.error("Fungsi openEpisodeList tidak ditemukan di window."); 
-            }
+            // 1. Tampilkan modal, sembunyikan player, tampilkan loading
+            videoModal.classList.remove('hidden');
+            document.getElementById('video-loading-icon').style.display = 'block';
+            modalMainPlayer.style.display = 'none';
+
+            // 2. Isi info di Kolom 1 (Thumbnail) dan Baris 2 (Info)
+            document.getElementById('modal-thumbnail').src = seriesData.thumbnailUrl;
+            document.getElementById('modal-content-title').textContent = seriesData.title;
+            document.getElementById('modal-content-description').textContent = seriesData.description || 'Tidak ada deskripsi.';
+            document.getElementById('modal-content-rating').textContent = (seriesData.rating || 'N/A').replace(' / 10', '');
+            document.getElementById('modal-content-vote').textContent = (seriesData.scored_by || 0).toLocaleString('id-ID') + ' Vote';
+            document.getElementById('modal-content-episodes').textContent = `${seriesData.episodeCount || 0} Eps`;
+
+            // 3. Panggil fungsi terpisah untuk mengisi Kolom 3 (Daftar Episode)
+            window.openEpisodeList(seriesId, seriesData); 
         }
         
-        /* [BARU] Fungsi untuk menangani URL share (deep linking) */
+        /* [DIKEMBALIKAN] Fungsi untuk menangani URL share (deep linking) */
         async function handleDeepLink() {
             const params = new URLSearchParams(window.location.search);
             const seriesId = params.get('series');
@@ -807,13 +776,16 @@
                     const videoUrl = episodeData.videoFiles ? episodeData.videoFiles['default'] : null;
 
                     if (videoUrl) {
-                        // 3. Langsung panggil pemutar video
+                        // 3. Langsung panggil pemutar video (akan mengisi info)
                         playVideoInModal(seriesData, episodeData, videoUrl, episodeId);
+                        
+                        // 4. [BARU] Muat juga daftar episode di Kolom 3
+                        window.openEpisodeList(seriesId, seriesData);
                     } else {
                         console.error("Gagal deep link: URL video tidak ditemukan.");
                     }
                     
-                    // 4. Bersihkan URL agar tidak memutar lagi saat di-refresh
+                    // 5. Bersihkan URL agar tidak memutar lagi saat di-refresh
                     history.replaceState(null, '', window.location.pathname);
 
                 } catch (error) {
@@ -832,7 +804,7 @@
                 videoContainer = document.getElementById('video-container'); 
                 closeModalBtn = document.getElementById('close-modal-btn');
                 modalMainPlayer = document.getElementById('modal-main-player');
-                episodeListModal = document.getElementById('episode-list-modal');
+                /* [DIHAPUS] episodeListModal */
                 
                 /* [DIHAPUS] Inisialisasi DOM Kontrol Kustom */
 
@@ -1107,7 +1079,7 @@
             const sendReportBtn = document.getElementById('send-report-btn');
             const reportStatusMsg = document.getElementById('report-status-message');
 
-            openReportBtn.addEventListener('click', () => {
+            if(openReportBtn) openReportBtn.addEventListener('click', () => {
                 reportModal.classList.remove('hidden');
             });
             
@@ -1118,17 +1090,17 @@
                 });
             }
             
-            closeReportBtn.addEventListener('click', () => {
+            if(closeReportBtn) closeReportBtn.addEventListener('click', () => {
                 reportModal.classList.add('hidden');
             });
             
-            reportModal.addEventListener('click', (e) => {
+            if(reportModal) reportModal.addEventListener('click', (e) => {
                 if (e.target === reportModal) {
                     reportModal.classList.add('hidden');
                 }
             });
 
-            reportForm.addEventListener('submit', async (e) => {
+            if(reportForm) reportForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const reportText = reportTextarea.value.trim();
                 if (reportText.length < 10) {
@@ -1169,23 +1141,24 @@
 
         /* --- [MULAI] KODE YANG DIGABUNGKAN DARI WATCH-MODULE.JS --- */
 
-        /* Fungsi Utama (dipanggil oleh loadAndShowEpisodeList) */
+        /* [DIUBAH] Fungsi ini sekarang HANYA MENGISI DAFTAR EPISODE di modal video */
         window.openEpisodeList = async (seriesId, seriesData) => {
             currentSeriesId = seriesId;
 
-            document.getElementById('episode-list-title').textContent = seriesData.title;
-            const episodeContainer = document.getElementById('episode-list-container');
-            episodeContainer.innerHTML = '<p class="text-gray-400">Memuat episode...</p>';
-            episodeListModal.classList.remove('hidden');
+            // [DIUBAH] Container diubah ke #modal-episode-list-container
+            const episodeContainer = document.getElementById('modal-episode-list-container');
+            episodeContainer.innerHTML = '<p class="text-xs text-gray-400 text-center">Memuat episode...</p>';
+            
+            /* [DIHAPUS] episodeListModal.classList.remove('hidden'); */
 
             /* Gunakan seriesCollRef global */
-            const episodesCollRef = collection(db, seriesCollRef.path, seriesId, 'episodes'); 
+            const episodesCollRef = collection(db, 'series', seriesId, 'episodes'); 
             const q = query(episodesCollRef, orderBy("title", "asc")); 
 
             onSnapshot(q, (snapshot) => {
                 episodeContainer.innerHTML = '';
                 if (snapshot.empty) {
-                    episodeContainer.innerHTML = '<p class="text-gray-400">Belum ada episode untuk serial ini.</p>';
+                    episodeContainer.innerHTML = '<p class="text-xs text-gray-400 text-center">Belum ada episode.</p>';
                     return;
                 }
 
@@ -1205,23 +1178,21 @@
                         : '';
 
                     const episodeEl = document.createElement('button');
-                    episodeEl.className = 'block w-full text-left p-3 bg-gray-700 hover:bg-gray-600 rounded-md transition flex justify-between items-center';
+                    // [DIUBAH] Styling diubah agar lebih kecil untuk sidebar
+                    episodeEl.className = 'block w-full text-left p-2 bg-gray-700 hover:bg-gray-600 rounded-md transition flex justify-between items-center';
                     
                     episodeEl.innerHTML = `
-                        <span>
-                            <span class="text-gray-300">${episode.title || `(Tanpa Judul)`}</span>
-                        </span>
-                        <span class="text-xs text-gray-400 flex items-center">
-                            ${watchedIcon}
-                        </span>
+                        <span class="text-sm text-gray-300 truncate">${episode.title || `(Tanpa Judul)`}</span>
+                        ${watchedIcon}
                     `;
 
                     const videoUrl = episode.videoFiles ? episode.videoFiles['default'] : null;
 
+                    // [DIUBAH] Onclick sekarang memanggil playVideoInModal
                     episodeEl.onclick = () => {
                         if (videoUrl) {
                             playVideoInModal(seriesData, episode, videoUrl, episodeId);
-                            episodeListModal.classList.add('hidden');
+                            /* [DIHAPUS] episodeListModal.classList.add('hidden'); */
                         } else {
                             console.warn('Video untuk episode ini tidak tersedia.');
                         }
@@ -1240,19 +1211,7 @@
         function setupModalEventListeners() {
             closeModalBtn.addEventListener('click', closeVideoModal);
             videoModal.addEventListener('click', (e) => { if (e.target === videoModal) closeVideoModal(); });
-            document.getElementById('close-episode-list-btn').addEventListener('click', () => {
-                episodeListModal.classList.add('hidden');
-            });
-
-            const openEpisodeListHandler = () => {
-                if (currentSeriesId && currentItem) {
-                    closeVideoModal();
-                    window.openEpisodeList(currentSeriesId, currentItem); 
-                }
-            };
-
-            document.getElementById('show-episodes-btn-mobile').addEventListener('click', openEpisodeListHandler);
-            document.getElementById('show-episodes-btn-desktop').addEventListener('click', openEpisodeListHandler);
+            /* [DIHAPUS] Listener untuk modal episode lama */
         }
 
         function closeVideoModal() {
@@ -1289,32 +1248,33 @@
                 const loadingIcon = document.getElementById('video-loading-icon');
                 /* [DIUBAH] Memprioritaskan favicon untuk logo memuat */
                 loadingIcon.src = faviconUrl || mainLogoUrl || 'https://placehold.co/64x64/374151/FFF?text=...'; 
-                loadingIcon.classList.remove('hidden', 'animate-pulse');
+                loadingIcon.classList.remove('hidden'); // [DIUBAH] Tampilkan loading
                 loadingIcon.classList.add('animate-pulse');
                 
-                modalMainPlayer.style.display = 'none'; 
+                modalMainPlayer.style.display = 'none'; // Sembunyikan player
+                videoModal.classList.remove('hidden'); // Pastikan modal terlihat
 
-                document.getElementById('modal-thumbnail').src = seriesData.thumbnailUrl;
-                document.getElementById('modal-content-title').textContent = seriesData.title;
-                document.getElementById('modal-content-description').textContent = seriesData.description || 'Tidak ada deskripsi.';
-                document.getElementById('modal-content-rating').textContent = (seriesData.rating || 'N/A').replace(' / 10', '');
-                document.getElementById('modal-content-vote').textContent = (seriesData.scored_by || 0).toLocaleString('id-ID') + ' Vote';
-                document.getElementById('modal-content-episodes').textContent = `${seriesData.episodeCount || 0} Eps`;
+                // [DIUBAH] Tetap isi info jika belum ada (untuk deep link)
+                if (!document.getElementById('modal-content-title').textContent || document.getElementById('modal-content-title').textContent === "Memuat judul...") {
+                    document.getElementById('modal-thumbnail').src = seriesData.thumbnailUrl;
+                    document.getElementById('modal-content-title').textContent = seriesData.title;
+                    document.getElementById('modal-content-description').textContent = seriesData.description || 'Tidak ada deskripsi.';
+                    document.getElementById('modal-content-rating').textContent = (seriesData.rating || 'N/A').replace(' / 10', '');
+                    document.getElementById('modal-content-vote').textContent = (seriesData.scored_by || 0).toLocaleString('id-ID') + ' Vote';
+                    document.getElementById('modal-content-episodes').textContent = `${seriesData.episodeCount || 0} Eps`;
+                }
 
-                videoModal.classList.remove('hidden');
-                
                 modalMainPlayer.src = videoUrl;
 
                 const progressData = getWatchProgress(episodeId);
                 const progress = progressData.time;
 
                 createWatermark(); // [DIKEMBALIKAN] Panggil fungsi watermark
-                /* [DIHAPUS] setupCustomControls(progress); */
                 
                 /* [DIKEMBALIKAN] Listener 'canplay' sederhana */
                 modalMainPlayer.addEventListener('canplay', () => {
-                    loadingIcon.classList.add('hidden');
-                    modalMainPlayer.style.display = 'block';
+                    loadingIcon.classList.add('hidden'); // Sembunyikan loading
+                    modalMainPlayer.style.display = 'block'; // Tampilkan player
                     if (progress > 0) {
                         modalMainPlayer.currentTime = progress;
                     }
@@ -1483,9 +1443,6 @@
         }
         
         /* --- [AKHIR] KODE YANG DIGABUNGKAN DARI WATCH-MODULE.JS --- */
-
-        /* [DIHAPUS] Fungsi duplikat */
-        /* function censorMessage(message, blocklist) { ... } */
         
         /* --- [MULAI] FUNGSI CHAT (HANYA SATU KALI) --- */
         
