@@ -72,7 +72,7 @@ body {
     /* [DIHAPUS] justify-content: center; */
 }
 
-@media (min-width: 200px) { /* sm */
+@media (min-width: 200px) { /* [DIUBAH] sm (dari 400px) */
   /* [DIUBAH] Kembali ke 3 kolom */
   #content-list, .custom-row-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -80,10 +80,35 @@ body {
   }
 }
 
-@media (min-width: 500px) { /* lg */
+/* [DIHAPUS] Aturan media query @media (min-width: 768px) */
+
+@media (min-width: 500px) { /* [DIUBAH] lg (dari 1024px) */
   #content-list, .custom-row-grid {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr)); /* 5 Kolom */
   }
 }
 
 
+/* [BARU] Sembunyikan scrollbar untuk Webkit (Chrome, Safari) */
+main.main-content-container::-webkit-scrollbar,
+#chat-messages::-webkit-scrollbar,
+#desktop-sidebar .overflow-y-auto::-webkit-scrollbar,
+#genre-flyout-panel::-webkit-scrollbar,
+#genre-list-mobile::-webkit-scrollbar,
+#modal-episode-list-container::-webkit-scrollbar, /* [BARU] */
+#modal-description-wrapper::-webkit-scrollbar /* [DIUBAH] */
+{
+    display: none;
+}
+
+/* [BARU] Sembunyikan scrollbar untuk Firefox */
+main.main-content-container,
+#chat-messages,
+#desktop-sidebar .overflow-y-auto,
+#genre-flyout-panel,
+#genre-list-mobile,
+#modal-episode-list-container, /* [BARU] */
+#modal-description-wrapper /* [DIUBAH] */
+{
+    scrollbar-width: none;  /* Firefox */
+}
