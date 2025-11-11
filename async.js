@@ -6,7 +6,7 @@ import {
     doc, getDoc, getDocs, updateDoc, deleteDoc, setDoc, 
     Timestamp, increment, limit, addDoc,
     arrayUnion, arrayRemove
-} from './firebase-init.js';
+} from 'https://aisnime.site/firebase-init.js';
 
 /* --- [BARU] Semua variabel global dipindahkan ke sini --- */
 let contentListEl, mainLogoImg, mainTitleText, contentRowsContainer; 
@@ -1239,4 +1239,5 @@ function setupVideoProgressSaving(player) {
 
 
 /* [BARU] Ekspor fungsi main */
+
 export { main };
