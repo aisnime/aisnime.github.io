@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- [DIUBAH] Versi cache busting dinaikkan -->
-    <link rel="stylesheet" href="android.css?v=2.80"> 
+    <link rel="stylesheet" href="android.css?v=2.83"> 
 </head>
 <!-- [DIUBAH] pb-16 di sini memberi ruang untuk nav bawah (Baris 2) -->
 <body class="bg-gray-900 text-white lg:h-screen lg:overflow-hidden pb-16 lg:pb-0" style="font-family: 'Inter', sans-serif;">
@@ -1271,11 +1271,10 @@
                 }
                 currentUserId = auth.currentUser?.uid || crypto.randomUUID();
                 
-                await loadSettings();
-                logPageView(); 
+                await loadSettings(); 
                 setupChat(); 
                 setupReportModal();
-                handleDeepLink();
+                
                 loadDynamicNavLinks(); 
             } catch(e) { 
                 console.error(`Initialization failed: ${e.message}`); 
@@ -1434,90 +1433,9 @@
                 container.innerHTML = '<p class="text-sm text-red-400">Gagal memuat navigasi.</p>';
             }
         }
-
-        async function logPageView() {
-            try {
-                const hasVisited = localStorage.getItem('aisnimeVisited');
-                if (!hasVisited) {
-                    const statsRef = doc(settingsCollRef, 'analytics');
-                    await setDoc(statsRef, {
-                        uniqueVisitors: increment(1)
-                    }, { merge: true });
-                    localStorage.setItem('aisnimeVisited', 'true');
-                }
-            } catch (error) {
-                console.error(`Gagal mencatat kunjungan unik: ${error.message}`); 
-            }
-        }
-
-        async function loadAndShowEpisodeList(seriesId, seriesData) {
-            
-            await ensurePlayerModuleIsLoaded(); 
-            
-            if (videoModal) videoModal.classList.remove('hidden');
-            const loadingIcon = document.getElementById('video-loading-icon');
-            if (loadingIcon) loadingIcon.style.display = 'block';
-            if (modalMainPlayer) modalMainPlayer.style.display = 'none';
-
-            if (document.getElementById('modal-thumbnail')) document.getElementById('modal-thumbnail').src = seriesData.thumbnailUrl;
-            if (document.getElementById('modal-content-title')) document.getElementById('modal-content-title').textContent = seriesData.title;
-            if (document.getElementById('modal-content-description')) document.getElementById('modal-content-description').textContent = seriesData.description || 'Tidak ada deskripsi.';
-            if (document.getElementById('modal-content-rating')) document.getElementById('modal-content-rating').textContent = (seriesData.rating || 'N/A').replace(' / 10', '');
-            if (document.getElementById('modal-content-vote')) document.getElementById('modal-content-vote').textContent = (seriesData.scored_by || 0).toLocaleString('id-ID') + ' Vote';
-            if (document.getElementById('modal-content-episodes')) document.getElementById('modal-content-episodes').textContent = `${seriesData.episodeCount || 0} Eps`;
-
-            openEpisodeList(seriesId, seriesData); 
-        }
         
-        async function handleDeepLink() {
-            const params = new URLSearchParams(window.location.search);
-            const seriesId = params.get('series');
-            const episodeId = params.get('episode');
-
-            if (seriesId && episodeId) {
-                console.log(`Deep link terdeteksi: Series ${seriesId}, Episode ${episodeId}`);
-                
-                try {
-                    await ensurePlayerModuleIsLoaded();
-                    
-                    const seriesDocRef = doc(seriesCollRef, seriesId);
-                    const episodeDocRef = doc(collection(db, seriesCollRef.path, seriesId, 'episodes'), episodeId);
-                    
-                    const [seriesSnap, episodeSnap] = await Promise.all([
-                        getDoc(seriesDocRef),
-                        getDoc(episodeDocRef)
-                    ]);
-
-                    if (!seriesSnap.exists() || !episodeSnap.exists()) {
-                        console.error("Gagal deep link: Serial atau episode tidak ditemukan.");
-                        return;
-                    }
-
-                    const seriesData = seriesSnap.data();
-                    const episodeData = episodeSnap.data();
-                    const videoUrl = episodeData.videoFiles ? episodeData.videoFiles['default'] : null;
-
-                    if (videoUrl) {
-                        playVideoInModal(seriesData, episodeData, videoUrl, episodeId);
-                        openEpisodeList(seriesId, seriesData);
-                    } else {
-                        console.error("Gagal deep link: URL video tidak ditemukan.");
-                    }
-                    
-                    history.replaceState(null, '', window.location.pathname);
-
-                } catch (error) {
-                    console.error("Error saat menangani deep link:", error);
-                }
-            }
-        }
+        /* [DIHAPUS] Blok duplikat dari async function logPageView() hingga async function ensurePlayerModuleIsLoaded() telah dihapus. */
         
-        /* [DIHAPUS] Fungsi duplikat async playVideoInModal, logVideoPlay */
-        
-        
-        
-        
-        /* --- [DIHAPUS] Blok duplikat dari async function main() hingga async function ensurePlayerModuleIsLoaded() telah dihapus dari sini. */
 
         /* Menunggu sehingga DOM sedia menjalankan 'main' */
         window.addEventListener('DOMContentLoaded', main);
