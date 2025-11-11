@@ -90,6 +90,7 @@ body {
 
 
 /* [BARU] Sembunyikan scrollbar untuk Webkit (Chrome, Safari) */
+#main-content::-webkit-scrollbar, /* [BARU] Sembunyikan scroll utama mobile */
 main.main-content-container::-webkit-scrollbar,
 #chat-messages::-webkit-scrollbar,
 #desktop-sidebar .overflow-y-auto::-webkit-scrollbar,
@@ -102,6 +103,7 @@ main.main-content-container::-webkit-scrollbar,
 }
 
 /* [BARU] Sembunyikan scrollbar untuk Firefox */
+#main-content, /* [BARU] Sembunyikan scroll utama mobile */
 main.main-content-container,
 #chat-messages,
 #desktop-sidebar .overflow-y-auto,
@@ -113,12 +115,14 @@ main.main-content-container,
     scrollbar-width: none;  /* Firefox */
 }
 
-/* [DIKEMBALIKAN] Sembunyikan scrollbar utama (body) di tampilan mobile/tablet */
+/* [DIHAPUS] Aturan yang menyembunyikan scrollbar body di mobile telah dihapus */
+/*
 @media (max-width: 1023px) {
     body::-webkit-scrollbar {
-        display: none; /* Webkit (Chrome, Safari) */
+        display: none; / Webkit (Chrome, Safari) /
     }
     body {
-        scrollbar-width: none; /* Firefox */
+        scrollbar-width: none; / Firefox /
     }
 }
+*/
