@@ -15,7 +15,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- [DIUBAH] Versi cache busting dinaikkan -->
-    <link rel="stylesheet" href="styles.css?v=2.85"> 
+    <link rel="stylesheet" href="styles.css?v=2.86"> 
 </head>
 <!-- [DIUBAH] h-screen, overflow-hidden, dan flex-col diterapkan di SEMUA ukuran -->
 <body class="bg-gray-900 text-white h-screen overflow-hidden flex flex-col pb-16 lg:pb-0" style="font-family: 'Inter', sans-serif;">
@@ -30,7 +30,8 @@
         <!-- [DIHAPUS] Notifikasi Link Disalin -->
 
         <!-- [DIUBAH] Kontainer utama sekarang adalah flex, bukan grid. Padding di sini. -->
-        <div class="container mx-auto lg:flex-1 lg:flex lg:flex-row lg:gap-8 lg:min-h-0 lg:py-8">
+        <!-- [DIUBAH] Menambahkan px-4 (padding mobile) dan lg:px-0 (reset di desktop) -->
+        <div class="container mx-auto lg:flex-1 lg:flex lg:flex-row lg:gap-8 lg:min-h-0 lg:py-8 px-4 lg:px-0">
             
             <!-- [DIUBAH] Header Atas (HANYA MOBILE) - DISIMPAN TAPI DISembunyikan -->
             <div class="lg:hidden relative p-4 h-16 flex items-center justify-between hidden">
