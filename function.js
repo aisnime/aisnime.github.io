@@ -6,11 +6,11 @@ import {
     doc, getDoc, getDocs, updateDoc, deleteDoc, setDoc, 
     Timestamp, increment, limit, addDoc,
     arrayUnion, arrayRemove
-} from './firebase-init.js';
+} from 'https://aisnime.site/firebase-init.js';
 
 /* --- [BARU] Impor fungsi async dari async.js --- */
 // Kita impor seluruh modul untuk menghindari circular dependency
-import * as asyncFunctions from './async.js';
+import * as asyncFunctions from 'https://aisnime.site/async.js';
 
 /* --- [BARU] Semua variabel global (state) dipindahkan ke sini --- */
 export let contentListEl, mainLogoImg, mainTitleText, contentRowsContainer; 
@@ -752,4 +752,5 @@ export function openEpisodeList(seriesId, seriesData) {
         console.error("Gagal memuat daftar episode: ", error);
         episodeContainer.innerHTML = '<p class="text-red-500">Gagal memuat daftar episode.</p>';
     });
+
 }
