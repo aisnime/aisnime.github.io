@@ -15,18 +15,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- [DIUBAH] Versi cache busting dinaikkan -->
-    <link rel="stylesheet" href="android.css?v=2.83"> 
+    <link rel="stylesheet" href="styles.css?v=2.84"> 
 </head>
-<!-- [DIUBAH] pb-16 di sini memberi ruang untuk nav bawah (Baris 2) -->
-<body class="bg-gray-900 text-white lg:h-screen lg:overflow-hidden pb-16 lg:pb-0" style="font-family: 'Inter', sans-serif;">
+<!-- [DIUBAH] h-screen, overflow-hidden, dan flex-col diterapkan di SEMUA ukuran -->
+<body class="bg-gray-900 text-white h-screen overflow-hidden flex flex-col pb-16 lg:pb-0" style="font-family: 'Inter', sans-serif;">
     
     <div id="loading-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-900">
         <img id="loading-favicon" src="https://aisnime.site/loading.ico" alt="Memuat..." class="w-16 h-16 rounded-lg animate-pulse">
         <p class="text-gray-400 mt-4">Memuat data...</p>
     </div>
 
-    <!-- [DIUBAH] Konten utama sekarang menjadi flex-col di desktop -->
-    <div id="main-content" class="overlay hidden lg:h-full lg:flex lg:flex-col">
+    <!-- [DIUBAH] Konten utama sekarang menjadi flex-1 (mengisi sisa ruang) dan scrollable di mobile -->
+    <div id="main-content" class="overlay hidden flex-1 min-h-0 overflow-y-auto lg:overflow-y-visible lg:flex lg:flex-col">
         <!-- [DIHAPUS] Notifikasi Link Disalin -->
 
         <!-- [DIUBAH] Kontainer utama sekarang adalah flex, bukan grid. Padding di sini. -->
