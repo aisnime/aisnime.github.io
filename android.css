@@ -1,0 +1,124 @@
+/* Gaya umum tetap sama */
+body {
+    font-family: 'Inter', sans-serif;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: white;
+}
+
+.overlay {
+    min-height: 100vh;
+}
+
+.main-content-container {
+    background-color: rgba(0, 0, 0, 0.75);
+    border-radius: 0.75rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+}
+
+.content-card {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    /* [DIHAPUS] Ukuran piksel tetap dihapus */
+    /* width: 20px !important; */
+    /* height: 60px !important; */
+    /* display: flex; */
+    /* flex-direction: column; */
+}
+
+.content-card:hover {
+    transform: translateY(-4px);
+}
+
+.content-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* [DIHAPUS] Kontrol kustom lama tidak lagi diperlukan */
+
+#modal-content-description {
+    white-space: pre-wrap;
+    overflow-y: auto;
+    flex-grow: 1;
+    max-height: 120px; 
+}
+
+@media (min-width: 1024px) { /* lg (desktop) */
+  #modal-content-description {
+     max-height: 200px;
+  }
+}
+
+/* [DIHAPUS] Aturan grid yang bentrok */
+/* ... (komentar aturan grid dihapus) ... */
+
+
+/* [DIUBAH] Mengganti flexbox kembali ke grid */
+#content-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem; /* 24px, sama dengan gap-6 */
+    /* [DIHAPUS] justify-content: center; */
+}
+
+/* [DIUBAH] Grid untuk baris kustom memiliki gaya yang sama */
+.custom-row-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem; /* 24px, sama dengan gap-6 */
+    /* [DIHAPUS] justify-content: center; */
+}
+
+@media (min-width: 200px) { /* [DIUBAH] sm (dari 400px) */
+  /* [DIUBAH] Kembali ke 3 kolom */
+  #content-list, .custom-row-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    /* [DIHAPUS] justify-content: flex-start; */
+  }
+}
+
+/* [DIHAPUS] Aturan media query @media (min-width: 768px) */
+
+@media (min-width: 500px) { /* [DIUBAH] lg (dari 1024px) */
+  #content-list, .custom-row-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr)); /* 5 Kolom */
+  }
+}
+
+
+/* [BARU] Sembunyikan scrollbar untuk Webkit (Chrome, Safari) */
+main.main-content-container::-webkit-scrollbar,
+#chat-messages::-webkit-scrollbar,
+#desktop-sidebar .overflow-y-auto::-webkit-scrollbar,
+#genre-flyout-panel::-webkit-scrollbar,
+#genre-list-mobile::-webkit-scrollbar,
+#modal-episode-list-container::-webkit-scrollbar, 
+#modal-description-wrapper::-webkit-scrollbar 
+{
+    display: none;
+}
+
+/* [BARU] Sembunyikan scrollbar untuk Firefox */
+main.main-content-container,
+#chat-messages,
+#desktop-sidebar .overflow-y-auto,
+#genre-flyout-panel,
+#genre-list-mobile,
+#modal-episode-list-container, 
+#modal-description-wrapper 
+{
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* [BARU] Sembunyikan scrollbar utama (body) di tampilan mobile/tablet */
+@media (max-width: 1023px) {
+    body::-webkit-scrollbar {
+        display: none;
+    }
+    body {
+        scrollbar-width: none; /* Firefox */
+    }
+}
