@@ -15,10 +15,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- [DIUBAH] Versi cache busting dinaikkan -->
-    <link rel="stylesheet" href="styles.css?v=2.87"> 
+    <link rel="stylesheet" href="styles.css?v=2.88"> 
 </head>
-<!-- [DIUBAH] h-screen, overflow-hidden, dan flex-col diterapkan di SEMUA ukuran -->
-<body class="bg-gray-900 text-white h-screen overflow-hidden flex flex-col pb-16 lg:pb-0" style="font-family: 'Inter', sans-serif;">
+<!-- [DIUBAH] h-screen, overflow-hidden, dan pb-16 diubah menjadi pb-[10vh] -->
+<body class="bg-gray-900 text-white h-screen overflow-hidden flex flex-col pb-[10vh] lg:pb-0" style="font-family: 'Inter', sans-serif;">
     
     <div id="loading-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-900">
         <img id="loading-favicon" src="https://aisnime.site/loading.ico" alt="Memuat..." class="w-16 h-16 rounded-lg animate-pulse">
@@ -324,8 +324,9 @@
     </div>
 
     <!-- [BARU] Navigasi Bawah (Hanya Mobile) -->
-    <!-- [KOMENTAR BARU] Ini adalah Baris 2 (Navigasi 20%) di tampilan mobile -->
-    <nav id="mobile-bottom-nav" class="lg:hidden fixed bottom-0 left-0 right-0 h-16 bg-gray-800 border-t border-gray-700 flex justify-around items-center z-40">
+    <!-- [KOMENTAR BARU] Ini adalah Baris 2 (Navigasi 10%) di tampilan mobile -->
+    <!-- [DIUBAH] h-16 diubah menjadi h-[10vh] -->
+    <nav id="mobile-bottom-nav" class="lg:hidden fixed bottom-0 left-0 right-0 h-[10vh] bg-gray-800 border-t border-gray-700 flex justify-around items-center z-40">
         <!-- Kiri: Genre / Pencarian -->
         <button id="bottom-nav-genre-btn" class="p-3 text-gray-400 hover:text-white">
             <!-- [DIUBAH] Ikon diubah menjadi ikon Pencarian -->
