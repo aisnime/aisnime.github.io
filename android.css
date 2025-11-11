@@ -113,10 +113,10 @@ main.main-content-container,
     scrollbar-width: none;  /* Firefox */
 }
 
-/* [BARU] Sembunyikan scrollbar utama (body) di tampilan mobile/tablet */
+/* [DIKEMBALIKAN] Sembunyikan scrollbar utama (body) di tampilan mobile/tablet */
 @media (max-width: 1023px) {
     body::-webkit-scrollbar {
-        display: none;
+        display: none; /* Webkit (Chrome, Safari) */
     }
     body {
         scrollbar-width: none; /* Firefox */
