@@ -18,8 +18,8 @@
     <link rel="stylesheet" href="styles.css?v=2.93"> 
 </head>
 <!-- [DIUBAH] h-screen, overflow-hidden, dan flex-col diterapkan di SEMUA ukuran -->
-<!-- [DIUBAH] pb-[10vh] diubah menjadi pb-[5vh] untuk nav 5% -->
-<body class="bg-gray-900 text-white h-screen overflow-hidden flex flex-col pb-[5vh] lg:pb-0" style="font-family: 'Inter', sans-serif;">
+<!-- [DIUBAH] pb-[5vh] diubah menjadi pb-[20vh] untuk nav 20% -->
+<body class="bg-gray-900 text-white h-screen overflow-hidden flex flex-col pb-[15vh] lg:pb-0" style="font-family: 'Inter', sans-serif;">
     
     <div id="loading-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-900">
         <img id="loading-favicon" src="https://aisnime.site/loading.ico" alt="Memuat..." class="w-16 h-16 rounded-lg animate-pulse">
@@ -112,7 +112,7 @@
             <!-- [DIUBAH] 'main-content-container', 'p-6', 'lg:overflow-y-auto' dipindahkan ke <main> -->
             <!-- [KOMENTAR BARU] Ini adalah Baris 1 (Konten 80%) di tampilan mobile -->
             <!-- [DIUBAH] Struktur <main> diubah untuk menerapkan scroll HANYA pada daftar konten -->
-            <!-- [DIUBAH] p-1 ditambahkan untuk mobile, lg:p-6 untuk desktop/tablet -->
+            <!-- [DIUBAH] p-6 diubah menjadi p-1 untuk mobile dan lg:p-6 untuk desktop -->
              <main class="main-content-container p-3 lg:p-6 flex flex-col flex-1 min-h-0 lg:flex-1 lg:flex lg:flex-col lg:min-w-0 relative z-10 lg:overflow-y-auto">
                 
                 <!-- [DIHAPUS] Poster Header telah dihapus -->
@@ -334,8 +334,8 @@
 
     <!-- [BARU] Navigasi Bawah (Hanya Mobile) -->
     <!-- [KOMENTAR BARU] Ini adalah Baris 2 (Navigasi 10%) di tampilan mobile -->
-    <!-- [DIUBAH] h-16 diubah menjadi h-[5vh] untuk nav 5% -->
-    <nav id="mobile-bottom-nav" class="lg:hidden fixed bottom-0 left-0 right-0 h-[5vh] bg-gray-800 border-t border-gray-700 flex justify-around items-center z-40">
+    <!-- [DIUBAH] h-[5vh] diubah menjadi h-[20vh] untuk nav 20% -->
+    <nav id="mobile-bottom-nav" class="lg:hidden fixed bottom-0 left-0 right-0 h-[10vh] bg-gray-800 border-t border-gray-700 flex justify-around items-center z-40">
         <!-- Kiri: Genre / Pencarian -->
         <button id="bottom-nav-genre-btn" class="p-3 text-gray-400 hover:text-white">
             <!-- [DIUBAH] Ikon diubah menjadi ikon Pencarian -->
