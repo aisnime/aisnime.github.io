@@ -15,9 +15,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- [DIUBAH] Versi cache busting dinaikkan -->
-    <link rel="stylesheet" href="styles.css?v=2.88"> 
+    <link rel="stylesheet" href="styles.css?v=2.91"> 
 </head>
-<!-- [DIUBAH] h-screen, overflow-hidden, dan pb-16 diubah menjadi pb-[10vh] -->
+<!-- [DIUBAH] h-screen, overflow-hidden, dan flex-col diterapkan di SEMUA ukuran -->
 <body class="bg-gray-900 text-white h-screen overflow-hidden flex flex-col pb-[10vh] lg:pb-0" style="font-family: 'Inter', sans-serif;">
     
     <div id="loading-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-900">
@@ -115,7 +115,8 @@
                 <!-- [DIHAPUS] Filter Genre Desktop dipindahkan ke sidebar -->
                 
                 <!-- [DIUBAH] Kontainer sekarang hanya wrapper biasa -->
-                <div id="content-rows-container" class="space-y-8 lg:h-full lg:overflow-y-auto">
+                <!-- [DIUBAH] lg:h-full dan lg:overflow-y-auto DIHAPUS dari sini -->
+                <div id="content-rows-container" class="space-y-8">
                     <!-- Baris "Update Terbaru" akan dimuat oleh JS di sini -->
                     <div id="latest-updates-row">
                         <!-- [DIUBAH] border-b dan pb-3 dihapus -->
@@ -385,7 +386,7 @@
         let isLoadingMore = false;
         let isSearching = false;
         let currentDisplayCount = 0;
-        const MOBILE_LIMIT = 9; 
+        const MOBILE_LIMIT = 6; 
         const DESKTOP_LIMIT = 10; 
         let chatCollRef = null;
         let currentUserId = null;
@@ -537,6 +538,7 @@
                 mobileScrollEl.addEventListener('scroll', handleScroll); /* Listener untuk Mobile */
             }
             
+            /* [DIUBAH] Query selector diubah agar lebih spesifik ke <main> */
             const desktopScrollEl = document.querySelector('main.main-content-container');
             if (desktopScrollEl) {
                 desktopScrollEl.addEventListener('scroll', handleScroll); /* Listener untuk Desktop */
@@ -572,8 +574,8 @@
         }
         
         function handleScroll(e) {
-            /* [DIUBAH] Infinite scroll hanya berlaku jika tidak sedang mencari ATAU filter */
-            if (isSearching || activeGenre !== 'All' || isLoadingMore) return;
+            /* [DIHAPUS] Pengecekan isSearching/activeGenre dihapus agar infinite scroll selalu aktif */
+            if (isLoadingMore) return;
             
             /* [DIUBAH] Logika target disederhanakan untuk menangkap event dari listener yang benar */
             const target = e.target; 
@@ -591,16 +593,12 @@
             const dataToRender = (isSearching || activeGenre !== 'All') ? filteredSeriesContent : allSeriesContent;
             
             let itemsToLoad;
-            if (isSearching || activeGenre !== 'All') {
-                itemsToLoad = dataToRender;
-                 if (currentDisplayCount > 0) { 
-                    isLoadingMore = false;
-                    return;
-                }
-            } else {
-                const limit = window.innerWidth < 768 ? MOBILE_LIMIT : DESKTOP_LIMIT;
-                itemsToLoad = dataToRender.slice(currentDisplayCount, currentDisplayCount + limit);
-            }
+            /* [DIUBAH] Logika diubah agar selalu me-load per batch (MOBILE_LIMIT/DESKTOP_LIMIT) */
+            // [DIHAPUS] Pengecekan if (isSearching || activeGenre !== 'All')
+            
+            // Logika infinite scroll normal (sekarang berlaku untuk semua)
+            const limit = window.innerWidth < 768 ? MOBILE_LIMIT : DESKTOP_LIMIT;
+            itemsToLoad = dataToRender.slice(currentDisplayCount, currentDisplayCount + limit);
             
             
             if (itemsToLoad.length === 0) {
