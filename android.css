@@ -60,4 +60,184 @@ body {
 }
 
 /* [BARU] Aturan media query untuk 3 dan 5 kolom */
-/* ... existing code ... -->
+#content-list, .custom-row-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* Default 2 kolom */
+    gap: 5px; /* 16px */
+}
+
+@media (min-width: 500px) { /* sm (dari 640px) */
+  /* [DIUBAH] Kembali ke 3 kolom */
+  #content-list, .custom-row-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    /* [DIHAPUS] justify-content: flex-start; */
+  }
+}
+
+@media (min-width: 750px) { /* lg (dari 1024px) */
+  #content-list, .custom-row-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr)); /* 5 Kolom */
+  }
+}
+
+
+/* [BARU] Sembunyikan scrollbar untuk Webkit (Chrome, Safari) */
+#main-content::-webkit-scrollbar, /* [BARU] Sembunyikan scroll utama mobile */
+main.main-content-container::-webkit-scrollbar,
+#chat-messages::-webkit-scrollbar,
+#desktop-sidebar .overflow-y-auto::-webkit-scrollbar,
+#genre-flyout-panel::-webkit-scrollbar,
+#genre-list-mobile::-webkit-scrollbar,
+#modal-episode-list-container::-webkit-scrollbar, 
+#modal-description-wrapper::-webkit-scrollbar,
+ 
+{
+    display: none;
+}
+
+/* [BARU] Sembunyikan scrollbar untuk Firefox */
+#main-content, /* [BARU] Sembunyikan scroll utama mobile */
+main.main-content-container,
+#chat-messages,
+#desktop-sidebar .overflow-y-auto,
+#genre-flyout-panel,
+#genre-list-mobile,
+#modal-episode-list-container, 
+#modal-description-wrapper,
+#latest-updates-row
+{
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* [DIHAPUS] Aturan yang menyembunyikan scrollbar body di mobile telah dihapus */
+/*
+@media (max-width: 1023px) {
+    body::-webkit-scrollbar {
+        display: none; / Webkit (Chrome, Safari) /
+    }
+    body {
+        scrollbar-width: none; / Firefox /
+    }
+}
+*//* Gaya umum tetap sama */
+body {
+    font-family: 'Inter', sans-serif;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: white;
+}
+
+.overlay {
+    min-height: 100vh;
+}
+
+.main-content-container {
+    background-color: rgba(0, 0, 0, 0.75);
+    border-radius: 0.75rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+}
+
+.content-card {
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.content-card:hover {
+    transform: translateY(-4px);
+}
+
+.content-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Mengalih keluar kawalan kustom */
+#custom-controls-container {
+    display: none;
+}
+#player-controls {
+    display: none;
+}
+
+#modal-content-description {
+    white-space: pre-wrap;
+    overflow-y: auto;
+    flex-grow: 1;
+    max-height: 120px; 
+}
+
+@media (min-width: 1024px) { /* lg (desktop) */
+  #modal-content-description {
+     max-height: 200px; /* Lebih banyak ruang di desktop */
+  }
+
+  /* [BARU] Terapkan max-height untuk scrolling desktop pada main container */
+  /* Ini dipindahkan dari inline style di index.html */
+  .main-content-container {
+    max-height: calc(100vh - 4rem); 
+  }
+}
+
+/* [BARU] Aturan media query untuk 3 dan 5 kolom */
+#content-list, .custom-row-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* Default 2 kolom */
+    gap: 4px; /* 16px */
+}
+
+@media (min-width: 500px) { /* sm (dari 640px) */
+  /* [DIUBAH] Kembali ke 3 kolom */
+  #content-list, .custom-row-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    /* [DIHAPUS] justify-content: flex-start; */
+  }
+}
+
+@media (min-width: 750px) { /* lg (dari 1024px) */
+  #content-list, .custom-row-grid {
+    grid-template-columns: repeat(5, minmax(0, 1fr)); /* 5 Kolom */
+  }
+}
+
+
+/* [BARU] Sembunyikan scrollbar untuk Webkit (Chrome, Safari) */
+#main-content::-webkit-scrollbar, /* [BARU] Sembunyikan scroll utama mobile */
+main.main-content-container::-webkit-scrollbar,
+#chat-messages::-webkit-scrollbar,
+#desktop-sidebar .overflow-y-auto::-webkit-scrollbar,
+#genre-flyout-panel::-webkit-scrollbar,
+#genre-list-mobile::-webkit-scrollbar,
+#modal-episode-list-container::-webkit-scrollbar, 
+#modal-description-wrapper::-webkit-scrollbar,
+ 
+{
+    display: none;
+}
+
+/* [BARU] Sembunyikan scrollbar untuk Firefox */
+#main-content, /* [BARU] Sembunyikan scroll utama mobile */
+main.main-content-container,
+#chat-messages,
+#desktop-sidebar .overflow-y-auto,
+#genre-flyout-panel,
+#genre-list-mobile,
+#modal-episode-list-container, 
+#modal-description-wrapper,
+#latest-updates-row
+{
+    scrollbar-width: none;  /* Firefox */
+}
+
+/* [DIHAPUS] Aturan yang menyembunyikan scrollbar body di mobile telah dihapus */
+/*
+@media (max-width: 1023px) {
+    body::-webkit-scrollbar {
+        display: none; / Webkit (Chrome, Safari) /
+    }
+    body {
+        scrollbar-width: none; / Firefox /
+    }
+}
+*/
