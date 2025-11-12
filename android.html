@@ -18,12 +18,11 @@
     <link rel="stylesheet" href="styles.css?v=2.93"> 
 </head>
 <!-- [DIUBAH] h-screen, overflow-hidden, dan flex-col diterapkan di SEMUA ukuran -->
-<!-- [DIUBAH] pb-[5vh] diubah menjadi pb-[20vh] untuk nav 20% -->
-<body class="bg-gray-900 text-white h-screen overflow-hidden flex flex-col pb-[20vh] lg:pb-0" style="font-family: 'Inter', sans-serif;">
+<!-- [DIUBAH] pb-[20vh] diubah menjadi pb-[10vh] (Mengembalikan ke 10%) -->
+<body class="bg-gray-900 text-white h-screen overflow-hidden flex flex-col pb-[14vh] lg:pb-0" style="font-family: 'Inter', sans-serif;">
     
     <div id="loading-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-900">
         <img id="loading-favicon" src="https://aisnime.site/loading.ico" alt="Memuat..." class="w-16 h-16 rounded-lg animate-pulse">
-        <p class="text-gray-400 mt-4">Memuat data...</p>
     </div>
 
     <!-- [DIUBAH] Konten utama sekarang menjadi flex-1 (mengisi sisa ruang) dan scrollable di mobile -->
@@ -81,7 +80,7 @@
                                 <!-- Konten panel yang terlihat -->
                                 <div class="w-max p-4 bg-gray-700 rounded-lg shadow-xl" style="max-height: 400px; overflow-y: auto;">
                                     <!-- [BARU] Judul di dalam panel -->
-                                    <h3 class="text-white text-lg font-semibold mb-2">Filter Genre</h3>
+                                    <h3 class="text-white text-lg font-semibold mb-2">Genre</h3>
                                     <!-- [DIUBAH] flex-col dan space-y-1 untuk daftar vertikal -->
                                     <div id="genre-list-desktop" class="flex flex-col space-y-1">
                                         <!-- Genre buttons will be loaded here -->
@@ -112,8 +111,8 @@
             <!-- [DIUBAH] 'main-content-container', 'p-6', 'lg:overflow-y-auto' dipindahkan ke <main> -->
             <!-- [KOMENTAR BARU] Ini adalah Baris 1 (Konten 80%) di tampilan mobile -->
             <!-- [DIUBAH] Struktur <main> diubah untuk menerapkan scroll HANYA pada daftar konten -->
-            <!-- [DIUBAH] p-6 diubah menjadi p-1 untuk mobile dan lg:p-6 untuk desktop -->
-            <main class="main-content-container p-1 lg:p-6 flex flex-col flex-1 min-h-0 lg:flex-1 lg:flex lg:flex-col lg:min-w-0 relative z-10 lg:overflow-y-auto">
+            <!-- [DIUBAH] p-1 lg:p-6 diubah menjadi p-1 sm:p-4 lg:p-6 -->
+            <main class="main-content-container p-3 lg:p-6 flex flex-col flex-1 min-h-0 lg:flex-1 lg:flex lg:flex-col lg:min-w-0 relative z-10 lg:overflow-y-auto">
                 
                 <!-- [DIHAPUS] Poster Header telah dihapus -->
                 
@@ -141,8 +140,8 @@
 
             <!-- [KOLOM 3] Sidebar Kanan (Sticky) -->
             <!-- [DIUBAH] Menggunakan lg:w-80, lg:bg-transparent, dan z-20 -->
-            <aside id="info-chat-sidebar" class="fixed top-0 right-0 h-full w-80 bg-gray-800 shadow-xl z-50 transform translate-x-full transition-transform duration-300 
-                                            lg:block lg:relative lg:translate-x-0 lg:z-auto lg:w-80 lg:flex-shrink-0 lg:sticky lg:top-8 lg:bg-transparent z-20" 
+            <!-- [DIUBAH] Dibuat HANYA untuk desktop (hidden lg:block) -->
+            <aside id="info-chat-sidebar" class="hidden lg:block lg:relative lg:translate-x-0 lg:z-auto lg:w-80 lg:flex-shrink-0 lg:sticky lg:top-8 lg:bg-transparent z-20" 
                  style="max-height: calc(100vh - 4rem);">
                 
                 <!-- Wrapper untuk Logo, Search, dan Chat -->
@@ -154,30 +153,30 @@
                             <img id="main-logo" src="" alt="Logo Aplikasi" class="w-auto h-10 mx-auto lg:ml-auto lg:mx-0 mb-4 hidden">
                             <h1 id="main-title-text" class="text-5xl lg:text-4xl font-extrabold text-white drop-shadow-lg"></h1>
                         </header>
-                        <form id="search-form" class="w-full max-w-xl mx-auto lg:ml-auto lg:mr-0 mt-4 mb-8">
+                        <form id="search-form-desktop" class="w-full max-w-xl mx-auto lg:ml-auto lg:mr-0 mt-4 mb-8">
                             <!-- [DIUBAH] border, border-gray-600, dan bg-opacity-50 dihapus -->
-                            <input type="search" id="search-input" placeholder="Cari berdasarkan judul atau genre..." class="w-full bg-gray-700 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition">
+                            <input type="search" id="search-input-desktop" placeholder="Cari berdasarkan judul atau genre..." class="w-full bg-gray-700 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition">
                         </form>
                     </div>
                     
                     <!-- [DIUBAH] Chat Wrapper (Sekarang bisa scroll) -->
-                    <div id="chat-container" class="rounded-lg flex flex-col flex-1 min-h-0"> 
+                    <!-- [DIUBAH] ID diubah menjadi -desktop -->
+                    <div id="chat-container-desktop" class="rounded-lg flex flex-col flex-1 min-h-0"> 
                         <!-- Header Chat -->
                         <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0 bg-gray-800 rounded-t-lg">
                             <h3 class="font-bold text-white">Chat Publik</h3>
-                            <button id="close-chat-btn" class="text-gray-400 hover:text-white text-2xl lg:hidden">&times;</button>
                         </div>
                         
                         <!-- [DIUBAH] Area Pesan (flex-grow dan bg-gray-800) -->
-                        <div id="chat-messages" class="flex-grow p-4 space-y-3 overflow-y-auto bg-gray-800">
+                        <div id="chat-messages-desktop" class="flex-grow p-4 space-y-3 overflow-y-auto bg-gray-800">
                             <p class="text-xs text-gray-500 text-center">Menyambungkan ke chat...</p>
                         </div>
                         
                         <!-- [DIUBAH] Input Pesan (flex-shrink-0 dan bg-gray-800) -->
                         <div class="p-4 border-t border-gray-700 flex-shrink-0 bg-gray-800 rounded-b-lg">
-                            <form id="chat-form" class="flex space-x-2">
-                                <input type="text" id="chat-input" placeholder="Ketik pesan..." class="flex-1 bg-gray-700 rounded-full py-2 px-4 text-white focus:ring-2 focus:ring-purple-500" autocomplete="off">
-                                <button type="submit" id="chat-send-btn" class="bg-purple-600 hover:bg-purple-700 rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">
+                            <form id="chat-form-desktop" class="flex space-x-2">
+                                <input type="text" id="chat-input-desktop" placeholder="Ketik pesan..." class="flex-1 bg-gray-700 rounded-full py-2 px-4 text-white focus:ring-2 focus:ring-purple-500" autocomplete="off">
+                                <button type="submit" id="chat-send-btn-desktop" class="bg-purple-600 hover:bg-purple-700 rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">
                                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 16.5V3.5a1 1 0 00.894-1.053l-1.48 8.88A1 1 0 0010.894 2.553z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
                                 </button>
                             </form>
@@ -188,44 +187,11 @@
         </div>
     </div>
 
-    <!-- Overlay Chat Mobile -->
-    <div id="chat-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
+    <!-- [DIHAPUS] Overlay Chat Mobile -->
     
-    <!-- Sidebar Genre Mobile -->
-    <div id="genre-sidebar" class="fixed top-0 left-0 h-full w-72 bg-gray-800 shadow-xl z-50 transform -translate-x-full transition-transform duration-300 flex flex-col">
-        <!-- Header -->
-        <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0">
-            <!-- [DIUBAH] Judul diubah -->
-            <h3 class="font-bold text-white">Pencarian & Filter</h3>
-            <button id="close-genre-btn" class="text-gray-400 hover:text-white text-2xl">&times;</button>
-        </div>
+    <!-- [DIHAPUS] Sidebar Genre Mobile -->
 
-        <!-- [BARU] Logo & Search (Dipindahkan ke sini) -->
-        <div class="p-4">
-            <header class="text-center mb-4">
-                <img id="main-logo-mobile" src="" alt="Logo Aplikasi" class="w-auto h-10 mx-auto mb-4 hidden">
-                <h1 id="main-title-text-mobile" class="text-4xl font-extrabold text-white drop-shadow-lg"></h1>
-            </header>
-            <form id="search-form-mobile" class="w-full max-w-xl mx-auto">
-                <input type="search" id="search-input-mobile" placeholder="Cari berdasarkan judul atau genre..." class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition">
-            </form>
-        </div>
-
-        <!-- [DIUBAH] Daftar Genre Mobile (Horizontal & Scroll-X) -->
-        <div id="genre-list-mobile" class="flex-shrink-0 p-4 flex flex-row space-x-2 overflow-x-auto border-t border-gray-700">
-            <!-- Genre buttons will be loaded here -->
-        </div>
-        
-        <!-- [BARU] Tombol Laporan dipindahkan ke sini -->
-        <div class="p-4 border-t border-gray-700 flex-shrink-0">
-            <button id="open-report-btn" class="w-full flex items-center justify-center text-sm text-gray-400 hover:text-white hover:bg-gray-700 p-2 rounded-lg transition-colors">
-                <svg class="w-5 h-5" mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2zm0 0h18"></path></svg>
-                <span>Laporkan Masalah</span>
-            </button>
-        </div>
-    </div>
-    <!-- Overlay Genre Mobile -->
-    <div id="genre-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden"></div>
+    <!-- [DIHAPUS] Overlay Genre Mobile -->
 
 
     <!-- Tampilan Maintenance (Awalnya disembunyikan) -->
@@ -250,14 +216,17 @@
                 
                 <!-- [BARU] Kolom 1: Thumbnail -->
                 <!-- [DIUBAH] col-span-2 diubah menjadi col-span-1, h-full dihapus -->
-                <div class="hidden lg:flex lg:col-span-1">
+                <!-- [DIUBAH] ID dihapus karena kolomnya disembunyikan oleh JS -->
+                <div id="modal-thumbnail-col" class="hidden lg:flex lg:col-span-1">
                     <img id="modal-thumbnail" src="" alt="Thumbnail Serial" class="w-full h-auto object-cover rounded-md border-2 border-gray-700">
                 </div>
 
                 <!-- [DIUBAH] Kolom 2: Video Player (col-span-3) -->
-                <div class="lg:col-span-3">
+                <!-- [DIUBAH] ID dihapus karena kolomnya disembunyikan oleh JS -->
+                <div id="modal-player-col" class="lg:col-span-3">
                     <div id="video-container" class="w-full aspect-video bg-black rounded-lg relative group">
                         <img id="video-loading-icon" src="" alt="Memuat..." class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 animate-pulse hidden z-10">
+                        <!-- [DIHAPUS] Iframe YouTube Player dihapus -->
                         <video id="modal-main-player" class="w-full h-full relative z-0" controls controlslist="nodownload" disablepictureinpicture playsinline autoplay></video>
                     </div>
                 </div>
@@ -265,14 +234,18 @@
                 <!-- [BARU] Kolom 3: Daftar Episode -->
                 <!-- [DIUBAH] col-span-1 (dari 5), h-64 di mobile, h-96 di desktop, h-full dihapus -->
                 <!-- [DIUBAH] Diganti dengan ComboBox untuk mobile dan Daftar Scroll untuk Desktop -->
-                <div class="lg:col-span-1 bg-gray-800 rounded-lg p-2 h-72 lg:h-96 mt-4 lg:mt-0 flex flex-col">
+                <!-- [DIUBAH] h-72 dihapus, lg:h-96 ditambahkan -->
+                <!-- [DIUBAH] h-72 dihapus (lagi), lg:h-96 dipertahankan -->
+                <!-- [DIUBAH] ID dihapus karena kolomnya disembunyikan oleh JS -->
+                <div id="modal-episode-col" class="lg:col-span-1 bg-gray-800 rounded-lg p-2 lg:h-96 mt-4 lg:mt-0 flex flex-col">
                     <!-- [BARU] Daftar Scroll HANYA UNTUK DESKTOP (lg:flex) -->
                     <div id="modal-episode-list-container-desktop" class="flex-1 overflow-y-auto hidden lg:flex lg:flex-col">
                         <p class="text-xs text-gray-400 text-center">Memuat episode...</p>
                     </div>
                     
                     <!-- [BARU] ComboBox HANYA UNTUK MOBILE (lg:hidden) -->
-                    <div class="block lg:hidden w-full h-full flex items-center justify-center">
+                    <!-- [DIUBAH] h-full, flex, items-center, justify-center dihapus -->
+                    <div class="block lg:hidden w-full">
                          <div class="relative w-full">
                             <select id="modal-episode-select-mobile" class="w-full bg-gray-700 text-white p-3 rounded-lg appearance-none focus:ring-2 focus:ring-purple-500">
                                 <option value="">Pilih Episode...</option>
@@ -346,10 +319,79 @@
         </div>
     </div>
 
+    <!-- [BARU] Panel Bawah (Geser dari Bawah) - HANYA MOBILE -->
+    <div id="bottom-panel-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden lg:hidden"></div>
+    <div id="bottom-panel" class="fixed bottom-0 left-0 right-0 h-[85vh] bg-gray-800 rounded-t-2xl shadow-xl z-40 transform translate-y-full transition-transform duration-300 flex flex-col lg:hidden">
+        <!-- Handle Geser -->
+        <div id="bottom-panel-handle" class="w-full py-3 flex justify-center items-center cursor-grab flex-shrink-0">
+            <div class="w-12 h-1.5 bg-gray-600 rounded-full"></div>
+        </div>
+        
+        <!-- Kontainer Konten Panel (Bisa Scroll) -->
+        <div class="flex-1 min-h-0 overflow-y-auto">
+            
+            <!-- [BARU] Konten untuk Pencarian/Genre -->
+            <div id="panel-search-content" class="hidden p-4">
+                <!-- Logo & Search -->
+                <div class="p-4">
+                    <header class="text-center mb-4">
+                        <img id="main-logo-mobile" src="" alt="Logo Aplikasi" class="w-auto h-10 mx-auto mb-4 hidden">
+                        <h1 id="main-title-text-mobile" class="text-4xl font-extrabold text-white drop-shadow-lg"></h1>
+                    </header>
+                    <form id="panel-search-form" class="w-full max-w-xl mx-auto">
+                        <input type="search" id="panel-search-input" placeholder="Cari berdasarkan judul atau genre..." class="w-full bg-gray-700 bg-opacity-50 border border-gray-600 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition">
+                    </form>
+                </div>
+                
+                <!-- [DIHAPUS] Form untuk memuat URL dihapus -->
+
+                <!-- Daftar Genre (Horizontal & Scroll-X) -->
+                <div id="panel-genre-list" class="flex-shrink-0 p-4 flex flex-row space-x-2 overflow-x-auto border-t border-gray-700">
+                    <!-- Genre buttons will be loaded here -->
+                </div>
+                
+                <!-- Tombol Laporan -->
+                <div class="p-4 border-t border-gray-700 flex-shrink-0">
+                    <button id="panel-open-report-btn" class="w-full flex items-center justify-center text-sm text-gray-400 hover:text-white hover:bg-gray-700 p-2 rounded-lg transition-colors">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2zm0 0h18"></path></svg>
+                        <span>Laporkan Masalah</span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- [BARU] Konten untuk Chat -->
+            <div id="panel-chat-content" class="hidden h-full">
+                <!-- Wrapper Chat (Dibuat h-full untuk mengisi panel) -->
+                <div id="chat-container-mobile" class="rounded-lg flex flex-col h-full"> 
+                    <!-- Header Chat -->
+                    <div class="flex justify-between items-center p-4 border-b border-gray-700 flex-shrink-0 bg-gray-800 rounded-t-lg">
+                        <h3 class="font-bold text-white">Chat Publik</h3>
+                    </div>
+                    
+                    <!-- Area Pesan (flex-grow) -->
+                    <div id="chat-messages-mobile" class="flex-grow p-4 space-y-3 overflow-y-auto bg-gray-800">
+                        <p class="text-xs text-gray-500 text-center">Menyambungkan ke chat...</p>
+                    </div>
+                    
+                    <!-- Input Pesan (flex-shrink-0) -->
+                    <div class="p-4 border-t border-gray-700 flex-shrink-0 bg-gray-800">
+                        <form id="chat-form-mobile" class="flex space-x-2">
+                            <input type="text" id="chat-input-mobile" placeholder="Ketik pesan..." class="flex-1 bg-gray-700 rounded-full py-2 px-4 text-white focus:ring-2 focus:ring-purple-500" autocomplete="off">
+                            <button type="submit" id="chat-send-btn-mobile" class="bg-purple-600 hover:bg-purple-700 rounded-full w-10 h-10 flex items-center justify-center flex-shrink-0">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 16.5V3.5a1 1 0 00.894-1.053l-1.48 8.88A1 1 0 0010.894 2.553z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
     <!-- [BARU] Navigasi Bawah (Hanya Mobile) -->
     <!-- [KOMENTAR BARU] Ini adalah Baris 2 (Navigasi 10%) di tampilan mobile -->
-    <!-- [DIUBAH] h-[5vh] diubah menjadi h-[20vh] untuk nav 20% -->
-    <nav id="mobile-bottom-nav" class="lg:hidden fixed bottom-0 left-0 right-0 h-[20vh] bg-gray-800 border-t border-gray-700 flex justify-around items-center z-40">
+    <!-- [DIUBAH] h-[20vh] diubah menjadi h-[10vh] (Mengembalikan ke 10%) -->
+    <nav id="mobile-bottom-nav" class="lg:hidden fixed bottom-0 left-0 right-0 h-[7vh] bg-gray-800 border-t border-gray-700 flex justify-around items-center z-40">
         <!-- Kiri: Genre / Pencarian -->
         <button id="bottom-nav-genre-btn" class="p-3 text-gray-400 hover:text-white">
             <!-- [DIUBAH] Ikon diubah menjadi ikon Pencarian -->
@@ -416,14 +458,24 @@
         let blockedWordsList = [];
         let faviconUrl = '';
         let isWatchModuleLoaded = false;
-        let genreSidebar, genreOverlay, openGenreBtn, closeGenreBtn, genreListMobile, genreListDesktop;
+        
+        /* [DIHAPUS] Variabel sidebar genre lama */
+        /* [DIUBAH] Variabel genreListDesktop dipertahankan, genreListMobile diganti panel */
+        let genreListDesktop, panelGenreList;
+        
         let allGenres = new Set();
         let activeGenre = 'All';
-        let videoModal, closeModalBtn, modalMainPlayer, videoContainer;
+        let videoModal, closeModalBtn, modalMainPlayer, videoContainer; // [DIHAPUS] modalYouTubePlayer dihapus
         let currentSeriesId = null;
         let currentItem = null;
         let saveTimeout;
         let watermarkEl = null; 
+        
+        /* [BARU] Variabel untuk Panel Bawah */
+        let bottomPanel, bottomPanelOverlay, bottomPanelHandle;
+        let panelSearchContent, panelChatContent;
+        let currentPanelContent = null; // 'search' atau 'chat'
+        let mobileBottomNav; // [BARU] Variabel untuk nav bawah
         
         /* --- [DIKEMBALIKAN] FUNGSI DARI function.js --- */
         
@@ -495,7 +547,7 @@
                         
                         <div class="flex items-center text-[9px] text-gray-400">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
-                            <span>${(itemData.data.episodeCount || 0)} Eps</span>
+                            <span>${(itemData.data.episodeCount || 0)}</span>
                         </div>
                         <!-- [DIHAPUS] Div untuk view count dihapus -->
                     </div>
@@ -540,21 +592,22 @@
             const handleSearchSubmit = (e) => e.preventDefault();
 
             // Desktop
-            const searchInputDesktop = document.getElementById('search-input');
-            const searchFormDesktop = document.getElementById('search-form');
+            const searchInputDesktop = document.getElementById('search-input-desktop');
+            const searchFormDesktop = document.getElementById('search-form-desktop');
             if (searchInputDesktop) searchInputDesktop.addEventListener('input', handleSearchInput);
             if (searchFormDesktop) searchFormDesktop.addEventListener('submit', handleSearchSubmit);
 
-            // Mobile
-            const searchInputMobile = document.getElementById('search-input-mobile');
-            const searchFormMobile = document.getElementById('search-form-mobile');
+            // [DIUBAH] Mobile (Panel Bawah)
+            const searchInputMobile = document.getElementById('panel-search-input');
+            const searchFormMobile = document.getElementById('panel-search-form');
             if (searchInputMobile) searchInputMobile.addEventListener('input', handleSearchInput);
             if (searchFormMobile) searchFormMobile.addEventListener('submit', handleSearchSubmit);
         }
 
         function setupEventListeners(){
             /* [DIUBAH] Target scroll diperbaiki untuk mobile dan desktop */
-            const mobileScrollEl = document.getElementById('main-content');
+            /* [DIUBAH] Listener scroll #main-content diganti menjadi #latest-updates-row untuk mobile */
+            const mobileScrollEl = document.getElementById('latest-updates-row');
             if (mobileScrollEl) {
                 mobileScrollEl.addEventListener('scroll', handleScroll); /* Listener untuk Mobile */
             }
@@ -565,33 +618,63 @@
             }
             /* [DIHAPUS] Listener 'window' yang lama dihapus */
             
-            const toggleGenreSidebar = (open) => {
-                if (open) {
-                    if (genreSidebar) genreSidebar.classList.remove('-translate-x-full');
-                    if (genreOverlay) genreOverlay.classList.remove('hidden');
-                } else {
-                    if (genreSidebar) genreSidebar.classList.add('-translate-x-full');
-                    if (genreOverlay) genreOverlay.classList.add('hidden');
-                }
-            };
+            /* [DIHAPUS] Logika sidebar genre lama */
 
-            if (openGenreBtn) openGenreBtn.addEventListener('click', () => toggleGenreSidebar(true));
-            if (closeGenreBtn) closeGenreBtn.addEventListener('click', () => toggleGenreSidebar(false));
-            if (genreOverlay) genreOverlay.addEventListener('click', () => toggleGenreSidebar(false));
-            
+            /* [BARU] Logika untuk Panel Bawah */
             const bottomNavGenreBtn = document.getElementById('bottom-nav-genre-btn');
-            if (bottomNavGenreBtn) bottomNavGenreBtn.addEventListener('click', () => toggleGenreSidebar(true));
+            if (bottomNavGenreBtn) bottomNavGenreBtn.addEventListener('click', () => openBottomPanel('search'));
+            
+            const bottomNavChatBtn = document.getElementById('bottom-nav-chat-btn');
+            if (bottomNavChatBtn) bottomNavChatBtn.addEventListener('click', () => openBottomPanel('chat'));
+
+            if (bottomPanelOverlay) bottomPanelOverlay.addEventListener('click', closeBottomPanel);
+            if (bottomPanelHandle) bottomPanelHandle.addEventListener('click', closeBottomPanel); // Bisa juga ditambahkan gestur geser nanti
 
             const bottomNavHomeBtn = document.getElementById('bottom-nav-home-btn');
             if (bottomNavHomeBtn) bottomNavHomeBtn.addEventListener('click', () => { 
-                window.scrollTo({ top: 0, behavior: 'smooth' }); 
+                /* [DIUBAH] Scroll-to-top sekarang menargetkan area scroll yang benar */
+                const mobileScrollEl = document.getElementById('latest-updates-row');
+                if (mobileScrollEl) mobileScrollEl.scrollTo({ top: 0, behavior: 'smooth' });
+                
+                const desktopScrollEl = document.querySelector('main.main-content-container');
+                if (desktopScrollEl) desktopScrollEl.scrollTo({ top: 0, behavior: 'smooth' });
             });
 
+            // [DIHAPUS] setupUrlFormListener() dihapus
 
             document.body.addEventListener('contextmenu', (e) => {
                 // e.preventDefault(); 
             });
         }
+        
+        /* [BARU] Fungsi untuk membuka panel bawah */
+        function openBottomPanel(contentToShow) { // contentToShow = 'search' atau 'chat'
+            if (panelSearchContent) panelSearchContent.classList.add('hidden');
+            if (panelChatContent) panelChatContent.classList.add('hidden');
+
+            if (contentToShow === 'search') {
+                if (panelSearchContent) panelSearchContent.classList.remove('hidden');
+            } else if (contentToShow === 'chat') {
+                if (panelChatContent) panelChatContent.classList.remove('hidden');
+            }
+            
+            currentPanelContent = contentToShow;
+            if (bottomPanel) bottomPanel.classList.remove('translate-y-full');
+            if (bottomPanelOverlay) bottomPanelOverlay.classList.remove('hidden');
+            if (mobileBottomNav) mobileBottomNav.classList.add('hidden'); // [BARU] Sembunyikan nav
+        }
+        
+        /* [BARU] Fungsi untuk menutup panel bawah */
+        function closeBottomPanel() {
+            if (bottomPanel) bottomPanel.classList.add('translate-y-full');
+            if (bottomPanelOverlay) bottomPanelOverlay.classList.add('hidden');
+            if (mobileBottomNav) mobileBottomNav.classList.remove('hidden'); // [BARU] Tampilkan nav
+            currentPanelContent = null;
+        }
+        
+        /* [DIHAPUS] Fungsi setupUrlFormListener dihapus */
+        
+        /* [DIHAPUS] Fungsi getYoutubeVideoId dihapus */
         
         function handleScroll(e) {
             /* [DIHAPUS] Pengecekan isSearching/activeGenre dihapus agar infinite scroll selalu aktif */
@@ -657,7 +740,8 @@
                 genres.forEach(g => allGenres.add(g.trim()));
             });
 
-            if (genreListMobile) genreListMobile.innerHTML = '';
+            /* [DIUBAH] Menargetkan panelGenreList dan genreListDesktop */
+            if (panelGenreList) panelGenreList.innerHTML = '';
             if (genreListDesktop) genreListDesktop.innerHTML = '';
             
             createGenreButton('All');
@@ -676,20 +760,20 @@
             button.className = 'genre-btn text-xs font-medium py-1 px-3 rounded-full transition lg:w-full lg:text-left lg:rounded-md lg:px-3 lg:py-2 lg:bg-gray-600 lg:hover:bg-gray-500';
             button.dataset.genre = genre;
             
-            button.addEventListener('click', () => filterContent(genre));
-            
-            if (genreListMobile) genreListMobile.appendChild(button.cloneNode(true));
+            /* [DIUBAH] Menargetkan panelGenreList dan genreListDesktop */
+            if (panelGenreList) panelGenreList.appendChild(button.cloneNode(true));
             if (genreListDesktop) genreListDesktop.appendChild(button.cloneNode(true));
             
-            if (genreListMobile && genreListMobile.lastChild) genreListMobile.lastChild.addEventListener('click', () => filterContent(genre));
+            if (panelGenreList && panelGenreList.lastChild) panelGenreList.lastChild.addEventListener('click', () => filterContent(genre));
             if (genreListDesktop && genreListDesktop.lastChild) genreListDesktop.lastChild.addEventListener('click', () => filterContent(genre));
         }
         
         function filterContent(genre) {
             activeGenre = genre;
             
-            const searchInputDesktop = document.getElementById('search-input');
-            const searchInputMobile = document.getElementById('search-input-mobile');
+            /* [DIUBAH] Menargetkan kedua input pencarian */
+            const searchInputDesktop = document.getElementById('search-input-desktop');
+            const searchInputMobile = document.getElementById('panel-search-input');
             if (searchInputDesktop && searchInputDesktop.value) searchInputDesktop.value = '';
             if (searchInputMobile && searchInputMobile.value) searchInputMobile.value = '';
             
@@ -718,8 +802,8 @@
                 });
             }
             
-            if (genreSidebar) genreSidebar.classList.add('-translate-x-full');
-            if (genreOverlay) genreOverlay.classList.add('hidden');
+            /* [DIUBAH] Menutup panel bawah, bukan sidebar lama */
+            closeBottomPanel();
             
             currentDisplayCount = 0;
             if (contentListEl) contentListEl.innerHTML = '';
@@ -751,92 +835,101 @@
             return censoredText;
         }
 
+        /* [DIUBAH] setupChat dimodifikasi untuk menangani DUA UI (desktop dan mobile) */
         function setupChat() {
             chatCollRef = collection(db, 'chat');
             
-            const chatContainer = document.getElementById('info-chat-sidebar');
-            const chatOverlay = document.getElementById('chat-overlay');
-            const openChatBtn = document.getElementById('open-chat-btn');
-            const closeChatBtn = document.getElementById('close-chat-btn');
-            const chatForm = document.getElementById('chat-form');
-            const chatInput = document.getElementById('chat-input');
-            const chatMessagesEl = document.getElementById('chat-messages');
+            // Referensi UI Desktop
+            const chatFormDesktop = document.getElementById('chat-form-desktop');
+            const chatInputDesktop = document.getElementById('chat-input-desktop');
+            const chatMessagesElDesktop = document.getElementById('chat-messages-desktop');
 
-            const toggleChat = (open) => {
-                if (open) {
-                    if (chatContainer) chatContainer.classList.remove('translate-x-full');
-                    if (chatOverlay) chatOverlay.classList.remove('hidden');
-                } else {
-                    if (chatContainer) chatContainer.classList.add('translate-x-full');
-                    if (chatOverlay) chatOverlay.classList.add('hidden');
-                }
-            };
+            // Referensi UI Mobile (Panel)
+            const chatFormMobile = document.getElementById('chat-form-mobile');
+            const chatInputMobile = document.getElementById('chat-input-mobile');
+            const chatMessagesElMobile = document.getElementById('chat-messages-mobile');
 
-            if (openChatBtn) openChatBtn.addEventListener('click', () => toggleChat(true));
-            if (closeChatBtn) closeChatBtn.addEventListener('click', () => toggleChat(false));
-            if (chatOverlay) chatOverlay.addEventListener('click', () => toggleChat(false));
+            /* [DIHAPUS] Logika toggleChat lama dihapus */
             
-            const bottomNavChatBtn = document.getElementById('bottom-nav-chat-btn');
-            if (bottomNavChatBtn) {
-                bottomNavChatBtn.addEventListener('click', () => toggleChat(true));
-            }
-            
-            if (chatForm) chatForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const message = chatInput.value.trim();
-                const censoredMessage = censorMessage(message, blockedWordsList);
-
+            // Fungsi untuk mengirim pesan (dipanggil oleh kedua form)
+            const sendMessage = async (message) => {
+                const censoredMessage = censorMessage(message, blocklist);
                 if (censoredMessage && currentUserId) {
                     try {
-                        addDoc(chatCollRef, {
+                        await addDoc(chatCollRef, {
                             text: censoredMessage,
                             userId: currentUserId,
                             createdAt: Timestamp.now()
                         });
-                        chatInput.value = '';
+                        // Kosongkan kedua input
+                        if (chatInputDesktop) chatInputDesktop.value = '';
+                        if (chatInputMobile) chatInputMobile.value = '';
                     } catch (error) {
                         console.error(`Gagal mengirim pesan chat: ${error.message}`); 
                     }
                 }
+            };
+            
+            // Pasang listener untuk kedua form
+            if (chatFormDesktop) chatFormDesktop.addEventListener('submit', (e) => {
+                e.preventDefault();
+                sendMessage(chatInputDesktop.value.trim());
+            });
+            
+            if (chatFormMobile) chatFormMobile.addEventListener('submit', (e) => {
+                e.preventDefault();
+                sendMessage(chatInputMobile.value.trim());
             });
             
             const q = query(chatCollRef, orderBy("createdAt", "desc"), limit(100));
             
             if (chatUnsubscribe) chatUnsubscribe();
             
+            // Satu snapshot untuk memperbarui KEDUA UI
             chatUnsubscribe = onSnapshot(q, (snapshot) => {
-                if (!chatMessagesEl) return;
-                chatMessagesEl.innerHTML = ''; 
                 const messages = [];
                 snapshot.forEach(doc => {
                     messages.push(doc.data());
                 });
+                messages.reverse(); // Balik sekali saja
 
-                messages.reverse().forEach(msg => {
-                    const isMe = msg.userId === currentUserId;
-                    const msgEl = document.createElement('div');
-                    msgEl.className = `flex flex-col ${isMe ? 'items-end' : 'items-start'}`;
-                    
-                    msgEl.innerHTML = `
-                        <span class="text-xs text-gray-400 mb-1 ${isMe ? 'mr-2' : 'ml-2'}">
-                            ${msg.userId.substring(0, 6)}...
-                        </span>
-                        <div class="max-w-[80%] break-words p-3 rounded-lg ${isMe ? 'bg-purple-600 text-white' : 'bg-gray-700 text-white'}">
-                            <p class="text-sm">${msg.text}</p>
-                        </div>
-                    `;
-                    chatMessagesEl.appendChild(msgEl);
-                });
-                
-                chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+                // Fungsi untuk merender pesan ke sebuah elemen
+                const renderMessages = (containerEl) => {
+                    if (!containerEl) return;
+                    containerEl.innerHTML = '';
+                    messages.forEach(msg => {
+                        const isMe = msg.userId === currentUserId;
+                        const msgEl = document.createElement('div');
+                        msgEl.className = `flex flex-col ${isMe ? 'items-end' : 'items-start'}`;
+                        
+                        msgEl.innerHTML = `
+                            <span class="text-xs text-gray-400 mb-1 ${isMe ? 'mr-2' : 'ml-2'}">
+                                ${msg.userId.substring(0, 6)}...
+                            </span>
+                            <div class="max-w-[80%] break-words p-3 rounded-lg ${isMe ? 'bg-purple-600 text-white' : 'bg-gray-700 text-white'}">
+                                <p class="text-sm">${msg.text}</p>
+                            </div>
+                        `;
+                        containerEl.appendChild(msgEl);
+                    });
+                    containerEl.scrollTop = containerEl.scrollHeight;
+                };
+
+                // Render ke kedua kontainer
+                renderMessages(chatMessagesElDesktop);
+                renderMessages(chatMessagesElMobile);
+
             }, (error) => {
                 console.error(`Gagal terhubung ke chat: ${error.message}`); 
-                if (chatMessagesEl) chatMessagesEl.innerHTML = '<p class="text-xs text-red-500 text-center">Gagal terhubung ke chat.</p>';
+                const errorMsg = '<p class="text-xs text-red-500 text-center">Gagal terhubung ke chat.</p>';
+                if (chatMessagesElDesktop) chatMessagesElDesktop.innerHTML = errorMsg;
+                if (chatMessagesElMobile) chatMessagesElMobile.innerHTML = errorMsg;
             });
         }
         
         function setupReportModal() {
-            const openReportBtn = document.getElementById('open-report-btn'); 
+            /* [DIUBAH] Tombol pembuka panel diganti */
+            const openReportBtnMobile = document.getElementById('panel-open-report-btn'); 
             const openReportBtnDesktop = document.getElementById('open-report-btn-desktop'); 
             const reportModal = document.getElementById('report-modal');
             const closeReportBtn = document.getElementById('close-report-btn');
@@ -845,8 +938,9 @@
             const sendReportBtn = document.getElementById('send-report-btn');
             const reportStatusMsg = document.getElementById('report-status-message');
 
-            if(openReportBtn) openReportBtn.addEventListener('click', () => {
+            if(openReportBtnMobile) openReportBtnMobile.addEventListener('click', () => {
                 if (reportModal) reportModal.classList.remove('hidden');
+                closeBottomPanel(); // Tutup panel bawah saat modal laporan terbuka
             });
             
             if (openReportBtnDesktop) {
@@ -1008,10 +1102,13 @@
             if (videoModal) videoModal.classList.add('hidden');
             saveWatchProgress(); 
             if (saveTimeout) clearTimeout(saveTimeout);
+            
+            // [DIUBAH] Reset player
             if (modalMainPlayer) {
                 modalMainPlayer.pause();
                 modalMainPlayer.src = '';
             }
+            // [DIHAPUS] Reset YouTube Player dihapus
             
             currentItem = null;
             currentSeriesId = null; 
@@ -1025,10 +1122,20 @@
                 modalMainPlayer.removeEventListener('timeupdate', modalMainPlayer._timeUpdateListener);
                 modalMainPlayer._timeUpdateListener = null;
             }
+            
+            if (mobileBottomNav) mobileBottomNav.classList.remove('hidden'); // [BARU] Tampilkan nav
+            
+            // [DIHAPUS] Reset elemen modal yang disembunyikan (tidak diperlukan lagi)
         }
+        
+        /* [DIHAPUS] Fungsi playYouTubeVideoInModal dihapus */
 
         async function playVideoInModal(seriesData, episodeData, videoUrl, episodeId) {
             try {
+                if (mobileBottomNav) mobileBottomNav.classList.add('hidden'); // [BARU] Sembunyikan nav
+                
+                // [DIHAPUS] Logika reset YouTube player dihapus
+                
                 currentItem = { ...seriesData, ...episodeData, episodeId: episodeId };
                 
                 if (!videoUrl) {
@@ -1074,13 +1181,9 @@
                     if (document.getElementById('modal-content-episodes')) document.getElementById('modal-content-episodes').textContent = `${seriesData.episodeCount || 0} Eps`;
                 }
 
-                if (modalMainPlayer) modalMainPlayer.src = videoUrl;
-
-                const progressData = getWatchProgress(episodeId);
-                const progress = progressData.time;
-
-                createWatermark(); 
-                
+                // [DIUBAH] Event listener dipindahkan SEBELUM .src diatur
+                // Ini untuk memperbaiki race condition di mana video (dari cache)
+                // akan memuat 'canplay' sebelum listener-nya terpasang.
                 if (modalMainPlayer) modalMainPlayer.addEventListener('canplay', () => {
                     if (loadingIcon) loadingIcon.classList.add('hidden'); 
                     if (modalMainPlayer) modalMainPlayer.style.display = 'block'; 
@@ -1092,13 +1195,24 @@
                     });
                 }, { once: true });
                 
-                if (modalMainPlayer) setupVideoProgressSaving(modalMainPlayer);
-
                 if (modalMainPlayer) modalMainPlayer.addEventListener('error', (e) => {
                      console.error("Video player error:", e, modalMainPlayer.error);
-                     if (loadingIcon) loadingIcon.src = 'https://placehold.co/64x64/ef4444/FFFFFF?text=Error';
+                     if (loadingIcon) loadingIcon.src = 'https.placehold.co/64x64/ef4444/FFFFFF?text=Error';
                      if (loadingIcon) loadingIcon.classList.remove('animate-pulse');
                 }, { once: true });
+
+                if (modalMainPlayer) modalMainPlayer.src = videoUrl;
+
+                const progressData = getWatchProgress(episodeId);
+                const progress = progressData.time;
+
+                createWatermark(); 
+                
+                /* [DIHAPUS] Event listener 'canplay' dipindahkan ke atas */
+                
+                if (modalMainPlayer) setupVideoProgressSaving(modalMainPlayer);
+
+                /* [DIHAPUS] Event listener 'error' dipindahkan ke atas */
                 
                 logVideoPlay(currentSeriesId);
 
@@ -1289,6 +1403,7 @@
                 videoContainer = document.getElementById('video-container'); 
                 closeModalBtn = document.getElementById('close-modal-btn');
                 modalMainPlayer = document.getElementById('modal-main-player');
+                // [DIHAPUS] modalYouTubePlayer dihapus
                 
                 setupModalEventListeners();
                 isWatchModuleLoaded = true;
@@ -1307,16 +1422,24 @@
                 contentRowsContainer = document.getElementById('content-rows-container'); 
                 mainLogoImg = document.getElementById('main-logo');
                 mainTitleText = document.getElementById('main-title-text');
-                genreSidebar = document.getElementById('genre-sidebar');
-                genreOverlay = document.getElementById('genre-overlay');
-                openGenreBtn = document.getElementById('open-genre-btn');
-                closeGenreBtn = document.getElementById('close-genre-btn');
-                genreListMobile = document.getElementById('genre-list-mobile');
+                
+                /* [DIUBAH] Variabel sidebar genre lama dihapus */
                 genreListDesktop = document.getElementById('genre-list-desktop');
+                
+                /* [BARU] Menargetkan elemen panel bawah */
+                bottomPanel = document.getElementById('bottom-panel');
+                bottomPanelOverlay = document.getElementById('bottom-panel-overlay');
+                bottomPanelHandle = document.getElementById('bottom-panel-handle');
+                panelSearchContent = document.getElementById('panel-search-content');
+                panelChatContent = document.getElementById('panel-chat-content');
+                panelGenreList = document.getElementById('panel-genre-list');
+                mobileBottomNav = document.getElementById('mobile-bottom-nav'); // [BARU] Mengambil nav bawah
+                
                 videoModal = document.getElementById('video-modal');
                 closeModalBtn = document.getElementById('close-modal-btn');
                 modalMainPlayer = document.getElementById('modal-main-player');
                 videoContainer = document.getElementById('video-container');
+                // [DIHAPUS] modalYouTubePlayer dihapus
 
 
                 /* --- Firebase Auth --- */
@@ -1391,6 +1514,7 @@
                 } else {
                     if (maintenanceOverlay) maintenanceOverlay.classList.add('hidden');
                     
+                    /* [DIUBAH] Menargetkan logo/teks di panel seluler juga */
                     const mainLogoImgMobile = document.getElementById('main-logo-mobile');
                     const mainTitleTextMobile = document.getElementById('main-title-text-mobile');
 
@@ -1425,7 +1549,7 @@
 
             } catch (error) { 
                 console.error(`Gagal memuat pengaturan: ${error.message}`); 
-                if (loadingFavicon) loadingFavicon.src = 'https://placehold.co/64x64/ef4444/FFFFFF?text=Error';
+                if (loadingFavicon) loadingFavicon.src = 'https.placehold.co/64x64/ef4444/FFFFFF?text=Error';
                 if (loadingFavicon) loadingFavicon.classList.remove('animate-pulse');
                 const loadingP = document.getElementById('loading-overlay').querySelector('p');
                 if (loadingP) loadingP.textContent = "Gagal memuat pengaturan. Coba refresh.";
@@ -1485,7 +1609,7 @@
                     
                     linkEl.innerHTML = `
                         <svg class="w-6 h-6 flex-shrink-0 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899l4-4a4 4 0 10-5.656-5.656l-1.102 1.101"></path></svg>
-                        <span class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-1 bg-gray-900 shadow-lg rounded-md text-sm text-white hidden lg:group-hover:block whitespace-nowFrap z-50">
+                        <span class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-1 bg-gray-900 shadow-lg rounded-md text-sm text-white hidden lg:group-hover:block whitespace-nowjrap z-50">
                             ${linkData.title}
                         </span>
                     `;
