@@ -108,7 +108,8 @@
             <!-- [KOLOM 2] Konten Tengah (Scrollable) -->
             <!-- [DIUBAH] 'main-content-container', 'p-6', 'lg:overflow-y-auto' dipindahkan ke <main> -->
             <!-- [KOMENTAR BARU] Ini adalah Baris 1 (Konten 80%) di tampilan mobile -->
-            <main class="main-content-container p-6 lg:flex-1 lg:flex lg:flex-col lg:min-w-0 relative z-10 lg:overflow-y-auto" style="max-height: calc(100vh - 4rem);">
+            <!-- [DIUBAH] style="max-height:..." dihapus dari <main> dan dipindahkan ke styles.css agar tidak memotong konten di mobile -->
+            <main class="main-content-container p-6 lg:flex-1 lg:flex lg:flex-col lg:min-w-0 relative z-10 lg:overflow-y-auto">
                 
                 <!-- [DIHAPUS] Poster Header telah dihapus -->
                 
@@ -290,14 +291,15 @@
                             <div>
                                 <span class="p-1 bg-blue-800 text-white text-xs font-bold rounded">MAL</span>
                             </div>
+<div id="modal-description-wrapper" class="h-24 overflow-y-auto mt-4">
+                    <!-- [DIUBAH] Menambahkan 'break-words' untuk memaksa teks panjang agar patah (wrap) -->
+                    <p id="modal-content-description" class="text-gray-400 text-sm whitespace-pre-wrap break-words">Tidak ada deskripsi.</p>
+                </div>
                         </div>
                     </div>
                 </div>
                 <!-- [DIUBAH] Deskripsi sekarang dibungkus div dengan scroll -->
-                <div id="modal-description-wrapper" class="h-24 overflow-y-auto mt-4">
-                    <!-- [DIUBAH] Menambahkan 'break-words' untuk memaksa teks panjang agar patah (wrap) -->
-                    <p id="modal-content-description" class="text-gray-400 text-sm whitespace-pre-wrap break-words">Tidak ada deskripsi.</p>
-                </div>
+                
                 
                 <!-- [DIHAPUS] Tombol "Lihat Daftar Episode" tidak diperlukan lagi -->
             </div>
