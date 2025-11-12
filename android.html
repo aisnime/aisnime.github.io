@@ -26,7 +26,8 @@
     </div>
 
     <!-- [DIUBAH] Konten utama sekarang menjadi flex-1 (mengisi sisa ruang) dan scrollable di mobile -->
-    <div id="main-content" class="overlay hidden flex-1 min-h-0">
+    <!-- [DIUBAH] overflow-y-auto diubah menjadi overflow-y-hidden untuk menghentikan scroll utama di mobile -->
+    <div id="main-content" class="overlay hidden flex-1 min-h-0 overflow-y-hidden lg:overflow-y-visible lg:flex lg:flex-col">
         <!-- [DIHAPUS] Notifikasi Link Disalin -->
 
         <!-- [DIUBAH] Kontainer utama sekarang adalah flex, bukan grid. Padding di sini. -->
@@ -108,26 +109,28 @@
             <!-- [KOLOM 2] Konten Tengah (Scrollable) -->
             <!-- [DIUBAH] 'main-content-container', 'p-6', 'lg:overflow-y-auto' dipindahkan ke <main> -->
             <!-- [KOMENTAR BARU] Ini adalah Baris 1 (Konten 80%) di tampilan mobile -->
-            <!-- [DIUBAH] style="max-height:..." dihapus dari <main> dan dipindahkan ke styles.css agar tidak memotong konten di mobile -->
-            <main class="main-content-container p-6 lg:flex-1 lg:flex lg:flex-col lg:min-w-0 relative z-10 lg:overflow-y-auto">
+            <!-- [DIUBAH] Struktur <main> diubah untuk menerapkan scroll HANYA pada daftar konten -->
+            <main class="main-content-container p-6 flex flex-col flex-1 min-h-0 lg:flex-1 lg:flex lg:flex-col lg:min-w-0 relative z-10 lg:overflow-y-auto">
                 
                 <!-- [DIHAPUS] Poster Header telah dihapus -->
                 
                 <!-- [DIHAPUS] Filter Genre Desktop dipindahkan ke sidebar -->
                 
-                <!-- [DIUBAH] Kontainer sekarang hanya wrapper biasa -->
-                <!-- [DIUBAH] lg:h-full dan lg:overflow-y-auto DIHAPUS dari sini -->
-                <div id="content-rows-container" class="space-y-8">
-                    <!-- Baris "Update Terbaru" akan dimuat oleh JS di sini -->
-                    <div id="latest-updates-row">
-                        <!-- [DIUBAH] border-b dan pb-3 dihapus -->
-                        <h2 class="text-3xl font-bold mb-6">UPDATE TERBARU</h2>
-                        <!-- [DIUBAH] Kelas grid Tailwind (sm:grid-cols-2 dll) DIHAPUS -->
-                        <div id="content-list" style="overflow-y-auto lg:overflow-y-visible lg:flex lg:flex-col">
+                <!-- Judul "UPDATE TERBARU" dipindahkan ke sini agar tetap diam -->
+                <h2 class="text-3xl font-bold mb-6">UPDATE TERBARU</h2>
+                
+                <!-- Kontainer ini akan mengisi sisa ruang -->
+                <div id="content-rows-container" class="space-y-8 flex flex-col flex-1 min-h-0">
+                    <!-- Baris "Update Terbaru" diubah menjadi area scroll -->
+                    <div id="latest-updates-row" class="flex-1 overflow-y-auto">
+                        <!-- #content-list sekarang menjadi pembungkus grid di dalam area scroll -->
+                        <div id="content-list">
                             <p id="no-content-message" class="text-gray-500 col-span-full text-center py-8">Memuat konten...</p>
                         </div>
                     </div>
-                    <!-- Baris kustom lainnya akan ditambahkan oleh JS di sini -->
+                    <!-- Baris kustom lainnya (jika ada) akan dimuat oleh JS di sini, 
+                         NAMUN di tata letak mobile ini, baris tersebut mungkin tidak akan terlihat 
+                         karena #latest-updates-row mengambil semua sisa ruang. -->
                 </div>
             </main>
             <!-- [KOMENTAR BARU] Akhir dari Baris 1 (Konten) -->
@@ -329,7 +332,7 @@
     <!-- [BARU] Navigasi Bawah (Hanya Mobile) -->
     <!-- [KOMENTAR BARU] Ini adalah Baris 2 (Navigasi 10%) di tampilan mobile -->
     <!-- [DIUBAH] h-16 diubah menjadi h-[10vh] -->
-    <nav id="mobile-bottom-nav" class="lg:hidden fixed bottom-0 left-0 right-0 h-[5vh] bg-gray-800 border-t border-gray-700 flex justify-around items-center z-40">
+    <nav id="mobile-bottom-nav" class="lg:hidden fixed bottom-0 left-0 right-0 h-[10vh] bg-gray-800 border-t border-gray-700 flex justify-around items-center z-40">
         <!-- Kiri: Genre / Pencarian -->
         <button id="bottom-nav-genre-btn" class="p-3 text-gray-400 hover:text-white">
             <!-- [DIUBAH] Ikon diubah menjadi ikon Pencarian -->
