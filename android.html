@@ -19,7 +19,7 @@
 </head>
 <!-- [DIUBAH] h-screen, overflow-hidden, dan flex-col diterapkan di SEMUA ukuran -->
 <!-- [DIUBAH] pb-[5vh] diubah menjadi pb-[20vh] untuk nav 20% -->
- <body class="bg-gray-900 text-white h-screen overflow-hidden flex flex-col pb-[14vh] lg:pb-0" style="font-family: 'Inter', sans-serif;">
+<body class="bg-gray-900 text-white h-screen overflow-hidden flex flex-col pb-[20vh] lg:pb-0" style="font-family: 'Inter', sans-serif;">
     
     <div id="loading-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-900">
         <img id="loading-favicon" src="https://aisnime.site/loading.ico" alt="Memuat..." class="w-16 h-16 rounded-lg animate-pulse">
@@ -113,7 +113,7 @@
             <!-- [KOMENTAR BARU] Ini adalah Baris 1 (Konten 80%) di tampilan mobile -->
             <!-- [DIUBAH] Struktur <main> diubah untuk menerapkan scroll HANYA pada daftar konten -->
             <!-- [DIUBAH] p-6 diubah menjadi p-1 untuk mobile dan lg:p-6 untuk desktop -->
- <main class="main-content-container p-3 lg:p-6 flex flex-col flex-1 min-h-0 lg:flex-1 lg:flex lg:flex-col lg:min-w-0 relative z-10 lg:overflow-y-auto">
+            <main class="main-content-container p-1 lg:p-6 flex flex-col flex-1 min-h-0 lg:flex-1 lg:flex lg:flex-col lg:min-w-0 relative z-10 lg:overflow-y-auto">
                 
                 <!-- [DIHAPUS] Poster Header telah dihapus -->
                 
@@ -264,9 +264,23 @@
 
                 <!-- [BARU] Kolom 3: Daftar Episode -->
                 <!-- [DIUBAH] col-span-1 (dari 5), h-64 di mobile, h-96 di desktop, h-full dihapus -->
-                <div class="lg:col-span-1 bg-gray-800 rounded-lg p-2 h-72 lg:h-96 overflow-y-auto mt-4 lg:mt-0 flex flex-col">
-                    <div id="modal-episode-list-container" class="flex-1 overflow-y-auto">
+                <!-- [DIUBAH] Diganti dengan ComboBox untuk mobile dan Daftar Scroll untuk Desktop -->
+                <div class="lg:col-span-1 bg-gray-800 rounded-lg p-2 h-72 lg:h-96 mt-4 lg:mt-0 flex flex-col">
+                    <!-- [BARU] Daftar Scroll HANYA UNTUK DESKTOP (lg:flex) -->
+                    <div id="modal-episode-list-container-desktop" class="flex-1 overflow-y-auto hidden lg:flex lg:flex-col">
                         <p class="text-xs text-gray-400 text-center">Memuat episode...</p>
+                    </div>
+                    
+                    <!-- [BARU] ComboBox HANYA UNTUK MOBILE (lg:hidden) -->
+                    <div class="block lg:hidden w-full h-full flex items-center justify-center">
+                         <div class="relative w-full">
+                            <select id="modal-episode-select-mobile" class="w-full bg-gray-700 text-white p-3 rounded-lg appearance-none focus:ring-2 focus:ring-purple-500">
+                                <option value="">Pilih Episode...</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                                <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -297,7 +311,7 @@
                             <div>
                                 <span class="p-1 bg-blue-800 text-white text-xs font-bold rounded">MAL</span>
                             </div>
-				<div id="modal-description-wrapper" class="h-24 overflow-y-auto mt-4">
+<div id="modal-description-wrapper" class="h-24 overflow-y-auto mt-4">
                     <!-- [DIUBAH] Menambahkan 'break-words' untuk memaksa teks panjang agar patah (wrap) -->
                     <p id="modal-content-description" class="text-gray-400 text-sm whitespace-pre-wrap break-words">Tidak ada deskripsi.</p>
                 </div>
@@ -335,7 +349,7 @@
     <!-- [BARU] Navigasi Bawah (Hanya Mobile) -->
     <!-- [KOMENTAR BARU] Ini adalah Baris 2 (Navigasi 10%) di tampilan mobile -->
     <!-- [DIUBAH] h-[5vh] diubah menjadi h-[20vh] untuk nav 20% -->
-    <nav id="mobile-bottom-nav" class="lg:hidden fixed bottom-0 left-0 right-0 h-[7vh] bg-gray-800 border-t border-gray-700 flex justify-around items-center z-40">
+    <nav id="mobile-bottom-nav" class="lg:hidden fixed bottom-0 left-0 right-0 h-[20vh] bg-gray-800 border-t border-gray-700 flex justify-around items-center z-40">
         <!-- Kiri: Genre / Pencarian -->
         <button id="bottom-nav-genre-btn" class="p-3 text-gray-400 hover:text-white">
             <!-- [DIUBAH] Ikon diubah menjadi ikon Pencarian -->
@@ -481,7 +495,7 @@
                         
                         <div class="flex items-center text-[9px] text-gray-400">
                             <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
-                            <span>${(itemData.data.episodeCount || 0)}</span>
+                            <span>${(itemData.data.episodeCount || 0)} Eps</span>
                         </div>
                         <!-- [DIHAPUS] Div untuk view count dihapus -->
                     </div>
@@ -895,17 +909,25 @@
         window.openEpisodeList = async (seriesId, seriesData) => {
             currentSeriesId = seriesId;
 
-            const episodeContainer = document.getElementById('modal-episode-list-container');
-            if (!episodeContainer) return;
-            episodeContainer.innerHTML = '<p class="text-xs text-gray-400 text-center">Memuat episode...</p>';
+            /* [DIUBAH] Target diubah untuk desktop dan seluler */
+            const episodeContainerDesktop = document.getElementById('modal-episode-list-container-desktop');
+            const episodeSelectMobile = document.getElementById('modal-episode-select-mobile');
+            
+            if (!episodeContainerDesktop || !episodeSelectMobile) return;
+            
+            episodeContainerDesktop.innerHTML = '<p class="text-xs text-gray-400 text-center">Memuat episode...</p>';
+            episodeSelectMobile.innerHTML = '<option value="">Memuat episode...</option>';
             
             const episodesCollRef = collection(db, 'series', seriesId, 'episodes'); 
             const q = query(episodesCollRef, orderBy("title", "asc")); 
 
             onSnapshot(q, (snapshot) => {
-                episodeContainer.innerHTML = '';
+                episodeContainerDesktop.innerHTML = '';
+                episodeSelectMobile.innerHTML = '<option value="">Pilih Episode...</option>'; // Opsi default
+                
                 if (snapshot.empty) {
-                    episodeContainer.innerHTML = '<p class="text-xs text-gray-400 text-center">Belum ada episode.</p>';
+                    episodeContainerDesktop.innerHTML = '<p class="text-xs text-gray-400 text-center">Belum ada episode.</p>';
+                    episodeSelectMobile.innerHTML = '<option value="">Belum ada episode.</option>';
                     return;
                 }
 
@@ -917,11 +939,15 @@
                 episodesList.forEach(item => {
                     const episode = item.data;
                     const episodeId = item.id;
+                    const videoUrl = episode.videoFiles ? episode.videoFiles['default'] : null;
+                    
+                    if (!videoUrl) return; // Lewati jika tidak ada video
                     
                     const progressData = getWatchProgress(episodeId);
                     const isWatched = progressData.watched;
                     const isPlaying = (currentItem && currentItem.episodeId === episodeId);
                     
+                    // --- 1. Buat untuk Daftar Desktop ---
                     const watchedIcon = isWatched 
                         ? `<svg class="w-4 h-4 ml-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>`
                         : '';
@@ -934,22 +960,42 @@
                         <span class="text-sm text-gray-300 truncate">${episode.title || `(Tanpa Judul)`}</span>
                         ${watchedIcon}
                     `;
-
-                    const videoUrl = episode.videoFiles ? episode.videoFiles['default'] : null;
-
-                    episodeEl.onclick = () => {
-                        if (videoUrl) {
-                            playVideoInModal(seriesData, episode, videoUrl, episodeId);
-                        } else {
-                            console.warn('Video untuk episode ini tidak tersedia.');
-                        }
-                    };
                     
-                    episodeContainer.appendChild(episodeEl);
+                    episodeEl.onclick = () => {
+                        playVideoInModal(seriesData, episode, videoUrl, episodeId);
+                    };
+                    episodeContainerDesktop.appendChild(episodeEl);
+
+                    // --- 2. Buat untuk ComboBox Seluler ---
+                    const optionEl = document.createElement('option');
+                    optionEl.value = episodeId;
+                    optionEl.textContent = `${isWatched ? '✓ ' : ''}${episode.title || '(Tanpa Judul)'}`;
+                    optionEl.dataset.videoUrl = videoUrl;
+                    optionEl.dataset.seriesData = JSON.stringify(seriesData); // Simpan data untuk onchange
+                    optionEl.dataset.episodeData = JSON.stringify(episode); // Simpan data untuk onchange
+                    if (isPlaying) {
+                        optionEl.selected = true;
+                    }
+                    episodeSelectMobile.appendChild(optionEl);
                 });
+                
+                // [BARU] Tambahkan event listener untuk ComboBox seluler
+                episodeSelectMobile.onchange = (e) => {
+                    const selectedOption = e.target.options[e.target.selectedIndex];
+                    const episodeId = selectedOption.value;
+                    const videoUrl = selectedOption.dataset.videoUrl;
+                    
+                    if (episodeId && videoUrl) {
+                        const seriesData = JSON.parse(selectedOption.dataset.seriesData);
+                        const episodeData = JSON.parse(selectedOption.dataset.episodeData);
+                        playVideoInModal(seriesData, episodeData, videoUrl, episodeId);
+                    }
+                };
+                
             }, (error) => { 
                 console.error("Gagal memuat daftar episode: ", error);
-                episodeContainer.innerHTML = '<p class="text-red-500">Gagal memuat daftar episode.</p>';
+                episodeContainerDesktop.innerHTML = '<p class="text-red-500">Gagal memuat daftar episode.</p>';
+                episodeSelectMobile.innerHTML = '<option value="">Gagal memuat.</option>';
             });
         }
 
@@ -998,7 +1044,10 @@
                 if (modalMainPlayer) modalMainPlayer.style.display = 'none'; 
                 if (videoModal) videoModal.classList.remove('hidden'); 
 
-                const allEpisodeButtons = document.querySelectorAll('#modal-episode-list-container .episode-list-button');
+                // [DIUBAH] Perbarui *kedua* daftar (Desktop dan Seluler)
+                
+                // 1. Perbarui Daftar Desktop
+                const allEpisodeButtons = document.querySelectorAll('#modal-episode-list-container-desktop .episode-list-button');
                 allEpisodeButtons.forEach(btn => {
                     if (btn.dataset.episodeId === episodeId) {
                         btn.classList.add('bg-purple-600', 'text-white');
@@ -1008,6 +1057,12 @@
                         btn.classList.add('bg-gray-700', 'hover:bg-gray-600');
                     }
                 });
+                
+                // 2. Perbarui ComboBox Seluler
+                const episodeSelectMobile = document.getElementById('modal-episode-select-mobile');
+                if (episodeSelectMobile) {
+                    episodeSelectMobile.value = episodeId;
+                }
 
                 const modalTitleEl = document.getElementById('modal-content-title');
                 if (!modalTitleEl || modalTitleEl.textContent === "Memuat judul...") {
@@ -1430,7 +1485,7 @@
                     
                     linkEl.innerHTML = `
                         <svg class="w-6 h-6 flex-shrink-0 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899l4-4a4 4 0 10-5.656-5.656l-1.102 1.101"></path></svg>
-                        <span class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-1 bg-gray-900 shadow-lg rounded-md text-sm text-white hidden lg:group-hover:block whitespace-nowrap z-50">
+                        <span class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-1 bg-gray-900 shadow-lg rounded-md text-sm text-white hidden lg:group-hover:block whitespace-nowFrap z-50">
                             ${linkData.title}
                         </span>
                     `;
