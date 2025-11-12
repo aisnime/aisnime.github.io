@@ -20,11 +20,6 @@ body {
 .content-card {
     cursor: pointer;
     transition: transform 0.3s ease;
-    /* [DIHAPUS] Ukuran piksel tetap dihapus */
-    /* width: 20px !important; */
-    /* height: 60px !important; */
-    /* display: flex; */
-    /* flex-direction: column; */
 }
 
 .content-card:hover {
@@ -37,7 +32,13 @@ body {
     object-fit: cover;
 }
 
-/* [DIHAPUS] Kontrol kustom lama tidak lagi diperlukan */
+/* Mengalih keluar kawalan kustom */
+#custom-controls-container {
+    display: none;
+}
+#player-controls {
+    display: none;
+}
 
 #modal-content-description {
     white-space: pre-wrap;
@@ -48,81 +49,15 @@ body {
 
 @media (min-width: 1024px) { /* lg (desktop) */
   #modal-content-description {
-     max-height: 200px;
+     max-height: 200px; /* Lebih banyak ruang di desktop */
+  }
+
+  /* [BARU] Terapkan max-height untuk scrolling desktop pada main container */
+  /* Ini dipindahkan dari inline style di index.html */
+  .main-content-container {
+    max-height: calc(100vh - 4rem); 
   }
 }
 
-/* [DIHAPUS] Aturan grid yang bentrok */
-/* ... (komentar aturan grid dihapus) ... */
-
-
-/* [DIUBAH] Mengganti flexbox kembali ke grid */
-#content-list {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.5rem; /* 24px, sama dengan gap-6 */
-    /* [DIHAPUS] justify-content: center; */
-}
-
-/* [DIUBAH] Grid untuk baris kustom memiliki gaya yang sama */
-.custom-row-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1.5rem; /* 24px, sama dengan gap-6 */
-    /* [DIHAPUS] justify-content: center; */
-}
-
-@media (min-width: 200px) { /* [DIUBAH] sm (dari 400px) */
-  /* [DIUBAH] Kembali ke 3 kolom */
-  #content-list, .custom-row-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    /* [DIHAPUS] justify-content: flex-start; */
-  }
-}
-
-/* [DIHAPUS] Aturan media query @media (min-width: 768px) */
-
-@media (min-width: 500px) { /* [DIUBAH] lg (dari 1024px) */
-  #content-list, .custom-row-grid {
-    grid-template-columns: repeat(5, minmax(0, 1fr)); /* 5 Kolom */
-  }
-}
-
-
-/* [BARU] Sembunyikan scrollbar untuk Webkit (Chrome, Safari) */
-#main-content::-webkit-scrollbar, /* [BARU] Sembunyikan scroll utama mobile */
-main.main-content-container::-webkit-scrollbar,
-#chat-messages::-webkit-scrollbar,
-#desktop-sidebar .overflow-y-auto::-webkit-scrollbar,
-#genre-flyout-panel::-webkit-scrollbar,
-#genre-list-mobile::-webkit-scrollbar,
-#modal-episode-list-container::-webkit-scrollbar, 
-#modal-description-wrapper::-webkit-scrollbar 
-{
-    display: none;
-}
-
-/* [BARU] Sembunyikan scrollbar untuk Firefox */
-#main-content, /* [BARU] Sembunyikan scroll utama mobile */
-main.main-content-container,
-#chat-messages,
-#desktop-sidebar .overflow-y-auto,
-#genre-flyout-panel,
-#genre-list-mobile,
-#modal-episode-list-container, 
-#modal-description-wrapper 
-{
-    scrollbar-width: none;  /* Firefox */
-}
-
-/* [DIHAPUS] Aturan yang menyembunyikan scrollbar body di mobile telah dihapus */
-/*
-@media (max-width: 1023px) {
-    body::-webkit-scrollbar {
-        display: none; / Webkit (Chrome, Safari) /
-    }
-    body {
-        scrollbar-width: none; / Firefox /
-    }
-}
-*/
+/* [BARU] Aturan media query untuk 3 dan 5 kolom */
+/* ... existing code ... -->
