@@ -19,12 +19,7 @@
 </head>
 <!-- [DIUBAH] h-screen, overflow-hidden, dan flex-col diterapkan di SEMUA ukuran -->
 <!-- [DIUBAH] pb-[20vh] diubah menjadi pb-[10vh] (Mengembalikan ke 10%) -->
-<body class="bg-gray-900 text-white h-screen overflow-hidden flex flex-col pb-[15vh] lg:pb-0" style="font-family: 'Inter', sans-serif;">
-    
-    <div id="loading-overlay" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-900">
-        <img id="loading-favicon" src="https://aisnime.site/loading.ico" alt="Memuat..." class="w-16 h-16 rounded-lg animate-pulse">
-    </div>
-
+<body class="bg-gray-900 text-white h-screen overflow-hidden flex flex-col pb-[14vh] lg:pb-0" style="font-family: 'Inter', sans-serif;">
     <!-- [DIUBAH] Konten utama sekarang menjadi flex-1 (mengisi sisa ruang) dan scrollable di mobile -->
     <!-- [DIUBAH] overflow-y-auto diubah menjadi overflow-y-hidden untuk menghentikan scroll utama di mobile -->
     <div id="main-content" class="overlay hidden flex-1 min-h-0 overflow-y-hidden lg:overflow-y-visible lg:flex lg:flex-col">
@@ -62,7 +57,7 @@
                         <!-- Kontainer Navigasi Dinamis (Sekarang 'relative group') -->
                         <div id="dynamic-nav-links" class="space-y-2">
                             <!-- Link dari admin akan dimuat oleh JS di sini -->
-                            <p class="text-sm text-gray-400">Memuat navigasi...</p>
+                            <p class="text-sm text-gray-400"></p>
                         </div>
 
                         <!-- [DIUBAH] Kontainer Filter Genre (Dengan Tooltip Fly-out) -->
@@ -75,16 +70,20 @@
                             <!-- [DIUBAH] Panel Fly-out (z-50, w-max, dan "jembatan" padding) -->
                             <div id="genre-flyout-panel" 
                                  class="hidden group-hover:block absolute left-0 top-0 z-50 pt-2"
-                                 style="padding-left: 5rem;"> <!-- 5rem = w-20, ini adalah "jembatan" transparan -->
+                                 style="padding-left: 4.1rem;"> <!-- 5rem = w-20, ini adalah "jembatan" transparan -->
                                 
                                 <!-- Konten panel yang terlihat -->
-                                <div class="w-max p-4 bg-gray-700 rounded-lg shadow-xl" style="max-height: 400px; overflow-y: auto;">
+								
+								
+                                <div class="w-max p-4 bg-gray-700 rounded-lg shadow-xl" class="max-height: 215px;">
                                     <!-- [BARU] Judul di dalam panel -->
                                     <h3 class="text-white text-lg font-semibold mb-2">Genre</h3>
+									<div id="genre-list-nav" style="max-height: 215px; overflow-y: auto; ">
                                     <!-- [DIUBAH] flex-col dan space-y-1 untuk daftar vertikal -->
-                                    <div id="genre-list-desktop" class="flex flex-col space-y-1">
+										<div id="genre-list-desktop" class="flex flex-col space-y-1">
                                         <!-- Genre buttons will be loaded here -->
-                                    </div>
+										</div>
+									</div>
                                 </div>
                             </div>
                         </div>
@@ -96,10 +95,10 @@
                     <!-- [DIUBAH] Kontainer Laporan (mt-auto DIHAPUS, sekarang didorong oleh spacer) -->
                     <div id="report-button-desktop-container" class="pt-4 border-t border-gray-700">
                          <!-- [DIUBAH] Tombol sekarang menjadi 'relative group' untuk tooltipnya sendiri -->
-                         <button id="open-report-btn-desktop" class="relative group w-full flex items-center justify-center text-sm text-gray-400 hover:text-white hover:bg-gray-700 p-2 rounded-lg transition-colors">
-                            <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2zm0 0h18"></path></svg>
+                         <button id="open-report-btn-desktop" class="relative group w-full flex items-center justify-center text-sm text-gray-400 hover:text-white hover:bg-gray-700 p-2 rounded-lg transition-colors" >
+                            <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="red" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2zm0 0h18"></path></svg>
                             <!-- [BARU] Tooltip -->
-                            <span class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-1 bg-gray-900 shadow-lg rounded-md text-sm text-white hidden lg:group-hover:block whitespace-nowrap z-20">
+                            <span style="margin-left: 1.1rem;" class="absolute left-full top-1/2 -translate-y-1/2 ml-3 px-3 py-1 bg-gray-900 shadow-lg rounded-md text-sm text-white hidden lg:group-hover:block whitespace-nowrap z-20">
                                 Laporkan Masalah
                             </span>
                         </button>
@@ -127,7 +126,7 @@
                     <div id="latest-updates-row" class="flex-1 overflow-y-auto">
                         <!-- #content-list sekarang menjadi pembungkus grid di dalam area scroll -->
                         <div id="content-list">
-                            <p id="no-content-message" class="text-gray-500 col-span-full text-center py-8">Memuat konten...</p>
+                            <p id="no-content-message" class="text-gray-500 col-span-full text-center py-8"></p>
                         </div>
                     </div>
                     <!-- Baris kustom lainnya (jika ada) akan dimuat oleh JS di sini, 
@@ -155,7 +154,7 @@
                         </header>
                         <form id="search-form-desktop" class="w-full max-w-xl mx-auto lg:ml-auto lg:mr-0 mt-4 mb-8">
                             <!-- [DIUBAH] border, border-gray-600, dan bg-opacity-50 dihapus -->
-                            <input type="search" id="search-input-desktop" placeholder="Cari berdasarkan judul atau genre..." class="w-full bg-gray-700 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition">
+                            <input type="search" id="search-input-desktop" placeholder="Cari judul ?" class="w-full bg-gray-700 rounded-full py-3 px-6 text-white focus:ring-2 focus:ring-purple-500 transition">
                         </form>
                     </div>
                     
@@ -195,11 +194,6 @@
 
 
     <!-- Tampilan Maintenance (Awalnya disembunyikan) -->
-    <div id="maintenance-overlay" class="hidden fixed inset-0 z-50 flex flex-col items-center justify-center text-center bg-gray-900 p-4">
-        <img id="maintenance-logo" src="" alt="Logo" class="w-40 h-40 rounded-full mb-6 border-4 border-gray-700 shadow-lg">
-        <h1 class="text-4xl font-bold text-white">MAINTENANCE</h1>
-        <p class="text-gray-300 mt-2 max-w-md">Mohon Maaf, Kami sedang melakukan beberapa pembaruan</p>
-    </div>
 
     <!-- [DIHAPUS] MODAL DAFTAR EPISODE (LAMA) -->
 
@@ -477,6 +471,57 @@
         let currentPanelContent = null; // 'search' atau 'chat'
         let mobileBottomNav; // [BARU] Variabel untuk nav bawah
         
+		async function main() {
+            try {
+                contentListEl = document.getElementById('content-list');
+                contentRowsContainer = document.getElementById('content-rows-container'); 
+                mainLogoImg = document.getElementById('main-logo');
+                mainTitleText = document.getElementById('main-title-text');
+                
+                /* [DIUBAH] Variabel sidebar genre lama dihapus */
+                genreListDesktop = document.getElementById('genre-list-desktop');
+                
+                /* [BARU] Menargetkan elemen panel bawah */
+                bottomPanel = document.getElementById('bottom-panel');
+                bottomPanelOverlay = document.getElementById('bottom-panel-overlay');
+                bottomPanelHandle = document.getElementById('bottom-panel-handle');
+                panelSearchContent = document.getElementById('panel-search-content');
+                panelChatContent = document.getElementById('panel-chat-content');
+                panelGenreList = document.getElementById('panel-genre-list');
+                mobileBottomNav = document.getElementById('mobile-bottom-nav'); // [BARU] Mengambil nav bawah
+                
+                videoModal = document.getElementById('video-modal');
+                closeModalBtn = document.getElementById('close-modal-btn');
+                modalMainPlayer = document.getElementById('modal-main-player');
+                videoContainer = document.getElementById('video-container');
+                // [DIHAPUS] modalYouTubePlayer dihapus
+
+
+                /* --- Firebase Auth --- */
+                try {
+                    await signInAnonymously(auth);
+                } catch (authError) {
+                    console.error(`Autentikasi Gagal: ${authError.message}`); 
+                    const loadingMsg = document.getElementById('loading-overlay').querySelector('p');
+                    if(loadingMsg) {
+                        loadingMsg.textContent = "Gagal terhubung ke server autentikasi. Pastikan domain ini telah diizinkan di Firebase Auth.";
+                        loadingMsg.classList.add("text-red-500", "p-4");
+                    }
+                    return; 
+                }
+                currentUserId = auth.currentUser?.uid || crypto.randomUUID();
+                
+                await loadSettings();
+                logPageView(); 
+                setupChat(); 
+                setupReportModal();
+                handleDeepLink();
+                loadDynamicNavLinks(); 
+            } catch(e) { 
+                console.error(`Initialization failed: ${e.message}`); 
+                document.body.innerHTML = `<div class="bg-red-900 text-white p-8 rounded-lg shadow-2xl max-w-2xl mx-auto mt-20"><h1 class="text-3xl font-bold mb-4">Koneksi Gagal!</h1><p>Gagal terhubung ke server.</p></div>`;
+            }
+        }
         /* --- [DIKEMBALIKAN] FUNGSI DARI function.js --- */
         
         function loadInitialContent() {
@@ -1416,57 +1461,7 @@
         
         /* --- [DIKEMBALIKAN] FUNGSI DARI async.js --- */
         
-        async function main() {
-            try {
-                contentListEl = document.getElementById('content-list');
-                contentRowsContainer = document.getElementById('content-rows-container'); 
-                mainLogoImg = document.getElementById('main-logo');
-                mainTitleText = document.getElementById('main-title-text');
-                
-                /* [DIUBAH] Variabel sidebar genre lama dihapus */
-                genreListDesktop = document.getElementById('genre-list-desktop');
-                
-                /* [BARU] Menargetkan elemen panel bawah */
-                bottomPanel = document.getElementById('bottom-panel');
-                bottomPanelOverlay = document.getElementById('bottom-panel-overlay');
-                bottomPanelHandle = document.getElementById('bottom-panel-handle');
-                panelSearchContent = document.getElementById('panel-search-content');
-                panelChatContent = document.getElementById('panel-chat-content');
-                panelGenreList = document.getElementById('panel-genre-list');
-                mobileBottomNav = document.getElementById('mobile-bottom-nav'); // [BARU] Mengambil nav bawah
-                
-                videoModal = document.getElementById('video-modal');
-                closeModalBtn = document.getElementById('close-modal-btn');
-                modalMainPlayer = document.getElementById('modal-main-player');
-                videoContainer = document.getElementById('video-container');
-                // [DIHAPUS] modalYouTubePlayer dihapus
-
-
-                /* --- Firebase Auth --- */
-                try {
-                    await signInAnonymously(auth);
-                } catch (authError) {
-                    console.error(`Autentikasi Gagal: ${authError.message}`); 
-                    const loadingMsg = document.getElementById('loading-overlay').querySelector('p');
-                    if(loadingMsg) {
-                        loadingMsg.textContent = "Gagal terhubung ke server autentikasi. Pastikan domain ini telah diizinkan di Firebase Auth.";
-                        loadingMsg.classList.add("text-red-500", "p-4");
-                    }
-                    return; 
-                }
-                currentUserId = auth.currentUser?.uid || crypto.randomUUID();
-                
-                await loadSettings();
-                logPageView(); 
-                setupChat(); 
-                setupReportModal();
-                handleDeepLink();
-                loadDynamicNavLinks(); 
-            } catch(e) { 
-                console.error(`Initialization failed: ${e.message}`); 
-                document.body.innerHTML = `<div class="bg-red-900 text-white p-8 rounded-lg shadow-2xl max-w-2xl mx-auto mt-20"><h1 class="text-3xl font-bold mb-4">Koneksi Gagal!</h1><p>Gagal terhubung ke server.</p></div>`;
-            }
-        }
+        
 
         async function loadSettings() {
             const loadingOverlay = document.getElementById('loading-overlay');
@@ -1708,20 +1703,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
