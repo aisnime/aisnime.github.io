@@ -102,9 +102,12 @@ main.main-content-container,
 #desktop-sidebar .overflow-y-auto,
 #genre-flyout-panel,
 #genre-list-mobile,
-#modal-episode-list-container, 
+#modal-episode-list-container-desktop,
+#modal-episode-list-container,
+#modal-content-description,
 #modal-description-wrapper,
-#latest-updates-row
+#latest-updates-row,
+#genre-list-nav
 {
     scrollbar-width: none;  /* Firefox */
 }
